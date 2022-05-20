@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../test.ts"],
+  "sourcesContent": ["import { DiscallWS as WS } from \"./ws\";\n\nexport function WSTest(): void {\n\tlet ws: WS = new WS();\n}"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA,gBAAgC;AAEzB,kBAAwB;AAC9B,MAAI,KAAS,IAAI;AAAA;",
+  "names": []
+}

@@ -1,0 +1,1 @@
+{"version":3,"file":"constantbackoff.d.ts","sourceRoot":"","sources":["../../src/backoff/constantbackoff.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,OAAO,EAAC,MAAM,WAAW,CAAC;AAElC;;GAEG;AACH,qBAAa,eAAgB,YAAW,OAAO;IAC3C,OAAO,CAAC,QAAQ,CAAC,OAAO,CAAS;gBAErB,OAAO,EAAE,MAAM;IAI3B,IAAI,IAAI,MAAM;IAId,KAAK,aAEJ;CACJ"}

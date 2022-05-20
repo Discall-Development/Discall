@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../index.ts"],
+  "sourcesContent": ["import * as Tests from './test'\n\nTests.WSTest();"],
+  "mappings": ";;;;;;;;;;;;;;;;;;AAAA,YAAuB;AAEvB,MAAM;",
+  "names": []
+}
