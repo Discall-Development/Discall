@@ -24,7 +24,7 @@ var __toModule = (module2) => {
 __export(exports, {
   WSTest: () => WSTest
 });
-var import_ws = __toModule(require("./ws"));
+var import_ws = __toModule(require("./src/ws"));
 function WSTest() {
   let ws = new import_ws.DiscallWS();
 }

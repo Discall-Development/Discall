@@ -1,4 +1,4 @@
-import { DiscallWS as WS } from "./ws";
+import { DiscallWS as WS } from "./src/ws";
 
 export function WSTest(): void {
 	let ws: WS = new WS();
