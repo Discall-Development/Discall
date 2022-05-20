@@ -1,0 +1,6 @@
+.replit
+
+*.nix
+
+.build/*
+node_module/*
