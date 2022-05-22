@@ -12,6 +12,11 @@
   "dependencies": {
     "etf.js": "^1.0.1",
     "express": "^4.18.1",
-    "websocket-ts": "^1.1.1"
+    "websocket-ts": "^1.1.1",
+    "ws": "^8.6.0",
+    "zlibt2": "^0.5.2"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.3"
   }
 }
