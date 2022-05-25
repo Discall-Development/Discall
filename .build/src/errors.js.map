@@ -2,6 +2,6 @@
   "version": 3,
   "sources": ["../../src/errors.ts"],
   "sourcesContent": ["export class VersionError extends Error {\n\tconstructor(version: number) {\n\t\tsuper(`Version ${version} is not a vaild version.`);\n\t}\n}\n\nexport class EncodingError extends Error {\n\tconstructor(encoding: string) {\n\t\tsuper(`Encoding ${encoding} is not a vaild encoding.`);\n\t}\n}"],
-  "mappings": ";;;;;;;AAAA;AAAA;AAAA;AAAA;AAAO,2BAA2B,MAAM;AAAA,EACvC,YAAY,SAAiB;AAC5B,UAAM,WAAW;AAAA;AAAA;AAIZ,4BAA4B,MAAM;AAAA,EACxC,YAAY,UAAkB;AAC7B,UAAM,YAAY;AAAA;AAAA;",
+  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,MAAM,qBAAqB,MAAM;AAAA,EACvC,YAAY,SAAiB;AAC5B,UAAM,WAAW,iCAAiC;AAAA,EACnD;AACD;AAEO,MAAM,sBAAsB,MAAM;AAAA,EACxC,YAAY,UAAkB;AAC7B,UAAM,YAAY,mCAAmC;AAAA,EACtD;AACD;",
   "names": []
 }

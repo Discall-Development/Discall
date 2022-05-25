@@ -1,9 +1,69 @@
+import Snowflake from "./snowflake";
+
+export interface DiscallWSType {
+	processer: DiscordDataProcesserType;
+
+	send(data: DiscordData): void;
+
+	get isopen(): boolean;
+}
+
+export interface DiscordDataProcesserType {
+	Dispatch(data: DiscordData, ws: DiscallWSType): Promise<void>;
+	Heartbeat(data: DiscordData, ws: DiscallWSType): Promise<void>;
+	Identify(ws: DiscallWSType): Promise<void>;
+	VoiceStateUpdate(ws: DiscallWSType): Promise<void>;
+	Resume(ws: DiscallWSType): Promise<void>;
+	Reconnect(data: DiscordData, ws: DiscallWSType): Promise<void>;
+	RequestGuildMembers(ws: DiscallWSType): Promise<void>;
+	InvalidSession(data: DiscordData, ws: DiscallWSType): Promise<void>;
+	Hello(data: DiscordData, ws: DiscallWSType): Promise<void>;
+	HeartbeatACK(data: DiscordData, ws: DiscallWSType): Promise<void>;
+}
+
+export interface UnavailableGuildType {
+	id: string;
+	unavailable: boolean;
+}
+
+export interface GuildType {}
+
+export interface BotType {
+	user: UserType | null;
+	guilds: UnavailableGuildType[];
+	session_ids: string[];
+	shards: [number, number][]
+	application: ApplicationType | null
+
+	emit(event_name: EventName, d: any): Promise<void>;
+}
+
+export interface ApplicationType {
+	flags: number,
+	id: { value: BigInt }
+}
+
+export interface UserType {
+	readonly id: Snowflake;
+	readonly name: string;
+	readonly discriminator: string;
+	readonly bot?: boolean;
+	readonly system?: boolean;
+	readonly mfa_enabled?: boolean;
+	readonly accent_color?: number | null;
+	readonly locale?: LocaleOption;
+	readonly verified?: boolean;
+	readonly flags?: number;
+	readonly premium_type?: number;
+	readonly public_flags?: number;
+}
+
 export interface DiscordData {
 	op: number;
 	d?: any;
 	s?: number;
 	t?: string;
-};
+}
 
 export enum OpCode {
 	Dispatch,
@@ -17,9 +77,11 @@ export enum OpCode {
 	InvalidSession,
 	Hello,
 	HeartbeatACK
-};
+}
 
 export type EventDataType = ReadyEventData | GuildCreateEventData;
+
+export type EventName = 'READY' | 'GUILD_CREATE';
 
 export interface ReadyEventData {
 	v: number;
@@ -47,6 +109,10 @@ export interface GuildCreateEventData extends GuildData {
 	}[];
 	stage_instances: StageInstanceData[];
 	guild_scheduled_events: GuildScheduledEventData;
+}
+
+export interface RoleType {
+	
 }
 
 export interface GuildData {
@@ -350,7 +416,7 @@ export enum VideQualityModes {
 }
 
 export enum ChannelFlags {
-	PINNED = 1 << 1;
+	PINNED = 1 << 1
 }
 
 export interface VoiceRegionData {

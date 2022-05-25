@@ -1,7 +1,6 @@
 {
   "name": "discall",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,13 +9,28 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "esbuild": "^0.14.39",
     "etf.js": "^1.0.1",
     "express": "^4.18.1",
+    "node-fetch": "^3.2.4",
     "websocket-ts": "^1.1.1",
     "ws": "^8.6.0",
     "zlibt2": "^0.5.2"
   },
   "devDependencies": {
-    "@types/ws": "^8.5.3"
-  }
+    "@types/ws": "^8.5.3",
+    "esbuild-windows-64": "^0.14.39"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rexwu1104/Discall.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rexwu1104/Discall/issues"
+  },
+  "homepage": "https://github.com/rexwu1104/Discall#readme",
+  "description": ""
 }

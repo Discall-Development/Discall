@@ -1,6 +1,9 @@
-import WS from "../src/ws";
+import Bot, {start} from "../src/bot";
 import Intents from "../src/Intents";
 
-export function WSTest(): void {
-	let ws: WS = new WS(process.env['token'] as string, Intents.all());
+export function BotTest(): void {
+	let bot: Bot = new Bot(process.env['token'] as string, Intents.all());
+	start(bot).then(r => {
+		console.log('started');
+	});
 }
