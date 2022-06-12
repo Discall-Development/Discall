@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../index.ts"],
-  "sourcesContent": ["export * from './src';\n\nimport * as Tests from './test'\n\nTests.BotTest();"],
-  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA,4BAAc,kBAAd;AAEA,YAAuB;AAEvB,MAAM,QAAQ;",
-  "names": []
-}
