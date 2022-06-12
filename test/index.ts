@@ -1,6 +1,4 @@
-import {allIntents} from "../src/intents";
-import {createBot, onGuildCreate, onReady} from "../src/bot";
-import {GuildCreateEventData, ReadyEventData} from "../src/dataType";
+import {allIntents, createBot, GuildCreateEventData, onGuildCreate, onReady, ReadyEventData} from '../src';
 
 
 export async function BotTest(): Promise<void> {
