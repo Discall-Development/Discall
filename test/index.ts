@@ -1,9 +1,20 @@
-import Bot, {start} from "../src/bot";
-import Intents from "../src/Intents";
+import {allIntents} from "../src/intents";
+import {createBot, onGuildCreate, onReady} from "../src/bot";
+import {GuildCreateEventData, ReadyEventData} from "../src/dataType";
 
-export function BotTest(): void {
-	let bot: Bot = new Bot(process.env['token'] as string, Intents.all());
-	start(bot).then(r => {
-		console.log('started');
-	});
+
+export async function BotTest(): Promise<void> {
+    createBot(process.env['WS_TOKEN'] as string, {
+        intents: allIntents(),
+        prefix: '!'
+    });
+
+    onReady(async (data: ReadyEventData) => {
+        console.log(`API Version: ${data.v}`);
+        console.log(`Login with '${data.user.username}'`);
+    });
+
+    onGuildCreate(async (data: GuildCreateEventData) => {
+        console.log(`Guild ${data.name} created`)
+    });
 }

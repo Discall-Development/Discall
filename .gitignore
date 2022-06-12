@@ -1,8 +1,9 @@
-.replit
-
-*.nix
-
 .build/*
+.cache/*
+.config/*
+.upm/*
+.vscode/*
+
 node_module/*
 
 *.xml
