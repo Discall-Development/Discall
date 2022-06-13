@@ -2,17 +2,16 @@ import WebSocket from "ws";
 import {pack, unpack} from "etf.js";
 import {debug, error} from "./logger";
 import {DiscordData, Opcode, WSObject} from "./dataType";
+import {callEvent, packEvent} from "./event";
 
 type Encoding = 'etf' | 'json';
 
 let Global: {
     sequence: number | null;
     session_id: string | null;
-    events: { [k: string]: ((...item: any) => Promise<any>)[] };
 } = {
     sequence: null,
-    session_id: null,
-    events: {}
+    session_id: null
 }
 export function createWS(
     token: string,
@@ -91,15 +90,6 @@ export function createWS(
     };
 }
 
-function packEvent(eventName: string): (cb: () => Promise<any>) => any {
-    return function(cb: () => Promise<any>): any {
-        if (Array.isArray(Global.events[eventName]))
-            Global.events[eventName].push(cb);
-        else
-            Global.events[eventName] = [cb];
-    };
-}
-
 async function onOpen(ws: WebSocket, event: WebSocket.Event, token: string, intents: number, encoding: Encoding): Promise<void> {
     debug('websocket opened');
     await Identity(ws, token, intents, encoding);
@@ -162,10 +152,7 @@ async function send(ws: WebSocket, data: DiscordData, encoding: Encoding): Promi
 
 async function Dispatch(data: DiscordData): Promise<void> {
     // console.log(data.t?.toLowerCase())
-    if (data.t !== undefined && Global.events[data.t.toLowerCase()] !== undefined)
-        for (const cb of Global.events[data.t.toLowerCase()]) {
-            await cb(data.d);
-        }
+    await callEvent(data.t as string, data.d);
 }
 
 async function Heartbeat(ws: WebSocket, data: DiscordData, encoding: Encoding): Promise<void> {
