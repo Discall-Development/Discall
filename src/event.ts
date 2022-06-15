@@ -12,8 +12,11 @@ export function packEvent(eventName: string): (cb: () => Promise<any>) => any {
     };
 }
 
-export async function callEvent(eventName: string, data: any) {
+export async function callEvent(eventName: string, data: any): Promise<void> {
+    if (Global.events[eventName.toLowerCase()] === undefined)
+        return;
+
     for (const cb of Global.events[eventName.toLowerCase()]) {
-        await cb(data);
+        await cb(Object.freeze(data));
     }
 }

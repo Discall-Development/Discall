@@ -1,5 +1,6 @@
 import WebSocket from "ws";
 
+type Timestamp = string;
 export interface DiscordData {
     op: number;
     d?: any;
@@ -66,15 +67,59 @@ export interface ReadyEventData {
     guilds: UnavailableGuildData[];
     session_id: string;
     shard?: [number, number];
-    application: { flags: number, id: SnowflakeData };
+    application: { flags: ApplicationFlag, id: SnowflakeData };
 }
 
 export interface ApplicationCommandPermissionsUpdateEventData {
+    id: SnowflakeData;
+    application_id: SnowflakeData;
+    guild_id: SnowflakeData;
+    permissions: ApplicationCommandPermissionsData[];
+}
 
+export interface ChannelCreateEventData extends ChannelData {}
+export interface ChannelUpdateEventData extends ChannelData {}
+export interface ChannelDeleteEventData extends ChannelData {}
+export interface ThreadCreateEventData extends ChannelData {
+    newly_created?: boolean;
+    thread_member?: ThreadMemberData;
+}
+
+export interface ThreadUpdateEventData extends ChannelData {}
+export interface ThreadDeleteEventData {
+    id: SnowflakeData;
+    guild_id: SnowflakeData;
+    parent_id: SnowflakeData | null;
+    type: ChannelTypes;
+}
+
+export interface ThreadListSyncEventData {
+    guild_id: SnowflakeData;
+    channel_ids?: SnowflakeData[];
+    threads: ChannelData[];
+    members: ThreadMemberData[];
+}
+
+export interface ThreadMemberUpdateEventData extends ThreadMemberData {
+    guild_id: SnowflakeData;
+}
+
+export interface ThreadMembersUpdateEventData {
+    id: SnowflakeData;
+    guild_id: SnowflakeData;
+    member_count: number;
+    added_members?: ThreadMemberData[];
+    removed_member_ids?: SnowflakeData[];
+}
+
+export interface ChannelPinsUpdateEventData {
+    guild_id?: SnowflakeData;
+    channel_id: SnowflakeData;
+    last_pin_timestamp?: Timestamp | null;
 }
 
 export interface GuildCreateEventData extends GuildData {
-    join_at: string;
+    join_at: Timestamp;
     large: boolean;
     unavailable: boolean;
     member_count: number;
@@ -91,6 +136,213 @@ export interface GuildCreateEventData extends GuildData {
     stage_instances: StageInstanceData[];
     guild_scheduled_events: GuildScheduledEventData;
 }
+
+export interface GuildUpdateEventData extends GuildData {}
+export interface GuildDeleteEventData extends UnavailableGuildData {}
+export interface GuildBanAddEventData {
+    guild_id: SnowflakeData;
+    user: UserData;
+}
+
+export interface GuildBanRemoveEventData {
+    guild_id: SnowflakeData;
+    user: UserData;
+}
+
+export interface GuildEmojisUpdateEventData {
+    guild_id: SnowflakeData;
+    emojis: EmojiData[];
+}
+
+export interface GuildStickersUpdateEventData {
+    guild_id: SnowflakeData;
+    stickers: StickerData[];
+}
+
+export interface GuildIntegrationsUpdateEventData {
+    guild_id: SnowflakeData;
+}
+
+export interface GuildMemberAddEventData extends GuildMemberData {
+    guild_id: SnowflakeData;
+}
+
+export interface GuildMemberRemoveEventData {
+    guild_id: SnowflakeData;
+    user: UserData;
+}
+
+export interface GuildMemberUpdateEventData {
+    guild_id: SnowflakeData;
+    roles: SnowflakeData[];
+    user: UserData;
+    nick?: string | null;
+    avatar: string | null;
+    join_at: Timestamp | null;
+    premium_since?: Timestamp | null;
+    deaf?: boolean;
+    mute?: boolean;
+    pending?: boolean;
+    communication_disabled_until?: Timestamp | null;
+}
+
+export interface GuildMembersChunkEventData {
+    guild_id: SnowflakeData;
+    members: GuildMemberData[];
+    chunk_index: number;
+    chunk_count: number;
+    not_found?: any[];
+    presences?: PresenceUpdateData[];
+    nonce?: string;
+}
+
+export interface GuildRoleCreateEventData {
+    guild_id: SnowflakeData;
+    role: RoleData;
+}
+
+export interface GuildRoleUpdateEventData {
+    guild_id: SnowflakeData;
+    role: RoleData;
+}
+
+export interface GuildRoleDeleteEventData {
+    guild_id: SnowflakeData;
+    role_id: SnowflakeData;
+}
+
+export interface GuildScheduledEventCreateEventData extends GuildScheduledEventData {}
+export interface GuildScheduledEventUpdateEventData extends GuildScheduledEventData {}
+export interface GuildScheduledEventDeleteEventData extends GuildScheduledEventData {}
+export interface GuildScheduledEventUserAddEventData {
+    guild_scheduled_event_id: SnowflakeData;
+    user_id: SnowflakeData;
+    guild_id: SnowflakeData;
+}
+
+export interface GuildScheduledEventUserRemoveEventData {
+    guild_scheduled_event_id: SnowflakeData;
+    user_id: SnowflakeData;
+    guild_id: SnowflakeData;
+}
+
+export interface IntegrationCreateEventData extends IntegrationData {
+    guild_id: SnowflakeData;
+}
+
+export interface IntegrationUpdateEventData extends IntegrationData {
+    guild_id: SnowflakeData;
+}
+
+export interface IntegrationDeleteEventData {
+    id: SnowflakeData;
+    guild_id: SnowflakeData;
+    application_id?: SnowflakeData;
+}
+
+export interface InviteCreateEventData {
+    channel_id: SnowflakeData;
+    code: string;
+    create_at: Timestamp;
+    guild_id?: SnowflakeData;
+    inviter?: UserData;
+    max_age: number;
+    max_uses: number;
+    target_type?: InviteTargetType;
+    target_user?: UserData;
+    target_application?: { flags: ApplicationFlag, id: SnowflakeData };
+    temporary: boolean;
+    uses: number;
+}
+
+export interface InviteDeleteEventData {
+    channel_id: SnowflakeData;
+    guild_id?: SnowflakeData;
+    code: string;
+}
+
+export interface MessageCreateEventData extends MessageData {
+    guild_id?: SnowflakeData;
+    member?: GuildMemberData;
+    mentions: GuildMemberMentionData[];
+}
+
+export interface MessageUpdateEventData extends MessageCreateEventData {}
+export interface MessageDeleteEventData {
+    id: SnowflakeData;
+    channel_id: SnowflakeData;
+    guild_id?: SnowflakeData;
+}
+
+export interface MessageDeleteBulkEventData {
+    ids: SnowflakeData[];
+    channel_id: SnowflakeData;
+    guild_id?: SnowflakeData;
+}
+
+export interface MessageReactionAddEventData {
+    user_id: SnowflakeData;
+    channel_id: SnowflakeData;
+    message_id: SnowflakeData;
+    guild_id?: SnowflakeData;
+    member?: GuildMemberData;
+    emoji: EmojiData;
+}
+
+export interface MessageReactionRemoveEventData {
+    user_id: SnowflakeData;
+    channel_id: SnowflakeData;
+    message_id: SnowflakeData;
+    guild_id?: SnowflakeData;
+    emoji: EmojiData;
+}
+
+export interface MessageReactionRemoveAllEventData {
+    channel_id: SnowflakeData;
+    message_id: SnowflakeData;
+    guild_id?: SnowflakeData;
+}
+
+export interface MessageReactionRemoveEmojiEventData {
+    channel_id: SnowflakeData;
+    message_id: SnowflakeData;
+    guild_id?: SnowflakeData;
+    emoji: EmojiData;
+}
+
+export interface PresenceUpdateEventData {
+    user: UserData;
+    guild_id: SnowflakeData;
+    status: string;
+    activities: ActivityData[];
+    client_status: ClientStatusData;
+}
+
+export interface TypingStartEventData {
+    channel_id: SnowflakeData;
+    guild_id?: SnowflakeData;
+    user_id: SnowflakeData;
+    timestamp: number;
+    member?: GuildMemberData;
+}
+
+export interface UserUpdateEventData extends UserData {}
+export interface VoiceStateUpdateEventData extends VoiceStateData {}
+export interface VoiceServerUpdateEventData {
+    token: string;
+    guild_id: SnowflakeData;
+    endpoint: string | null;
+}
+
+export interface WebhookUpdateEventData {
+    guild_id: SnowflakeData;
+    channel_id: SnowflakeData;
+}
+
+export interface InteractionCreateEventData extends InteractionData {}
+export interface StageInstanceCreateEventData extends StageInstanceData {}
+export interface StageInstanceUpdateEventData extends StageInstanceData {}
+export interface StageInstanceDeleteEventData extends StageInstanceData {}
 
 export type replaceCallback = (cb: () => Promise<any>) => any;
 export interface WSObject {
@@ -239,7 +491,7 @@ export interface ChannelData {
     owner_id?: SnowflakeData;
     application_id?: SnowflakeData;
     parent_id?: SnowflakeData | null;
-    last_pin_timestamp?: string | null;
+    last_pin_timestamp?: Timestamp | null;
     rtc_region?: string | null;
     video_quality_mode?: VideQualityModes;
     message_count?: number;
@@ -273,16 +525,15 @@ export interface ApplicationData {
     id: SnowflakeData;
     name: string;
     icon: string | null;
-    flags: number;
+    flags: ApplicationFlag;
 }
 
 export interface UnavailableGuildData {
-    id: string;
-    unavailable: boolean;
+    id: SnowflakeData;
+    unavailable?: boolean;
 }
 
-export type SnowflakeData = BigInt | string;
-
+export type SnowflakeData = BigInt;
 export type LocaleOption =
     'da' | 'de' | 'en-GB' | 'en-US' |
     'es-ES' | 'fr' | 'hr' | 'it' |
@@ -395,7 +646,7 @@ export interface VoiceStateData {
     self_stream?: boolean;
     self_video: boolean;
     suppress: boolean;
-    request_to_speak_timestamp: string | null;
+    request_to_speak_timestamp: Timestamp | null;
 }
 
 export interface GuildMemberData {
@@ -403,13 +654,13 @@ export interface GuildMemberData {
     nick?: string | null;
     avatar?: string | null;
     roles: SnowflakeData[];
-    join_at: string;
-    premium_since?: string | null;
+    join_at: Timestamp;
+    premium_since?: Timestamp | null;
     deaf: boolean;
     mute: boolean;
     pending?: boolean;
     permission?: string;
-    communication_disabled_until?: string | null;
+    communication_disabled_until?: Timestamp | null;
 }
 
 export interface OverwriteData {
@@ -422,16 +673,16 @@ export interface OverwriteData {
 export interface ThreadMetadataData {
     archived: boolean;
     auto_archive_duration: number;
-    archive_timestamp: string;
+    archive_timestamp: Timestamp;
     locked: boolean;
     invitable?: boolean;
-    create_timestamp?: string | null;
+    create_timestamp?: Timestamp | null;
 }
 
 export interface ThreadMemberData {
     id?: SnowflakeData;
     user_id?: SnowflakeData;
-    join_timestamp: string;
+    join_timestamp: Timestamp;
     flags: number;
 }
 
@@ -655,4 +906,411 @@ export enum GuildScheduledEventEntityType {
 
 export interface GuildScheduledEventEntityMetadata {
     location?: string;
+}
+
+export interface ApplicationCommandPermissionsData {
+    id: SnowflakeData;
+    type: ApplicationCommandPermissionsType;
+    permission: boolean;
+}
+
+export enum ApplicationCommandPermissionsType {
+    ROLE = 1,
+    USER,
+    CHANNEL
+}
+
+export interface IntegrationData {
+    id: SnowflakeData;
+    name: string;
+    type: string;
+    enabled?: boolean;
+    syncing?: boolean;
+    role_id?: SnowflakeData;
+    enable_emoticons?: boolean;
+    expire_behavior?: IntegrationExpireBehaviors;
+    expire_grace_period?: number;
+    user?: UserData;
+    account: IntegrationAccountData;
+    synced?: Timestamp;
+    subscriber_count?: number;
+    revoked?: boolean;
+    application?: IntegrationApplicationData;
+}
+
+export enum IntegrationExpireBehaviors {
+    RemoveRole,
+    Kick
+}
+
+export interface IntegrationAccountData {
+    id: string;
+    name: string;
+}
+
+export interface IntegrationApplicationData {
+    id: SnowflakeData;
+    name: string;
+    icon: string | null;
+    description: string;
+    bot?: UserData;
+}
+
+export enum InviteTargetType {
+    STREAM = 1,
+    EMBEDDED_APPLICATION
+}
+
+export interface MessageData {
+    id: SnowflakeData;
+    channel_id: SnowflakeData;
+    author: UserData;
+    content: string;
+    timestamp: Timestamp;
+    edited_timestamp: Timestamp | null;
+    tts: boolean;
+    mention_everyone: boolean;
+    mentions: UserData[];
+    mention_roles: RoleData[];
+    mention_channels: ChannelMentionData[];
+    attachments: AttachmentData[];
+    embeds: EmbedData[];
+    reactions: ReactionData[];
+    nonce?: number | string;
+    pinned: boolean;
+    webhook_id?: SnowflakeData;
+    type: MessageType;
+    activity?: MessageActivityData;
+    application?: { flags: ApplicationFlag, id: SnowflakeData };
+    application_id?: SnowflakeData;
+    message_reference?: MessageReferenceData;
+    flag?: MessageFlag;
+    referenced_message?: MessageData | null;
+    interaction?: MessageInteractionData;
+    thread?: ChannelData;
+    components?: MessageComponentData[];
+    sticker_items?: MessageStickerItemData[];
+    stickers?: StickerData[]; // Deprecated
+}
+
+export interface ChannelMentionData {
+    id: SnowflakeData;
+    guild_id: SnowflakeData;
+    type: ChannelTypes;
+    name: string;
+}
+
+export interface AttachmentData {
+    id: SnowflakeData;
+    filename: string;
+    description?: string;
+    content_type?: string;
+    size: number;
+    url: string;
+    proxy_url: string;
+    height?: number | null;
+    width?: number | null;
+    ephemeral?: boolean;
+}
+
+export interface EmbedData {
+    title?: string;
+    type?: string;
+    description?: string;
+    url?: string;
+    timestamp?: Timestamp;
+    color?: number;
+    footer?: EmbedFooterData;
+    image?: EmbedImageData;
+    thumbnail?: EmbedThumbnailData;
+    video?: EmbedVideoData;
+    provider?: EmbedProviderData;
+    author?: EmbedAuthorData;
+    fields: EmbedFieldData[];
+}
+
+export interface EmbedFooterData {
+    text: string;
+    icon_url?: string;
+    proxy_icon_url?: string;
+}
+
+export interface EmbedImageData {
+    url: string;
+    proxy_url?: string;
+    height?: number;
+    width?: number;
+}
+
+export interface EmbedThumbnailData {
+    url: string;
+    proxy_url?: string;
+    height?: number;
+    width?: number;
+}
+
+export interface EmbedVideoData {
+    url?: string;
+    proxy_url?: string;
+    height?: number;
+    width?: number;
+}
+
+export interface EmbedProviderData {
+    name?: string;
+    url?: string;
+}
+
+export interface EmbedAuthorData {
+    name: string;
+    url?: string;
+    icon_url?: string;
+    proxy_icon_url?: string;
+}
+
+export interface EmbedFieldData {
+    name: string;
+    value: string;
+    inline?: boolean;
+}
+
+export interface ReactionData {
+    count: number;
+    me: boolean;
+    emoji: EmojiData;
+}
+
+export enum MessageType {
+    DEFAULT,
+    RECIPIENT_ADD,
+    RECIPIENT_REMOVE,
+    CALL,
+    CHANNEL_NAME_CHANGE,
+    CHANNEL_ICON_CHANGE,
+    CHANNEL_PINNED_MESSAGE,
+    GUILD_MEMBER_JOIN,
+    USER_PREMIUM_GUILD_SUBSCRIPTION,
+    USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1,
+    USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2,
+    USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3,
+    CHANNEL_FOLLOW_ADD,
+    GUILD_DISCOVERY_DISQUALIFIED = 14,
+    GUILD_DISCOVERY_REQUALIFIED,
+    GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING,
+    GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING,
+    THREAD_CREATED,
+    REPLY,
+    CHAT_INPUT_COMMAND,
+    THREAD_STARTER_MESSAGE,
+    GUILD_INVITE_REMINDER,
+    CONTEXT_MENU_COMMAND
+}
+
+export interface MessageActivityData {
+    type: MessageActivityType;
+    party_id?: string;
+}
+
+export enum MessageActivityType {
+    JOIN = 1,
+    SPECTATE,
+    LISTEN,
+    JOIN_REQUEST
+}
+
+export enum ApplicationFlag {
+    GATEWAY_PRESENCE                 = 1 << 12,
+    GATEWAY_PRESENCE_LIMITED         = 1 << 13,
+    GATEWAY_GUILD_MEMBERS            = 1 << 14,
+    GATEWAY_GUILD_MEMBERS_LIMITED    = 1 << 15,
+    VERIFICATION_PENDING_GUILD_LIMIT = 1 << 16,
+    EMBEDDED                         = 1 << 17,
+    GATEWAY_MESSAGE_CONTENT          = 1 << 18,
+    GATEWAY_MESSAGE_CONTENT_LIMITED  = 1 << 19
+}
+
+export interface MessageReferenceData {
+    message_id?: SnowflakeData;
+    channel_id?: SnowflakeData;
+    guild_id?: SnowflakeData;
+    fail_if_not_exists?: boolean;
+}
+
+export enum MessageFlag {
+    CROSSPOSTED                            = 1 << 0,
+    IS_CROSSPOST                           = 1 << 1,
+    SUPPRESS_EMBEDS                        = 1 << 2,
+    SOURCE_MESSAGE_DELETED                 = 1 << 3,
+    URGENT                                 = 1 << 4,
+    HAS_THREAD                             = 1 << 5,
+    EPHEMERAL                              = 1 << 6,
+    LOADING                                = 1 << 7,
+    FAILED_TO_MENTION_SOME_ROLES_IN_THREAD = 1 << 8
+}
+
+export interface MessageInteractionData {
+    id: SnowflakeData;
+    type: InteractionType;
+    name: string;
+    user: UserData;
+    member?: GuildMemberData;
+}
+
+export enum InteractionType {
+    PING = 1,
+    APPLICATION_COMMAND,
+    MESSAGE_COMPONENT,
+    APPLICATION_COMMAND_AUTOCOMPLETE,
+    MODAL_SUBMIT
+}
+
+export interface MessageComponentData {
+    content: string;
+    components: ActionRowData[];
+}
+
+export interface ActionRowData {
+    type: ComponentType.ActionRow;
+    components: OtherComponentData[];
+}
+
+export type OtherComponentData = ButtonData | SnowflakeData | TextInputData;
+export interface ButtonData {
+    type: ComponentType.Button;
+    style: ButtonStyle;
+    label?: string;
+    emoji?: {
+        id: SnowflakeData | null,
+        name: string | null,
+        animated?: boolean;
+    },
+    custom_id: string;
+    url?: string;
+    disabled?: boolean;
+}
+
+export interface SelectMenuData {
+    type: ComponentType.SelectMenu;
+    custom_id: string;
+    options: SelectOption[];
+    placeholder?: string;
+    min_values?: number;
+    max_values?: number;
+    disabled?: boolean;
+}
+
+export interface TextInputData {
+    type: ComponentType.TextInput;
+    custom_id: string;
+    style: TextInputStyle;
+    label: string;
+    min_length?: number;
+    max_length?: number;
+    required?: boolean;
+    value?: string;
+    placeholder?: string;
+}
+
+export enum ComponentType {
+    ActionRow = 1,
+    Button,
+    SelectMenu,
+    TextInput
+}
+
+export enum ButtonStyle {
+    Primary = 1,
+    Secondary,
+    Success,
+    Danger,
+    Link,
+    Blurple = Primary,
+    Grey,
+    Green,
+    Red,
+    URL
+}
+
+export interface SelectOption {
+    label: string;
+    value: string;
+    description?: string;
+    emoji?: {
+        id: SnowflakeData | null,
+        name: string | null,
+        animated?: boolean;
+    },
+    default?: boolean;
+}
+
+export enum TextInputStyle {
+    Short = 1,
+    Paragraph
+}
+
+export interface MessageStickerItemData {
+    id: SnowflakeData;
+    name: string;
+    format_type: StickerFormatTypes;
+}
+
+export interface GuildMemberMentionData extends UserData {
+    member: GuildMemberData;
+}
+
+export interface InteractionData {
+    id: SnowflakeData;
+    application_id: SnowflakeData;
+    type: InteractionType;
+    data?: InteractionDataData;
+    guild_id?: SnowflakeData;
+    channel_id?: SnowflakeData;
+    member?: GuildMemberData;
+    user?: UserData;
+    token: string;
+    version: 1;
+    message?: MessageData;
+    locale?: LocaleOption;
+    guild_locale?: LocaleOption;
+}
+
+export interface InteractionDataData {
+    id: SnowflakeData;
+    name: string;
+    type: InteractionType;
+    resolved?: ResolveDataData;
+    options?: ApplicationCommandInteractionDataOptionData[];
+    guild_id?: SnowflakeData;
+    target_id?: SnowflakeData;
+}
+
+export interface ResolveDataData {
+    users?: Map<SnowflakeData, UserData>;
+    members?: Map<SnowflakeData, GuildMemberData>;
+    roles?: Map<SnowflakeData, RoleData>;
+    channels?: Map<SnowflakeData, ChannelData>;
+    messages?: Map<SnowflakeData, MessageData>;
+    attachments?: Map<SnowflakeData, AttachmentData>;
+}
+
+export interface ApplicationCommandInteractionDataOptionData {
+    name: string;
+    type: ApplicationCommandOptionType;
+    value?: number | string;
+    options?: ApplicationCommandInteractionDataOptionData[];
+    focused?: boolean;
+}
+
+export enum ApplicationCommandOptionType {
+    SUB_COMMAND = 1,
+    SUB_COMMAND_GROUP,
+    STRING,
+    INTEGER,
+    BOOLEAN,
+    USER,
+    CHANNEL,
+    ROLE,
+    MENTIONABLE,
+    NUMBER,
+    ATTACHMENT
 }

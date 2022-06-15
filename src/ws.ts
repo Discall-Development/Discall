@@ -4,8 +4,6 @@ import {debug, error} from "./logger";
 import {DiscordData, Opcode, WSObject} from "./dataType";
 import {callEvent, packEvent} from "./event";
 
-type Encoding = 'etf' | 'json';
-
 let Global: {
     sequence: number | null;
     session_id: string | null;
@@ -16,16 +14,15 @@ let Global: {
 export function createWS(
     token: string,
     intents: number,
-    version: 8 | 9 = 9,
-    encoding: Encoding = 'etf'
+    version: 8 | 9 = 9
 ): WSObject {
-    let wsUri = `wss://gateway.discord.gg?v=${version}&encoding=${encoding}`;
+    let wsUri = `wss://gateway.discord.gg?v=${version}&encoding=etf`;
 
     let ws = new WebSocket(wsUri);
-    ws.onopen = (data) => onOpen(ws, data, token, intents, encoding);
+    ws.onopen = (data) => onOpen(ws, data, token, intents);
     ws.onclose = onClose;
     ws.onerror = onError;
-    ws.onmessage = (data) => onMessage(ws, data, encoding);
+    ws.onmessage = (data) => onMessage(ws, data);
 
     return {
         ws,
@@ -90,9 +87,9 @@ export function createWS(
     };
 }
 
-async function onOpen(ws: WebSocket, event: WebSocket.Event, token: string, intents: number, encoding: Encoding): Promise<void> {
+async function onOpen(ws: WebSocket, event: WebSocket.Event, token: string, intents: number): Promise<void> {
     debug('websocket opened');
-    await Identity(ws, token, intents, encoding);
+    await Identity(ws, token, intents);
 }
 
 async function onClose(event: WebSocket.CloseEvent): Promise<void> {
@@ -105,17 +102,13 @@ async function onError(event: WebSocket.ErrorEvent): Promise<void> {
     process.exit(1);
 }
 
-async function onMessage(ws: WebSocket, event: WebSocket.MessageEvent, encoding: Encoding): Promise<void> {
-    let data: DiscordData;
-    if (encoding == 'json')
-        data = JSON.parse(event.data as string);
-    else
-        data = decode(event.data as Buffer);
+async function onMessage(ws: WebSocket, event: WebSocket.MessageEvent): Promise<void> {
+    let data: DiscordData = decode(event.data as Buffer);
 
     if (data.s !== undefined)
         Global.sequence = data.s;
 
-    await processData(ws, encoding, data);
+    await processData(ws, data);
 }
 
 function decode(data: Buffer): DiscordData {
@@ -126,40 +119,36 @@ function encode(data: DiscordData): Buffer {
     return pack(data as unknown) as Buffer;
 }
 
-async function processData(ws: WebSocket, encoding: Encoding, data: DiscordData): Promise<void> {
+async function processData(ws: WebSocket, data: DiscordData): Promise<void> {
     switch (data.op) {
         case Opcode.Dispatch:
             return await Dispatch(data);
         case Opcode.Heartbeat:
-            return await Heartbeat(ws, data, encoding);
+            return await Heartbeat(ws, data);
         case Opcode.Reconnect:
             return await Reconnect(data);
         case Opcode.InvalidSession:
             return await InvalidSession(data);
         case Opcode.Hello:
-            return await Hello(ws, data, encoding);
+            return await Hello(ws, data);
         case Opcode.HeartbeatACK:
             return await HeartbeatACK(data);
     }
 }
 
-async function send(ws: WebSocket, data: DiscordData, encoding: Encoding): Promise<void> {
-    if (encoding == 'etf')
-        ws.send(encode(data));
-    else
-        ws.send(JSON.stringify(data));
+async function send(ws: WebSocket, data: DiscordData): Promise<void> {
+    ws.send(encode(data));
 }
 
 async function Dispatch(data: DiscordData): Promise<void> {
-    // console.log(data.t?.toLowerCase())
     await callEvent(data.t as string, data.d);
 }
 
-async function Heartbeat(ws: WebSocket, data: DiscordData, encoding: Encoding): Promise<void> {
-    await send(ws, { ...data, d: Global.sequence }, encoding);
+async function Heartbeat(ws: WebSocket, data: DiscordData): Promise<void> {
+    await send(ws, { ...data, d: Global.sequence });
 }
 
-async function Identity(ws: WebSocket, token: string, intents: number, encoding: Encoding): Promise<void> {
+async function Identity(ws: WebSocket, token: string, intents: number): Promise<void> {
     await send(ws, {
         op: 2,
         d: {
@@ -171,18 +160,18 @@ async function Identity(ws: WebSocket, token: string, intents: number, encoding:
                 $device: 'discall'
             }
         }
-    }, encoding);
+    });
 }
 
-async function PresenceUpdate(ws: WebSocket, data: DiscordData, encoding: Encoding): Promise<void> {
-
-}
-
-async function VoiceStateUpdate(ws: WebSocket, data: DiscordData, encoding: Encoding): Promise<void> {
+async function PresenceUpdate(ws: WebSocket, data: DiscordData): Promise<void> {
 
 }
 
-async function Resume(ws: WebSocket, data: DiscordData, encoding: Encoding): Promise<void> {
+async function VoiceStateUpdate(ws: WebSocket, data: DiscordData): Promise<void> {
+
+}
+
+async function Resume(ws: WebSocket, data: DiscordData): Promise<void> {
 
 }
 
@@ -190,7 +179,7 @@ async function Reconnect(data: DiscordData): Promise<void> {
 
 }
 
-async function RequestGuildMembers(ws: WebSocket, data: DiscordData, encoding: Encoding): Promise<void> {
+async function RequestGuildMembers(ws: WebSocket, data: DiscordData): Promise<void> {
 
 }
 
@@ -198,8 +187,8 @@ async function InvalidSession(data: DiscordData): Promise<void> {
 
 }
 
-async function Hello(ws: WebSocket, data: DiscordData, encoding: Encoding): Promise<void> {
-    setInterval(Heartbeat, data.d.heartbeat_interval, ws, { op: 1 }, encoding);
+async function Hello(ws: WebSocket, data: DiscordData): Promise<void> {
+    setInterval(Heartbeat, data.d.heartbeat_interval, ws, { op: 1 });
 }
 
 async function HeartbeatACK(data: DiscordData): Promise<void> {

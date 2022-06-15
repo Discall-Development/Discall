@@ -1,4 +1,12 @@
-import {allIntents, createBot, GuildCreateEventData, onGuildCreate, onReady, ReadyEventData} from '../src';
+import {
+    allIntents,
+    createBot,
+    GuildCreateEventData,
+    onGuildCreate,
+    onMessageCreate,
+    onReady,
+    ReadyEventData
+} from '../src';
 
 
 export async function BotTest(): Promise<void> {
@@ -15,4 +23,16 @@ export async function BotTest(): Promise<void> {
     onGuildCreate(async (data: GuildCreateEventData) => {
         console.log(`Guild ${data.name} created`)
     });
+
+    // onInviteCreate(async (data: any) => {
+    //     console.log(data);
+    // });
+
+    onMessageCreate(async (data: any) => {
+        console.log(data);
+    });
+
+    // onMessageUpdate(async (data: any) => {
+    //     console.log(data);
+    // })
 }

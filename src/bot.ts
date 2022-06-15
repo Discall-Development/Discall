@@ -1,5 +1,5 @@
 import {createWS} from "./ws";
-import {replaceCallback, WSOptions} from "./dataType";
+import {WSOptions} from "./dataType";
 
 let anyCall = (cb: () => Promise<any>) => (() => cb);
 let Global = {
@@ -62,7 +62,7 @@ let Global = {
 };
 
 export function createBot(token: string, data: { intents: number, prefix: string }, options?: WSOptions): void {
-    let obj = createWS(token, data.intents, 9, 'etf');
+    let obj = createWS(token, data.intents, 9);
     Global = obj.events
 }
 
