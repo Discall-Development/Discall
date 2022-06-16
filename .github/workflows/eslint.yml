@@ -17,7 +17,7 @@ jobs:
           node-version: 16
 
       - name: Install Node.js dependencies
-        run: npm install
+        run: npm install --force 
       
       - name: Install ESLint
         run: npm install -g eslint prettier
