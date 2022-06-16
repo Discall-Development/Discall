@@ -1,0 +1,32 @@
+name: Lint
+on: [push]
+permissions: write-all
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Install Node.js dependencies
+        run: npm ci
+      
+      - name: Install ESLint
+        run: npm install -g eslint prettier
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          eslint: true
+          prettier: true
+          auto_fix: true
+          git_name: "ESLint"
+          commit_message: "使用 ${linter} 改進代碼質量"
