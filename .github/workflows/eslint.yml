@@ -23,4 +23,4 @@ jobs:
         run: npm install -g eslint prettier
 
       - name: Run linters
-        run: eslint ./src/ 
+        run: ls -larth && eslint .
