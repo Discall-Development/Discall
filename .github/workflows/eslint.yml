@@ -26,4 +26,4 @@ jobs:
         run: npm install --save-dev eslint typescript @typescript-eslint/parser @typescript-eslint/eslint-plugin
 
       - name: Run linters
-        run: eslint --fix --ignore-path .gitignore --ext .js,.ts,.tsx . 
+        run: npm run lint
