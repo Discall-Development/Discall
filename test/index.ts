@@ -5,14 +5,13 @@ import {
   onGuildCreate,
   onMessageCreate,
   onReady,
-  ReadyEventData
+  ReadyEventData,
 } from "../src";
-
 
 export async function BotTest(): Promise<void> {
   createBot(process.env["WS_TOKEN"] as string, {
     intents: allIntents(),
-    prefix: "!"
+    prefix: "!",
   });
 
   onReady(async (data: ReadyEventData) => {

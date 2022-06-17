@@ -1,7 +1,7 @@
-import {createWS} from "./ws";
-import {WSOptions} from "./dataType";
+import { createWS } from "./ws";
+import { WSOptions } from "./dataType";
 
-let anyCall = (cb: () => Promise<any>) => (() => cb);
+let anyCall = (cb: () => Promise<any>) => () => cb;
 let Global = {
   ready: anyCall,
   resumed: anyCall,
@@ -58,10 +58,14 @@ let Global = {
   user_update: anyCall,
   voice_state_update: anyCall,
   voice_server_update: anyCall,
-  webhooks_update: anyCall
+  webhooks_update: anyCall,
 };
 
-export function createBot(token: string, data: { intents: number, prefix: string }, options?: WSOptions): void {
+export function createBot(
+  token: string,
+  data: { intents: number; prefix: string },
+  options?: WSOptions
+): void {
   let obj = createWS(token, data.intents, 9);
   Global = obj.events;
 }
@@ -74,7 +78,9 @@ export function onResumed(cb: (...item: any) => Promise<any>) {
   Global.resumed(cb);
 }
 
-export function onApplicationCommandPermissionsUpdate(cb: (...item: any) => Promise<any>) {
+export function onApplicationCommandPermissionsUpdate(
+  cb: (...item: any) => Promise<any>
+) {
   Global.application_command_permissions_update(cb);
 }
 
@@ -178,23 +184,33 @@ export function onGuildRoleDelete(cb: (...item: any) => Promise<any>) {
   Global.guild_role_delete(cb);
 }
 
-export function onGuildScheduledEventCreate(cb: (...item: any) => Promise<any>) {
+export function onGuildScheduledEventCreate(
+  cb: (...item: any) => Promise<any>
+) {
   Global.guild_scheduled_event_create(cb);
 }
 
-export function onGuildScheduledEventUpdate(cb: (...item: any) => Promise<any>) {
+export function onGuildScheduledEventUpdate(
+  cb: (...item: any) => Promise<any>
+) {
   Global.guild_scheduled_event_update(cb);
 }
 
-export function onGuildScheduledEventDelete(cb: (...item: any) => Promise<any>) {
+export function onGuildScheduledEventDelete(
+  cb: (...item: any) => Promise<any>
+) {
   Global.guild_scheduled_event_delete(cb);
 }
 
-export function onGuildScheduledEventUserAdd(cb: (...item: any) => Promise<any>) {
+export function onGuildScheduledEventUserAdd(
+  cb: (...item: any) => Promise<any>
+) {
   Global.guild_scheduled_event_user_add(cb);
 }
 
-export function onGuildScheduledEventUserRemove(cb: (...item: any) => Promise<any>) {
+export function onGuildScheduledEventUserRemove(
+  cb: (...item: any) => Promise<any>
+) {
   Global.guild_scheduled_event_user_remove(cb);
 }
 
@@ -250,7 +266,9 @@ export function onMessageReactionRemoveAll(cb: (...item: any) => Promise<any>) {
   Global.message_reaction_remove_all(cb);
 }
 
-export function onMessageReactionRemoveEmoji(cb: (...item: any) => Promise<any>) {
+export function onMessageReactionRemoveEmoji(
+  cb: (...item: any) => Promise<any>
+) {
   Global.message_reaction_remove_emoji(cb);
 }
 

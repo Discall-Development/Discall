@@ -1,15 +1,15 @@
 import WebSocket from "ws";
-import {pack, unpack} from "etf.js";
-import {debug, error} from "./logger";
-import {DiscordData, Opcode, WSObject} from "./dataType";
-import {callEvent, packEvent} from "./event";
+import { pack, unpack } from "etf.js";
+import { debug, error } from "./logger";
+import { DiscordData, Opcode, WSObject } from "./dataType";
+import { callEvent, packEvent } from "./event";
 
 let Global: {
-    sequence: number | null;
-    session_id: string | null;
+  sequence: number | null;
+  session_id: string | null;
 } = {
   sequence: null,
-  session_id: null
+  session_id: null,
 };
 export function createWS(
   token: string,
@@ -29,7 +29,9 @@ export function createWS(
     events: {
       ready: packEvent("ready"),
       resumed: packEvent("resumed"),
-      application_command_permissions_update: packEvent("application_command_permissions_update"),
+      application_command_permissions_update: packEvent(
+        "application_command_permissions_update"
+      ),
       channel_create: packEvent("channel_create"),
       channel_update: packEvent("channel_update"),
       channel_delete: packEvent("channel_delete"),
@@ -58,8 +60,12 @@ export function createWS(
       guild_scheduled_event_create: packEvent("guild_scheduled_event_create"),
       guild_scheduled_event_update: packEvent("guild_scheduled_event_update"),
       guild_scheduled_event_delete: packEvent("guild_scheduled_event_delete"),
-      guild_scheduled_event_user_add: packEvent("guild_scheduled_event_user_add"),
-      guild_scheduled_event_user_remove: packEvent("guild_scheduled_event_user_remove"),
+      guild_scheduled_event_user_add: packEvent(
+        "guild_scheduled_event_user_add"
+      ),
+      guild_scheduled_event_user_remove: packEvent(
+        "guild_scheduled_event_user_remove"
+      ),
       integration_create: packEvent("integration_create"),
       integration_update: packEvent("integration_update"),
       integration_delete: packEvent("integration_delete"),
@@ -82,12 +88,17 @@ export function createWS(
       user_update: packEvent("user_update"),
       voice_state_update: packEvent("voice_state_update"),
       voice_server_update: packEvent("voice_server_update"),
-      webhooks_update: packEvent("webhooks_update")
-    }
+      webhooks_update: packEvent("webhooks_update"),
+    },
   };
 }
 
-async function onOpen(ws: WebSocket, event: WebSocket.Event, token: string, intents: number): Promise<void> {
+async function onOpen(
+  ws: WebSocket,
+  event: WebSocket.Event,
+  token: string,
+  intents: number
+): Promise<void> {
   debug("websocket opened");
   await Identity(ws, token, intents);
 }
@@ -102,11 +113,13 @@ async function onError(event: WebSocket.ErrorEvent): Promise<void> {
   process.exit(1);
 }
 
-async function onMessage(ws: WebSocket, event: WebSocket.MessageEvent): Promise<void> {
+async function onMessage(
+  ws: WebSocket,
+  event: WebSocket.MessageEvent
+): Promise<void> {
   let data: DiscordData = decode(event.data as Buffer);
 
-  if (data.s !== undefined)
-    Global.sequence = data.s;
+  if (data.s !== undefined) Global.sequence = data.s;
 
   await processData(ws, data);
 }
@@ -121,18 +134,18 @@ function encode(data: DiscordData): Buffer {
 
 async function processData(ws: WebSocket, data: DiscordData): Promise<void> {
   switch (data.op) {
-  case Opcode.Dispatch:
-    return await Dispatch(data);
-  case Opcode.Heartbeat:
-    return await Heartbeat(ws, data);
-  case Opcode.Reconnect:
-    return await Reconnect(data);
-  case Opcode.InvalidSession:
-    return await InvalidSession(data);
-  case Opcode.Hello:
-    return await Hello(ws, data);
-  case Opcode.HeartbeatACK:
-    return await HeartbeatACK(data);
+    case Opcode.Dispatch:
+      return await Dispatch(data);
+    case Opcode.Heartbeat:
+      return await Heartbeat(ws, data);
+    case Opcode.Reconnect:
+      return await Reconnect(data);
+    case Opcode.InvalidSession:
+      return await InvalidSession(data);
+    case Opcode.Hello:
+      return await Hello(ws, data);
+    case Opcode.HeartbeatACK:
+      return await HeartbeatACK(data);
   }
 }
 
@@ -148,7 +161,11 @@ async function Heartbeat(ws: WebSocket, data: DiscordData): Promise<void> {
   await send(ws, { ...data, d: Global.sequence });
 }
 
-async function Identity(ws: WebSocket, token: string, intents: number): Promise<void> {
+async function Identity(
+  ws: WebSocket,
+  token: string,
+  intents: number
+): Promise<void> {
   await send(ws, {
     op: 2,
     d: {
@@ -157,35 +174,32 @@ async function Identity(ws: WebSocket, token: string, intents: number): Promise<
       properties: {
         $os: "linux",
         $browser: "discall",
-        $device: "discall"
-      }
-    }
+        $device: "discall",
+      },
+    },
   });
 }
 
-async function PresenceUpdate(ws: WebSocket, data: DiscordData): Promise<void> {
+async function PresenceUpdate(
+  ws: WebSocket,
+  data: DiscordData
+): Promise<void> {}
 
-}
+async function VoiceStateUpdate(
+  ws: WebSocket,
+  data: DiscordData
+): Promise<void> {}
 
-async function VoiceStateUpdate(ws: WebSocket, data: DiscordData): Promise<void> {
+async function Resume(ws: WebSocket, data: DiscordData): Promise<void> {}
 
-}
+async function Reconnect(data: DiscordData): Promise<void> {}
 
-async function Resume(ws: WebSocket, data: DiscordData): Promise<void> {
+async function RequestGuildMembers(
+  ws: WebSocket,
+  data: DiscordData
+): Promise<void> {}
 
-}
-
-async function Reconnect(data: DiscordData): Promise<void> {
-
-}
-
-async function RequestGuildMembers(ws: WebSocket, data: DiscordData): Promise<void> {
-
-}
-
-async function InvalidSession(data: DiscordData): Promise<void> {
-
-}
+async function InvalidSession(data: DiscordData): Promise<void> {}
 
 async function Hello(ws: WebSocket, data: DiscordData): Promise<void> {
   setInterval(Heartbeat, data.d.heartbeat_interval, ws, { op: 1 });
