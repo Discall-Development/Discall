@@ -15,15 +15,21 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
+          
+      - name: Set up typescript
+        run: npm i typescript && npm install -g @typescript-eslint/parser @typescript-eslint/eslint-plugin
 
       - name: Install Node.js dependencies
-        run: npm install --force 
+        run: npm ci
       
       - name: Install ESLint
-        run: npm i typescript && npm install -g eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
-        
-      - name: Run setup
-        run: npm install --save-dev eslint typescript @typescript-eslint/parser @typescript-eslint/eslint-plugin
+        run: npm install -g eslint prettier
 
       - name: Run linters
-        run: npm run lint
+        uses: wearerequired/lint-action@v1
+        with:
+          eslint: true
+          prettier: true
+          auto_fix: true
+          git_name: "Linter"
+          commit_message: "使用 ${linter} 改進代碼質量"
