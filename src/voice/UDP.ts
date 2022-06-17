@@ -1,4 +1,4 @@
-import {createSocket, Socket} from "dgram";
+import { createSocket, Socket } from "dgram";
 
 export function createUDP() {
   let socket = createSocket("udp4");
@@ -6,6 +6,4 @@ export function createUDP() {
   socket.on("connect", () => onOpen(socket));
 }
 
-async function onOpen(socket: Socket) {
-
-}
+async function onOpen(socket: Socket) {}
