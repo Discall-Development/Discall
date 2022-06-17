@@ -540,14 +540,14 @@ export interface UnavailableGuildData {
 
 export type SnowflakeData = bigint;
 export type LocaleOption =
-    'da' | 'de' | 'en-GB' | 'en-US' |
-    'es-ES' | 'fr' | 'hr' | 'it' |
-    'lt' | 'hu' | 'nl' | 'no' |
-    'pl' | 'pt-BR' | 'ro' | 'fi' |
-    'sv-SE' | 'vi' | 'tr' | 'cs' |
-    'el' | 'bg' | 'ru' | 'uk' |
-    'hi' | 'th' | 'zh-CN' | 'ja' |
-    'zh-TW' | 'ko';
+    "da" | "de" | "en-GB" | "en-US" |
+    "es-ES" | "fr" | "hr" | "it" |
+    "lt" | "hu" | "nl" | "no" |
+    "pl" | "pt-BR" | "ro" | "fi" |
+    "sv-SE" | "vi" | "tr" | "cs" |
+    "el" | "bg" | "ru" | "uk" |
+    "hi" | "th" | "zh-CN" | "ja" |
+    "zh-TW" | "ko";
 
 export enum UserFlags {
     STAFF                    = 1 << 0,
@@ -584,13 +584,13 @@ export interface EmojiData {
 }
 
 export type GuildFeature =
-    'ANIMATED_BANNER' | 'ANIMATED_ICON' | 'BANNER' |
-    'COMMERCE' | 'COMMUNITY' | 'DISCOVERABLE' | 'FEATURABLE' |
-    'INVITE_SPLASH' | 'MEMBER_VERIFICATION_GATE_ENABLED' |
-    'MONETIZATION_ENABLED' | 'MORE_STICKERS' | 'NEWS' |
-    'PARTNERED' | 'PREVIEW_ENABLED' | 'PRIVATE_THREADS' |
-    'ROLE_ICONS' | 'TICKETED_EVENTS_ENABLED' | 'VANITY_URL' |
-    'VERIFIED' | 'VIP_REGIONS' | 'WELCOME_SCREEN_ENABLED';
+    "ANIMATED_BANNER" | "ANIMATED_ICON" | "BANNER" |
+    "COMMERCE" | "COMMUNITY" | "DISCOVERABLE" | "FEATURABLE" |
+    "INVITE_SPLASH" | "MEMBER_VERIFICATION_GATE_ENABLED" |
+    "MONETIZATION_ENABLED" | "MORE_STICKERS" | "NEWS" |
+    "PARTNERED" | "PREVIEW_ENABLED" | "PRIVATE_THREADS" |
+    "ROLE_ICONS" | "TICKETED_EVENTS_ENABLED" | "VANITY_URL" |
+    "VERIFIED" | "VIP_REGIONS" | "WELCOME_SCREEN_ENABLED";
 
 export interface StickerData {
     id: SnowflakeData;
@@ -598,7 +598,7 @@ export interface StickerData {
     name: string;
     description: string | null;
     tags: string;
-    asset?: '';
+    asset?: "";
     type: StickerTypes;
     format: StickerFormatTypes;
     available?: boolean;
