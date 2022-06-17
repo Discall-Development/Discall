@@ -344,7 +344,7 @@ export interface StageInstanceCreateEventData extends StageInstanceData {}
 export interface StageInstanceUpdateEventData extends StageInstanceData {}
 export interface StageInstanceDeleteEventData extends StageInstanceData {}
 
-export type replaceCallback = (cb: () => Promise<any>) => any;
+export type replaceCallback = (cb: (...item: any) => Promise<any>) => any;
 export interface WSObject {
     ws: WebSocket;
     events: {
@@ -404,6 +404,11 @@ export interface WSObject {
         voice_state_update: replaceCallback;
         voice_server_update: replaceCallback;
         webhooks_update: replaceCallback;
+    },
+    gateway_commands: {
+        getMember: (...params: any) => Promise<void>,
+        setPresence: (...params: any) => Promise<void>,
+        setVoiceState: (...params: any) => Promise<void>
     }
 }
 
@@ -533,7 +538,7 @@ export interface UnavailableGuildData {
     unavailable?: boolean;
 }
 
-export type SnowflakeData = BigInt;
+export type SnowflakeData = bigint;
 export type LocaleOption =
     'da' | 'de' | 'en-GB' | 'en-US' |
     'es-ES' | 'fr' | 'hr' | 'it' |

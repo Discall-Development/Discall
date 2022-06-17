@@ -3,8 +3,8 @@ let Global: {
 } = {
     events: {}
 }
-export function packEvent(eventName: string): (cb: () => Promise<any>) => any {
-    return function(cb: () => Promise<any>): any {
+export function packEvent(eventName: string): (cb: (...item: any) => Promise<any>) => any {
+    return function(cb: (...item: any) => Promise<any>): any {
         if (Array.isArray(Global.events[eventName]))
             Global.events[eventName].push(cb);
         else

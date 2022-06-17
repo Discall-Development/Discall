@@ -1,28 +1,51 @@
 import WebSocket from "ws";
 import {pack, unpack} from "etf.js";
-import {debug, error} from "./logger";
-import {DiscordData, Opcode, WSObject} from "./dataType";
+import {debug, error, message} from "./logger";
+import {
+    ActivityData,
+    DiscordData,
+    Opcode,
+    ReadyEventData,
+    SnowflakeData,
+    VoiceServerUpdateEventData,
+    WSObject
+} from "./dataType";
 import {callEvent, packEvent} from "./event";
+import {createVoiceWS} from "./voice";
 
 let Global: {
     sequence: number | null;
     session_id: string | null;
+    user_id: SnowflakeData | null
+    identified: boolean;
 } = {
     sequence: null,
-    session_id: null
+    session_id: null,
+    user_id: null,
+    identified: false
 }
 export function createWS(
     token: string,
     intents: number,
-    version: 8 | 9 = 9
+    version: 8 | 9 | 10 = 10
 ): WSObject {
-    let wsUri = `wss://gateway.discord.gg?v=${version}&encoding=etf`;
+    let ws = new WebSocket(`wss://gateway.discord.gg?v=${version}&encoding=etf`);
 
-    let ws = new WebSocket(wsUri);
     ws.onopen = (data) => onOpen(ws, data, token, intents);
-    ws.onclose = onClose;
-    ws.onerror = onError;
+    ws.onclose = (data) => onClose(ws, data, token);
+    ws.onerror = (data) => onError(ws, data);
     ws.onmessage = (data) => onMessage(ws, data);
+
+    packEvent('ready')(async (data: ReadyEventData) => {
+        Global.session_id = data.session_id;
+        Global.user_id = data.user.id
+    });
+
+    packEvent('voice_server_update')(async (data: VoiceServerUpdateEventData) => {
+        if (data.endpoint) {
+            let obj = createVoiceWS(data.endpoint, Global.user_id as SnowflakeData, data.token, data.guild_id, Global.session_id as string);
+        }
+    });
 
     return {
         ws,
@@ -83,22 +106,35 @@ export function createWS(
             voice_state_update: packEvent('voice_state_update'),
             voice_server_update: packEvent('voice_server_update'),
             webhooks_update: packEvent('webhooks_update')
+        },
+        gateway_commands: {
+            getMember: packCommand(ws, RequestGuildMembers),
+            setPresence: packCommand(ws, PresenceUpdate),
+            setVoiceState: packCommand(ws, VoiceStateUpdate)
         }
     };
 }
 
 async function onOpen(ws: WebSocket, event: WebSocket.Event, token: string, intents: number): Promise<void> {
     debug('websocket opened');
-    await Identity(ws, token, intents);
+    if (!Global.identified)
+        await Identity(ws, token, intents);
+    else
+        await Resume(ws, token);
 }
 
-async function onClose(event: WebSocket.CloseEvent): Promise<void> {
+async function onClose(ws: WebSocket, event: WebSocket.CloseEvent, token: string): Promise<void> {
     debug('websocket closed');
+
+    if (event.code == 1000 || event.code == 1001)
+        return await Resume(ws, token);
+
     process.exit();
 }
 
-async function onError(event: WebSocket.ErrorEvent): Promise<void> {
+async function onError(ws: WebSocket, event: WebSocket.ErrorEvent): Promise<void> {
     error('websocket failed');
+    message(`Error message: ${event.message}`);
     process.exit(1);
 }
 
@@ -128,7 +164,7 @@ async function processData(ws: WebSocket, data: DiscordData): Promise<void> {
         case Opcode.Reconnect:
             return await Reconnect(data);
         case Opcode.InvalidSession:
-            return await InvalidSession(data);
+            return await InvalidSession(ws, data);
         case Opcode.Hello:
             return await Hello(ws, data);
         case Opcode.HeartbeatACK:
@@ -138,6 +174,12 @@ async function processData(ws: WebSocket, data: DiscordData): Promise<void> {
 
 async function send(ws: WebSocket, data: DiscordData): Promise<void> {
     ws.send(encode(data));
+}
+
+function packCommand(ws: WebSocket, cb: (...parma: any) => Promise<void>): (...params: any) => Promise<void> {
+    return async function(...params: any) {
+        return await cb(ws, ...params);
+    }
 }
 
 async function Dispatch(data: DiscordData): Promise<void> {
@@ -150,7 +192,7 @@ async function Heartbeat(ws: WebSocket, data: DiscordData): Promise<void> {
 
 async function Identity(ws: WebSocket, token: string, intents: number): Promise<void> {
     await send(ws, {
-        op: 2,
+        op: Opcode.Identity,
         d: {
             token,
             intents,
@@ -163,34 +205,90 @@ async function Identity(ws: WebSocket, token: string, intents: number): Promise<
     });
 }
 
-async function PresenceUpdate(ws: WebSocket, data: DiscordData): Promise<void> {
-
+async function PresenceUpdate(ws: WebSocket, since: number | null, activities: ActivityData[], status: string, afk: boolean): Promise<void> {
+    await send(ws, {
+        op: Opcode.PresenceUpdate,
+        d: {
+            since,
+            activities,
+            status,
+            afk
+        }
+    });
 }
 
-async function VoiceStateUpdate(ws: WebSocket, data: DiscordData): Promise<void> {
-
+async function VoiceStateUpdate(ws: WebSocket, guild_id: SnowflakeData, channel_id: SnowflakeData | null, mute: boolean, deaf: boolean): Promise<void> {
+    await send(ws, {
+        op: Opcode.VoiceStateUpdate,
+        d: {
+            guild_id,
+            channel_id,
+            self_mute: mute,
+            self_deaf: deaf
+        }
+    });
 }
 
-async function Resume(ws: WebSocket, data: DiscordData): Promise<void> {
-
+async function Resume(ws: WebSocket, token: string): Promise<void> {
+    await send(ws, {
+        op: Opcode.Resume,
+        d: {
+            token,
+            session_id: Global.session_id,
+            seq: Global.sequence
+        }
+    });
 }
 
-async function Reconnect(data: DiscordData): Promise<void> {
+async function Reconnect(data: DiscordData): Promise<void> {}
 
+async function RequestGuildMembers(ws: WebSocket, guild_id: SnowflakeData, limit: number = 0, type: 'search' | 'get', param: any, presences?: boolean, nonce?: string): Promise<void> {
+    let data: {
+        guild_id: SnowflakeData;
+        query?: string;
+        limit: number;
+        presences?: boolean,
+        user_ids?: SnowflakeData | SnowflakeData[];
+        nonce?: string;
+    } = {
+        guild_id,
+        limit
+    };
+
+    switch (type) {
+        case 'get':
+            data.user_ids = param;
+            break;
+        case 'search':
+            data.query = param;
+            break;
+    }
+
+    if (presences !== undefined)
+        data.presences = presences;
+
+    if (nonce !== undefined)
+        data.nonce = nonce;
+
+    await send(ws, {
+        op: Opcode.RequestGuildMember,
+        d: data
+    });
 }
 
-async function RequestGuildMembers(ws: WebSocket, data: DiscordData): Promise<void> {
-
-}
-
-async function InvalidSession(data: DiscordData): Promise<void> {
-
+async function InvalidSession(ws: WebSocket, data: DiscordData): Promise<void> {
+    if (data.d !== null && data.d !== undefined) {
+        if (data.d)
+            ws.close(1000);
+        else
+            process.exit(1);
+    }
+    else
+        process.exit(1);
 }
 
 async function Hello(ws: WebSocket, data: DiscordData): Promise<void> {
-    setInterval(Heartbeat, data.d.heartbeat_interval, ws, { op: 1 });
+    setInterval(Heartbeat, data.d.heartbeat_interval, ws, { op: Opcode.Heartbeat });
 }
 
-async function HeartbeatACK(data: DiscordData): Promise<void> {
-    debug('heartbeat ACK received');
-}
+async function HeartbeatACK(data: DiscordData): Promise<void> {}

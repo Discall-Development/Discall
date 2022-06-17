@@ -1,7 +1,8 @@
 import {createWS} from "./ws";
-import {WSOptions} from "./dataType";
+import {SnowflakeData, WSOptions} from "./dataType";
 
 let anyCall = (cb: () => Promise<any>) => (() => cb);
+let anyPromise = async (...params: any) => (new Promise<any>(() => {}));
 let Global = {
     ready: anyCall,
     resumed: anyCall,
@@ -58,12 +59,15 @@ let Global = {
     user_update: anyCall,
     voice_state_update: anyCall,
     voice_server_update: anyCall,
-    webhooks_update: anyCall
+    webhooks_update: anyCall,
+    getMember: anyPromise,
+    setPresence: anyPromise,
+    setVoiceState: anyPromise
 };
 
 export function createBot(token: string, data: { intents: number, prefix: string }, options?: WSOptions): void {
     let obj = createWS(token, data.intents, 9);
-    Global = obj.events
+    Global = { ...obj.events, ...obj.gateway_commands };
 }
 
 export function onReady(cb: (...item: any) => Promise<any>) {
@@ -288,4 +292,8 @@ export function onVoiceServerUpdate(cb: (...item: any) => Promise<any>) {
 
 export function onWebhookUpdate(cb: (...item: any) => Promise<any>) {
     Global.webhooks_update(cb);
+}
+
+export async function connectChannel(guild_id: SnowflakeData, channel_id: SnowflakeData, mute: boolean, deaf: boolean) {
+    await Global.setVoiceState(guild_id, channel_id, mute, deaf);
 }
