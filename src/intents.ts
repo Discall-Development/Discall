@@ -21,8 +21,8 @@ enum IntentsPermission {
 }
 
 export function allIntents(): number {
-    return (
-        IntentsPermission.GUILDS |
+  return (
+    IntentsPermission.GUILDS |
         IntentsPermission.GUILD_MEMBERS |
         IntentsPermission.GUILD_BANS |
         IntentsPermission.GUILD_EMOJIS_AND_STICKERS |
@@ -39,12 +39,12 @@ export function allIntents(): number {
         IntentsPermission.DIRECT_MESSAGE_TYPING |
         IntentsPermission.MESSAGE_CONTENT |
         IntentsPermission.GUILD_SCHEDULED_EVENTS
-    );
+  );
 }
 
 export function defaultIntents(): number {
-    return (
-        IntentsPermission.GUILDS |
+  return (
+    IntentsPermission.GUILDS |
         IntentsPermission.GUILD_BANS |
         IntentsPermission.GUILD_EMOJIS_AND_STICKERS |
         IntentsPermission.GUILD_INTEGRATIONS |
@@ -58,65 +58,65 @@ export function defaultIntents(): number {
         IntentsPermission.DIRECT_MESSAGE_REACTIONS |
         IntentsPermission.DIRECT_MESSAGE_TYPING |
         IntentsPermission.GUILD_SCHEDULED_EVENTS
-    );
+  );
 }
 
 export function noneIntents(): number {
-    return 0;
+  return 0;
 }
 
 export function customIntents(options: IntentsOptionsInterface) {
-    let value: number = 0;
-    if (options.guilds)
-        value |= IntentsPermission.GUILDS;
+  let value: number = 0;
+  if (options.guilds)
+    value |= IntentsPermission.GUILDS;
 
-    if (options.guildMembers)
-        value |= IntentsPermission.GUILD_MEMBERS;
+  if (options.guildMembers)
+    value |= IntentsPermission.GUILD_MEMBERS;
 
-    if (options.guildBans)
-        value |= IntentsPermission.GUILD_BANS;
+  if (options.guildBans)
+    value |= IntentsPermission.GUILD_BANS;
 
-    if (options.guildEmojisAndStickers)
-        value |= IntentsPermission.GUILD_EMOJIS_AND_STICKERS;
+  if (options.guildEmojisAndStickers)
+    value |= IntentsPermission.GUILD_EMOJIS_AND_STICKERS;
 
-    if (options.guildIntegrations)
-        value |= IntentsPermission.GUILD_INTEGRATIONS;
+  if (options.guildIntegrations)
+    value |= IntentsPermission.GUILD_INTEGRATIONS;
 
-    if (options.guildWebhooks)
-        value |= IntentsPermission.GUILD_WEBHOOKS;
+  if (options.guildWebhooks)
+    value |= IntentsPermission.GUILD_WEBHOOKS;
 
-    if (options.guildInvites)
-        value |= IntentsPermission.GUILD_INVITES;
+  if (options.guildInvites)
+    value |= IntentsPermission.GUILD_INVITES;
 
-    if (options.guildVoiceStates)
-        value |= IntentsPermission.GUILD_VOICE_STATES;
+  if (options.guildVoiceStates)
+    value |= IntentsPermission.GUILD_VOICE_STATES;
 
-    if (options.guildPresences)
-        value |= IntentsPermission.GUILD_PRESENCES;
+  if (options.guildPresences)
+    value |= IntentsPermission.GUILD_PRESENCES;
 
-    if (options.guildMessage)
-        value |= IntentsPermission.GUILD_MESSAGES;
+  if (options.guildMessage)
+    value |= IntentsPermission.GUILD_MESSAGES;
 
-    if (options.guildMessageReactions)
-        value |= IntentsPermission.GUILD_MESSAGE_REACTIONS;
+  if (options.guildMessageReactions)
+    value |= IntentsPermission.GUILD_MESSAGE_REACTIONS;
 
-    if (options.guildMessageTyping)
-        value |= IntentsPermission.GUILD_MESSAGE_TYPING;
+  if (options.guildMessageTyping)
+    value |= IntentsPermission.GUILD_MESSAGE_TYPING;
 
-    if (options.directMessage)
-        value |= IntentsPermission.DIRECT_MESSAGES;
+  if (options.directMessage)
+    value |= IntentsPermission.DIRECT_MESSAGES;
 
-    if (options.directMessageReactions)
-        value |= IntentsPermission.DIRECT_MESSAGE_REACTIONS;
+  if (options.directMessageReactions)
+    value |= IntentsPermission.DIRECT_MESSAGE_REACTIONS;
 
-    if (options.directMessageTyping)
-        value |= IntentsPermission.DIRECT_MESSAGE_TYPING;
+  if (options.directMessageTyping)
+    value |= IntentsPermission.DIRECT_MESSAGE_TYPING;
 
-    if (options.messageContent)
-        value |= IntentsPermission.MESSAGE_CONTENT;
+  if (options.messageContent)
+    value |= IntentsPermission.MESSAGE_CONTENT;
 
-    if (options.guildScheduledEvents)
-        value |= IntentsPermission.GUILD_SCHEDULED_EVENTS;
+  if (options.guildScheduledEvents)
+    value |= IntentsPermission.GUILD_SCHEDULED_EVENTS;
 
-    return value;
+  return value;
 }

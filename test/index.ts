@@ -1,38 +1,38 @@
 import {
-    allIntents,
-    createBot,
-    GuildCreateEventData,
-    onGuildCreate,
-    onMessageCreate,
-    onReady,
-    ReadyEventData
-} from '../src';
+  allIntents,
+  createBot,
+  GuildCreateEventData,
+  onGuildCreate,
+  onMessageCreate,
+  onReady,
+  ReadyEventData
+} from "../src";
 
 
 export async function BotTest(): Promise<void> {
-    createBot(process.env['WS_TOKEN'] as string, {
-        intents: allIntents(),
-        prefix: '!'
-    });
+  createBot(process.env["WS_TOKEN"] as string, {
+    intents: allIntents(),
+    prefix: "!"
+  });
 
-    onReady(async (data: ReadyEventData) => {
-        console.log(`API Version: ${data.v}`);
-        console.log(`Login with '${data.user.username}'`);
-    });
+  onReady(async (data: ReadyEventData) => {
+    console.log(`API Version: ${data.v}`);
+    console.log(`Login with '${data.user.username}'`);
+  });
 
-    onGuildCreate(async (data: GuildCreateEventData) => {
-        console.log(`Guild ${data.name} created`)
-    });
+  onGuildCreate(async (data: GuildCreateEventData) => {
+    console.log(`Guild ${data.name} created`);
+  });
 
-    // onInviteCreate(async (data: any) => {
-    //     console.log(data);
-    // });
+  // onInviteCreate(async (data: any) => {
+  //     console.log(data);
+  // });
 
-    onMessageCreate(async (data: any) => {
-        console.log(data);
-    });
+  onMessageCreate(async (data: any) => {
+    console.log(data);
+  });
 
-    // onMessageUpdate(async (data: any) => {
-    //     console.log(data);
-    // })
+  // onMessageUpdate(async (data: any) => {
+  //     console.log(data);
+  // })
 }
