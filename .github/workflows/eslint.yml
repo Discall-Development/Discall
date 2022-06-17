@@ -20,7 +20,10 @@ jobs:
         run: npm install --force 
       
       - name: Install ESLint
-        run: npm install -g eslint typescript @typescript-eslint/parser @typescript-eslint/eslint-plugin
+        run: npm i typescript && npm install -g eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+        
+      - name: Run setup
+        run: npm install --save-dev eslint typescript @typescript-eslint/parser @typescript-eslint/eslint-plugin
 
       - name: Run linters
         run: eslint --fix --ignore-path .gitignore --ext .js,.ts,.tsx . 
