@@ -1,9 +1,9 @@
-import chalk from 'chalk';
+import chalk from "chalk";
 
-const debug = chalk.hex('#FFA500');
+const debug = chalk.hex("#FFA500");
 const error = chalk.red;
 const warn = chalk.yellow;
-const log = chalk.blue
+const log = chalk.blue;
 
 export function debug(message: string) {
   console.log(debug("[DEBUG]:", message));
