@@ -18,10 +18,6 @@
     "ws": "^8.6.0",
     "zlibt2": "^0.5.2"
   },
-  "devDependencies": {
-    "@types/ws": "^8.5.3",
-    "esbuild-windows-64": "^0.14.39"
-  },
   "directories": {
     "test": "test"
   },
