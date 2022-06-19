@@ -14,7 +14,7 @@ let Global: {
     timestamp: number;
     sequence: number;
     nonce: Buffer;
-    keepAliveID?: NodeJS.Timer;
+    keepAliveID?: any;
 } = {
     counter: 0,
     ping: -1,
@@ -101,13 +101,14 @@ async function send(socket: Socket, ip: string, port: number, data: Buffer) {
 }
 
 function performID(socket: Socket, ip: string, port: number, ssrc: number) {
-    return new Promise(async (resolve: (value: { ip: string, port: number }) => unknown, _) => {
+    return new Promise((resolve: (value: { ip: string, port: number }) => unknown, _) => {
         socket.on('message', async function _(message) {
             try {
                 if (message.readUInt16BE(0) !== 2) return;
                 let ipPort = getIpPort(message);
                 socket.off('message', _);
                 resolve(ipPort);
+            // eslint-disable-no-empty
             } catch {}
         });
 
@@ -117,7 +118,7 @@ function performID(socket: Socket, ip: string, port: number, ssrc: number) {
         buf.writeUInt16BE(70, 2);
         buf.writeUint32BE(ssrc, 4);
 
-        await send(socket, ip, port, buf);
+        send(socket, ip, port, buf).then();
     });
 }
 
@@ -135,12 +136,13 @@ function createAudioData(data: Buffer, secretKey: Uint8Array, ssrc: number) {
 
 function encryptData(data: Buffer, secretKey: Uint8Array, nonce?: number) {
     let buf = Buffer.alloc(24);
+    let rand: Uint8Array;
     switch (Global.mode) {
         case 'xsalsa20_poly1305_lite':
             buf.writeUint32BE(nonce as number, 0);
             return [close(data, buf, secretKey), buf.slice(0, 4)];
         case 'xsalsa20_poly1305_suffix':
-            let rand = random(24, buf);
+            rand = random(24, buf);
             return [
                 close(data, rand as Buffer, secretKey),
                 rand
