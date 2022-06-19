@@ -1,5 +1,5 @@
 import {createSocket, Socket} from "dgram";
-import {debug} from "../logger";
+import {debug, error} from "../logger";
 import {close, random} from "./secret";
 
 interface keepAliveStructure {
@@ -108,8 +108,9 @@ function performID(socket: Socket, ip: string, port: number, ssrc: number) {
                 let ipPort = getIpPort(message);
                 socket.off('message', _);
                 resolve(ipPort);
-            // eslint-disable-no-empty
-            } catch {}
+            } catch (err) {
+                error((err as Error).toString());
+            }
         });
 
         let buf = Buffer.alloc(74);
