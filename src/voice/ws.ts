@@ -1,17 +1,22 @@
+import {createUDP} from "./UDP";
+
 import WebSocket from "ws";
 import {DiscordData, SnowflakeData, VoiceOpcode} from "../dataType";
 import {debug} from "../logger";
+import {NoneValidEncryptionMode} from "../errors";
 
 let Global: {
-    sequence: number | null;
+    UDPSend: ((buf: Buffer, secret: Uint8Array) => any) | ((buf: Buffer) => any);
+    UDPSetMode: (mode: string) => any;
 } = {
-    sequence: null
+    UDPSend: (buf: Buffer) => buf,
+    UDPSetMode: (mode: string) => mode
 }
 export function createVoiceWS(endpoint: string, user_id: SnowflakeData, token: string, server_id: SnowflakeData, session_id: string) {
     let ws = new WebSocket(`wss://${endpoint}/?v=4`);
 
     ws.onopen = (event) => onOpen(ws, user_id, token, server_id, session_id, event);
-    ws.onclose = (event) => onClose(ws, event);
+    ws.onclose = (event) => onClose(ws, token, server_id, session_id, event);
     ws.onerror = (event) => onError(ws, event);
     ws.onmessage = (event) => onMessage(ws, event);
 
@@ -25,9 +30,12 @@ async function onOpen(ws: WebSocket, user_id: SnowflakeData, token: string, serv
     await Identify(ws, user_id, token, server_id, session_id);
 }
 
-async function onClose(ws: WebSocket, event: WebSocket.CloseEvent) {
+async function onClose(ws: WebSocket, token: string, server_id: SnowflakeData, session_id: string, event: WebSocket.CloseEvent) {
     debug('voice websocket closed');
-    console.log(event.code)
+    if (event.code === 1000 || event.code === 1001) {
+        ws.resume();
+        await Resume(ws, token, server_id, session_id);
+    }
 }
 
 async function onError(ws: WebSocket, event: WebSocket.ErrorEvent) {
@@ -36,10 +44,6 @@ async function onError(ws: WebSocket, event: WebSocket.ErrorEvent) {
 
 async function onMessage(ws: WebSocket, event: WebSocket.MessageEvent) {
     let data: DiscordData = decode(event.data as string);
-
-    if (data.s !== undefined)
-        Global.sequence = data.s;
-
     await processData(ws, data);
 }
 
@@ -86,20 +90,44 @@ async function Identify(ws: WebSocket, user_id: SnowflakeData, token: string, se
     });
 }
 
-async function SelectProtocol(ws: WebSocket, data: DiscordData) {
-    let validProtocol = ['xsalsa20_poly1305', 'xsalsa20_poly1305_suffix', 'xsalsa20_poly1305_lite'];
+async function SelectProtocol(ws: WebSocket, modes: string[], ip: string, port: number) {
+    let validOptions = ['xsalsa20_poly1305', 'xsalsa20_poly1305_lite', 'xsalsa20_poly1305_suffix'];
+    let option = modes.find((option) => validOptions.includes(option));
+    if (!option)
+        throw new NoneValidEncryptionMode(modes);
+
+    Global.UDPSetMode(option);
+    await send(ws, {
+        op: VoiceOpcode.SelectProtocol,
+        d: {
+            protocol: 'udp',
+            data: {
+                address: ip,
+                port,
+                mode: option
+            }
+        }
+    });
 }
 
 async function Ready(ws: WebSocket, data: DiscordData) {
-    console.log(data.d)
+    let { modes, ip, port, ssrc } = data.d;
+    let { send, setMode, config } = await createUDP(ip, port, ssrc);
+
+    Global.UDPSend = send;
+    Global.UDPSetMode = setMode;
+    await SelectProtocol(ws, modes, config.ip, config.port);
 }
 
 async function Heartbeat(ws: WebSocket, data: DiscordData) {
-    await send(ws, { ...data, d: Global.sequence });
+    await send(ws, { ...data, d: Date.now() });
 }
 
 async function SessionDescription(ws: WebSocket, data: DiscordData) {
-
+    let _send = Global.UDPSend;
+    Global.UDPSend = async function(buf: Buffer) {
+        await _send(buf, data.d.secret_key);
+    }
 }
 
 async function Speaking(ws: WebSocket, data: DiscordData) {
@@ -108,8 +136,15 @@ async function Speaking(ws: WebSocket, data: DiscordData) {
 
 async function HeartbeatACK(ws: WebSocket, data: DiscordData) {}
 
-async function Resume(ws: WebSocket, data: DiscordData) {
-
+async function Resume(ws: WebSocket, token: string, server_id: SnowflakeData, session_id: string) {
+    await send(ws, {
+        op: VoiceOpcode.Resume,
+        d: {
+            server_id,
+            session_id,
+            token
+        }
+    });
 }
 
 async function Hello(ws: WebSocket, data: DiscordData) {

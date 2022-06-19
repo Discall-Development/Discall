@@ -9,8 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/libsodium-wrappers": "^0.7.9",
+    "chalk": "^5.0.1",
     "esbuild": "^0.14.39",
     "etf.js": "^1.0.1",
+    "libsodium-wrappers": "^0.7.10",
     "node-fetch": "^3.2.4",
     "ramda": "^0.28.0",
     "ws": "^8.6.0"

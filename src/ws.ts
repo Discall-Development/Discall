@@ -14,13 +14,13 @@ import {callEvent, packEvent} from "./event";
 import {createVoiceWS} from "./voice";
 
 let Global: {
-    sequence: number | null;
     session_id: string | null;
-    user_id: SnowflakeData | null
+    sequence: number | null;
+    user_id: SnowflakeData | null;
     identified: boolean;
 } = {
-    sequence: null,
     session_id: null,
+    sequence: null,
     user_id: null,
     identified: false
 }
@@ -126,8 +126,11 @@ async function onOpen(ws: WebSocket, event: WebSocket.Event, token: string, inte
 async function onClose(ws: WebSocket, event: WebSocket.CloseEvent, token: string): Promise<void> {
     debug('websocket closed');
 
-    if (event.code == 1000 || event.code == 1001)
+    message(`close code: ${event.code}`)
+    if (event.code == 1000 || event.code == 1001) {
+        ws.resume();
         return await Resume(ws, token);
+    }
 
     process.exit();
 }
@@ -141,7 +144,7 @@ async function onError(ws: WebSocket, event: WebSocket.ErrorEvent): Promise<void
 async function onMessage(ws: WebSocket, event: WebSocket.MessageEvent): Promise<void> {
     let data: DiscordData = decode(event.data as Buffer);
 
-    if (data.s !== undefined)
+    if (data.s)
         Global.sequence = data.s;
 
     await processData(ws, data);
