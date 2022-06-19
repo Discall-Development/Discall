@@ -69,20 +69,20 @@ async function onMessage(ws: WebSocket, event: WebSocket.MessageEvent) {
 
 async function processData(ws: WebSocket, data: DiscordData) {
   switch (data.op) {
-  case VoiceOpcode.Ready:
-    return await Ready(ws, data);
-  case VoiceOpcode.SessionDescription:
-    return await SessionDescription(ws, data);
-  case VoiceOpcode.Speaking:
-    return await Speaking(ws, data);
-  case VoiceOpcode.HeartbeatACK:
-    return await HeartbeatACK(ws, data);
-  case VoiceOpcode.Hello:
-    return await Hello(ws, data);
-  case VoiceOpcode.Resumed:
-    return await Resumed(ws, data);
-  case VoiceOpcode.ClientDisconnect:
-    return await ClientDisconnect(ws, data);
+    case VoiceOpcode.Ready:
+      return await Ready(ws, data);
+    case VoiceOpcode.SessionDescription:
+      return await SessionDescription(ws, data);
+    case VoiceOpcode.Speaking:
+      return await Speaking(ws, data);
+    case VoiceOpcode.HeartbeatACK:
+      return await HeartbeatACK(ws, data);
+    case VoiceOpcode.Hello:
+      return await Hello(ws, data);
+    case VoiceOpcode.Resumed:
+      return await Resumed(ws, data);
+    case VoiceOpcode.ClientDisconnect:
+      return await ClientDisconnect(ws, data);
   }
 }
 
