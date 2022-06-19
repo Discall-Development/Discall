@@ -1,6 +1,6 @@
 import WebSocket from "ws";
-import {pack, unpack} from "etf.js";
-import {debug, error, message} from "./logger";
+import { pack, unpack } from "etf.js";
+import { debug, error, message } from "./logger";
 import {
   ActivityData,
   DiscordData,
@@ -8,21 +8,21 @@ import {
   ReadyEventData,
   SnowflakeData,
   VoiceServerUpdateEventData,
-  WSObject
+  WSObject,
 } from "./dataType";
-import {callEvent, packEvent} from "./event";
-import {createVoiceWS} from "./voice";
+import { callEvent, packEvent } from "./event";
+import { createVoiceWS } from "./voice";
 
 let Global: {
-    session_id: string | null;
-    sequence: number | null;
-    user_id: SnowflakeData | null;
-    identified: boolean;
+  session_id: string | null;
+  sequence: number | null;
+  user_id: SnowflakeData | null;
+  identified: boolean;
 } = {
   session_id: null,
   sequence: null,
   user_id: null,
-  identified: false
+  identified: false,
 };
 export function createWS(
   token: string,
@@ -43,7 +43,13 @@ export function createWS(
 
   packEvent("voice_server_update")(async (data: VoiceServerUpdateEventData) => {
     if (data.endpoint) {
-      let obj = createVoiceWS(data.endpoint, Global.user_id as SnowflakeData, data.token, data.guild_id, Global.session_id as string);
+      let obj = createVoiceWS(
+        data.endpoint,
+        Global.user_id as SnowflakeData,
+        data.token,
+        data.guild_id,
+        Global.session_id as string
+      );
     }
   });
 
@@ -52,7 +58,9 @@ export function createWS(
     events: {
       ready: packEvent("ready"),
       resumed: packEvent("resumed"),
-      application_command_permissions_update: packEvent("application_command_permissions_update"),
+      application_command_permissions_update: packEvent(
+        "application_command_permissions_update"
+      ),
       channel_create: packEvent("channel_create"),
       channel_update: packEvent("channel_update"),
       channel_delete: packEvent("channel_delete"),
@@ -81,8 +89,12 @@ export function createWS(
       guild_scheduled_event_create: packEvent("guild_scheduled_event_create"),
       guild_scheduled_event_update: packEvent("guild_scheduled_event_update"),
       guild_scheduled_event_delete: packEvent("guild_scheduled_event_delete"),
-      guild_scheduled_event_user_add: packEvent("guild_scheduled_event_user_add"),
-      guild_scheduled_event_user_remove: packEvent("guild_scheduled_event_user_remove"),
+      guild_scheduled_event_user_add: packEvent(
+        "guild_scheduled_event_user_add"
+      ),
+      guild_scheduled_event_user_remove: packEvent(
+        "guild_scheduled_event_user_remove"
+      ),
       integration_create: packEvent("integration_create"),
       integration_update: packEvent("integration_update"),
       integration_delete: packEvent("integration_delete"),
@@ -105,25 +117,32 @@ export function createWS(
       user_update: packEvent("user_update"),
       voice_state_update: packEvent("voice_state_update"),
       voice_server_update: packEvent("voice_server_update"),
-      webhooks_update: packEvent("webhooks_update")
+      webhooks_update: packEvent("webhooks_update"),
     },
     gateway_commands: {
       getMember: packCommand(ws, RequestGuildMembers),
       setPresence: packCommand(ws, PresenceUpdate),
-      setVoiceState: packCommand(ws, VoiceStateUpdate)
-    }
+      setVoiceState: packCommand(ws, VoiceStateUpdate),
+    },
   };
 }
 
-async function onOpen(ws: WebSocket, event: WebSocket.Event, token: string, intents: number): Promise<void> {
+async function onOpen(
+  ws: WebSocket,
+  event: WebSocket.Event,
+  token: string,
+  intents: number
+): Promise<void> {
   debug("websocket opened");
-  if (!Global.identified)
-    await Identity(ws, token, intents);
-  else
-    await Resume(ws, token);
+  if (!Global.identified) await Identity(ws, token, intents);
+  else await Resume(ws, token);
 }
 
-async function onClose(ws: WebSocket, event: WebSocket.CloseEvent, token: string): Promise<void> {
+async function onClose(
+  ws: WebSocket,
+  event: WebSocket.CloseEvent,
+  token: string
+): Promise<void> {
   debug("websocket closed");
 
   message(`close code: ${event.code}`);
@@ -135,17 +154,22 @@ async function onClose(ws: WebSocket, event: WebSocket.CloseEvent, token: string
   process.exit();
 }
 
-async function onError(ws: WebSocket, event: WebSocket.ErrorEvent): Promise<void> {
+async function onError(
+  ws: WebSocket,
+  event: WebSocket.ErrorEvent
+): Promise<void> {
   error("websocket failed");
   message(`Error message: ${event.message}`);
   process.exit(1);
 }
 
-async function onMessage(ws: WebSocket, event: WebSocket.MessageEvent): Promise<void> {
+async function onMessage(
+  ws: WebSocket,
+  event: WebSocket.MessageEvent
+): Promise<void> {
   let data: DiscordData = decode(event.data as Buffer);
 
-  if (data.s)
-    Global.sequence = data.s;
+  if (data.s) Global.sequence = data.s;
 
   await processData(ws, data);
 }
@@ -160,18 +184,18 @@ function encode(data: DiscordData): Buffer {
 
 async function processData(ws: WebSocket, data: DiscordData): Promise<void> {
   switch (data.op) {
-  case Opcode.Dispatch:
-    return await Dispatch(data);
-  case Opcode.Heartbeat:
-    return await Heartbeat(ws, data);
-  case Opcode.Reconnect:
-    return await Reconnect(data);
-  case Opcode.InvalidSession:
-    return await InvalidSession(ws, data);
-  case Opcode.Hello:
-    return await Hello(ws, data);
-  case Opcode.HeartbeatACK:
-    return await HeartbeatACK(data);
+    case Opcode.Dispatch:
+      return await Dispatch(data);
+    case Opcode.Heartbeat:
+      return await Heartbeat(ws, data);
+    case Opcode.Reconnect:
+      return await Reconnect(data);
+    case Opcode.InvalidSession:
+      return await InvalidSession(ws, data);
+    case Opcode.Hello:
+      return await Hello(ws, data);
+    case Opcode.HeartbeatACK:
+      return await HeartbeatACK(data);
   }
 }
 
@@ -179,8 +203,11 @@ async function send(ws: WebSocket, data: DiscordData): Promise<void> {
   ws.send(encode(data));
 }
 
-function packCommand(ws: WebSocket, cb: (...parma: any) => Promise<void>): (...params: any) => Promise<void> {
-  return async function(...params: any) {
+function packCommand(
+  ws: WebSocket,
+  cb: (...parma: any) => Promise<void>
+): (...params: any) => Promise<void> {
+  return async function (...params: any) {
     return await cb(ws, ...params);
   };
 }
@@ -193,7 +220,11 @@ async function Heartbeat(ws: WebSocket, data: DiscordData): Promise<void> {
   await send(ws, { ...data, d: Global.sequence });
 }
 
-async function Identity(ws: WebSocket, token: string, intents: number): Promise<void> {
+async function Identity(
+  ws: WebSocket,
+  token: string,
+  intents: number
+): Promise<void> {
   await send(ws, {
     op: Opcode.Identity,
     d: {
@@ -202,33 +233,45 @@ async function Identity(ws: WebSocket, token: string, intents: number): Promise<
       properties: {
         $os: "linux",
         $browser: "discall",
-        $device: "discall"
-      }
-    }
+        $device: "discall",
+      },
+    },
   });
 }
 
-async function PresenceUpdate(ws: WebSocket, since: number | null, activities: ActivityData[], status: string, afk: boolean): Promise<void> {
+async function PresenceUpdate(
+  ws: WebSocket,
+  since: number | null,
+  activities: ActivityData[],
+  status: string,
+  afk: boolean
+): Promise<void> {
   await send(ws, {
     op: Opcode.PresenceUpdate,
     d: {
       since,
       activities,
       status,
-      afk
-    }
+      afk,
+    },
   });
 }
 
-async function VoiceStateUpdate(ws: WebSocket, guild_id: SnowflakeData, channel_id: SnowflakeData | null, mute: boolean, deaf: boolean): Promise<void> {
+async function VoiceStateUpdate(
+  ws: WebSocket,
+  guild_id: SnowflakeData,
+  channel_id: SnowflakeData | null,
+  mute: boolean,
+  deaf: boolean
+): Promise<void> {
   await send(ws, {
     op: Opcode.VoiceStateUpdate,
     d: {
       guild_id,
       channel_id,
       self_mute: mute,
-      self_deaf: deaf
-    }
+      self_deaf: deaf,
+    },
   });
 }
 
@@ -238,60 +281,64 @@ async function Resume(ws: WebSocket, token: string): Promise<void> {
     d: {
       token,
       session_id: Global.session_id,
-      seq: Global.sequence
-    }
+      seq: Global.sequence,
+    },
   });
 }
 
 async function Reconnect(data: DiscordData): Promise<void> {}
 
-async function RequestGuildMembers(ws: WebSocket, guild_id: SnowflakeData, limit: number = 0, type: "search" | "get", param: any, presences?: boolean, nonce?: string): Promise<void> {
+async function RequestGuildMembers(
+  ws: WebSocket,
+  guild_id: SnowflakeData,
+  limit: number = 0,
+  type: "search" | "get",
+  param: any,
+  presences?: boolean,
+  nonce?: string
+): Promise<void> {
   let data: {
-        guild_id: SnowflakeData;
-        query?: string;
-        limit: number;
-        presences?: boolean,
-        user_ids?: SnowflakeData | SnowflakeData[];
-        nonce?: string;
-    } = {
-      guild_id,
-      limit
-    };
+    guild_id: SnowflakeData;
+    query?: string;
+    limit: number;
+    presences?: boolean;
+    user_ids?: SnowflakeData | SnowflakeData[];
+    nonce?: string;
+  } = {
+    guild_id,
+    limit,
+  };
 
   switch (type) {
-  case "get":
-    data.user_ids = param;
-    break;
-  case "search":
-    data.query = param;
-    break;
+    case "get":
+      data.user_ids = param;
+      break;
+    case "search":
+      data.query = param;
+      break;
   }
 
-  if (presences !== undefined)
-    data.presences = presences;
+  if (presences !== undefined) data.presences = presences;
 
-  if (nonce !== undefined)
-    data.nonce = nonce;
+  if (nonce !== undefined) data.nonce = nonce;
 
   await send(ws, {
     op: Opcode.RequestGuildMember,
-    d: data
+    d: data,
   });
 }
 
 async function InvalidSession(ws: WebSocket, data: DiscordData): Promise<void> {
   if (data.d !== null && data.d !== undefined) {
-    if (data.d)
-      ws.close(1000);
-    else
-      process.exit(1);
-  }
-  else
-    process.exit(1);
+    if (data.d) ws.close(1000);
+    else process.exit(1);
+  } else process.exit(1);
 }
 
 async function Hello(ws: WebSocket, data: DiscordData): Promise<void> {
-  setInterval(Heartbeat, data.d.heartbeat_interval, ws, { op: Opcode.Heartbeat });
+  setInterval(Heartbeat, data.d.heartbeat_interval, ws, {
+    op: Opcode.Heartbeat,
+  });
 }
 
 async function HeartbeatACK(data: DiscordData): Promise<void> {}
