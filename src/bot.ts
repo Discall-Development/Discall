@@ -322,7 +322,7 @@ export async function connectChannel(
 }
 
 export async function disconnectChannel(
-    guild_id: SnowflakeData
+  guild_id: SnowflakeData
 ) {
   await Global.setVoiceState(guild_id, null, false, false);
 }
