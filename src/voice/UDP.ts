@@ -35,7 +35,6 @@ export async function createUDP(ip: string, port: number, ssrc: number) {
     setImmediate(keepAlive, socket, ip, port, keepAlives);
 
     let ipPort = await performID(socket, ip, port, ssrc);
-
     return {
         send: async function(data: Buffer, secretKey: Uint8Array) {
             let packet = createAudioData(data, secretKey, ssrc);
