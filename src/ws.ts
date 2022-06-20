@@ -1,6 +1,6 @@
 import WebSocket from "ws";
-import {pack, unpack} from "etf.js";
-import {debug, error, message} from "./logger";
+import { pack, unpack } from "etf.js";
+import { debug, error, message } from "./logger";
 import {
   ActivityData,
   DiscordData,
@@ -10,14 +10,14 @@ import {
   VoiceServerUpdateEventData,
   WSObject,
 } from "./dataType";
-import {callEvent, packEvent} from "./event";
-import {createVoiceWS} from "./voice";
+import { callEvent, packEvent } from "./event";
+import { createVoiceWS } from "./voice";
 
 let Global: {
-    session_id: string | null;
-    sequence: number | null;
-    user_id: SnowflakeData | null;
-    identified: boolean;
+  session_id: string | null;
+  sequence: number | null;
+  user_id: SnowflakeData | null;
+  identified: boolean;
 } = {
   session_id: null,
   sequence: null,
@@ -25,7 +25,7 @@ let Global: {
   identified: false,
 };
 
-type Version = 9 | 10
+type Version = 9 | 10;
 export function createWS(
   token: string,
   intents: number,
@@ -48,10 +48,10 @@ export function createWS(
     if (data.endpoint) {
       let obj = createVoiceWS(
         data.endpoint,
-                Global.user_id as SnowflakeData,
-                data.token,
-                data.guild_id,
-                Global.session_id as string
+        Global.user_id as SnowflakeData,
+        data.token,
+        data.guild_id,
+        Global.session_id as string
       );
     }
   });
@@ -92,8 +92,12 @@ export function createWS(
       guild_scheduled_event_create: packEvent("guild_scheduled_event_create"),
       guild_scheduled_event_update: packEvent("guild_scheduled_event_update"),
       guild_scheduled_event_delete: packEvent("guild_scheduled_event_delete"),
-      guild_scheduled_event_user_add: packEvent("guild_scheduled_event_user_add"),
-      guild_scheduled_event_user_remove: packEvent("guild_scheduled_event_user_remove"),
+      guild_scheduled_event_user_add: packEvent(
+        "guild_scheduled_event_user_add"
+      ),
+      guild_scheduled_event_user_remove: packEvent(
+        "guild_scheduled_event_user_remove"
+      ),
       integration_create: packEvent("integration_create"),
       integration_update: packEvent("integration_update"),
       integration_delete: packEvent("integration_delete"),
@@ -136,8 +140,7 @@ async function onOpen(
 ): Promise<void> {
   debug("websocket opened");
   await Identity(ws, token, intents);
-  if (resume)
-    await Resume(ws, token, intents, version, resume);
+  if (resume) await Resume(ws, token, intents, version, resume);
 }
 
 async function onClose(
@@ -187,18 +190,18 @@ function encode(data: DiscordData): Buffer {
 
 async function processData(ws: WebSocket, data: DiscordData): Promise<void> {
   switch (data.op) {
-  case Opcode.Dispatch:
-    return await Dispatch(data);
-  case Opcode.Heartbeat:
-    return await Heartbeat(ws, data);
-  case Opcode.Reconnect:
-    return await Reconnect(data);
-  case Opcode.InvalidSession:
-    return await InvalidSession(ws, data);
-  case Opcode.Hello:
-    return await Hello(ws, data);
-  case Opcode.HeartbeatACK:
-    return await HeartbeatACK(data);
+    case Opcode.Dispatch:
+      return await Dispatch(data);
+    case Opcode.Heartbeat:
+      return await Heartbeat(ws, data);
+    case Opcode.Reconnect:
+      return await Reconnect(data);
+    case Opcode.InvalidSession:
+      return await InvalidSession(ws, data);
+    case Opcode.Hello:
+      return await Hello(ws, data);
+    case Opcode.HeartbeatACK:
+      return await HeartbeatACK(data);
   }
 }
 
@@ -220,7 +223,7 @@ async function Dispatch(data: DiscordData): Promise<void> {
 }
 
 async function Heartbeat(ws: WebSocket, data: DiscordData): Promise<void> {
-  await send(ws, {...data, d: Global.sequence});
+  await send(ws, { ...data, d: Global.sequence });
 }
 
 async function Identity(
@@ -278,9 +281,14 @@ async function VoiceStateUpdate(
   });
 }
 
-async function Resume(ws: WebSocket, token: string, intents: number, version: Version, resume: boolean): Promise<void> {
-  if (!resume)
-    createWS(token, intents, version, true);
+async function Resume(
+  ws: WebSocket,
+  token: string,
+  intents: number,
+  version: Version,
+  resume: boolean
+): Promise<void> {
+  if (!resume) createWS(token, intents, version, true);
   else
     await send(ws, {
       op: Opcode.Resume,
@@ -304,24 +312,24 @@ async function RequestGuildMembers(
   nonce?: string
 ): Promise<void> {
   let data: {
-        guild_id: SnowflakeData;
-        query?: string;
-        limit: number;
-        presences?: boolean;
-        user_ids?: SnowflakeData | SnowflakeData[];
-        nonce?: string;
-    } = {
-      guild_id,
-      limit,
-    };
+    guild_id: SnowflakeData;
+    query?: string;
+    limit: number;
+    presences?: boolean;
+    user_ids?: SnowflakeData | SnowflakeData[];
+    nonce?: string;
+  } = {
+    guild_id,
+    limit,
+  };
 
   switch (type) {
-  case "get":
-    data.user_ids = param;
-    break;
-  case "search":
-    data.query = param;
-    break;
+    case "get":
+      data.user_ids = param;
+      break;
+    case "search":
+      data.query = param;
+      break;
   }
 
   if (presences !== undefined) data.presences = presences;

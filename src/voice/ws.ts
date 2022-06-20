@@ -1,14 +1,14 @@
-import {createUDP} from "./UDP";
+import { createUDP } from "./UDP";
 
 import WebSocket from "ws";
-import {DiscordData, SnowflakeData, VoiceOpcode} from "../dataType";
-import {debug, message} from "../logger";
-import {NoneValidEncryptionMode} from "../errors";
+import { DiscordData, SnowflakeData, VoiceOpcode } from "../dataType";
+import { debug, message } from "../logger";
+import { NoneValidEncryptionMode } from "../errors";
 
 let Global: {
-    ssrc: number;
-    UDPSend: ((buf: Buffer, secret: Uint8Array) => any) | ((buf: Buffer) => any);
-    UDPSetMode: (mode: string) => any;
+  ssrc: number;
+  UDPSend: ((buf: Buffer, secret: Uint8Array) => any) | ((buf: Buffer) => any);
+  UDPSetMode: (mode: string) => any;
 } = {
   ssrc: 0,
   UDPSend: (buf: Buffer) => buf,
@@ -72,20 +72,20 @@ async function onMessage(ws: WebSocket, event: WebSocket.MessageEvent) {
 
 async function processData(ws: WebSocket, data: DiscordData) {
   switch (data.op) {
-  case VoiceOpcode.Ready:
-    return await Ready(ws, data);
-  case VoiceOpcode.SessionDescription:
-    return await SessionDescription(ws, data);
-  case VoiceOpcode.Speaking:
-    return await Speaking(ws);
-  case VoiceOpcode.HeartbeatACK:
-    return await HeartbeatACK(ws, data);
-  case VoiceOpcode.Hello:
-    return await Hello(ws, data);
-  case VoiceOpcode.Resumed:
-    return await Resumed(ws, data);
-  case VoiceOpcode.ClientDisconnect:
-    return await ClientDisconnect(ws, data);
+    case VoiceOpcode.Ready:
+      return await Ready(ws, data);
+    case VoiceOpcode.SessionDescription:
+      return await SessionDescription(ws, data);
+    case VoiceOpcode.Speaking:
+      return await Speaking(ws);
+    case VoiceOpcode.HeartbeatACK:
+      return await HeartbeatACK(ws, data);
+    case VoiceOpcode.Hello:
+      return await Hello(ws, data);
+    case VoiceOpcode.Resumed:
+      return await Resumed(ws, data);
+    case VoiceOpcode.ClientDisconnect:
+      return await ClientDisconnect(ws, data);
   }
 }
 
@@ -148,8 +148,8 @@ async function SelectProtocol(
 }
 
 async function Ready(ws: WebSocket, data: DiscordData) {
-  let {modes, ip, port, ssrc} = data.d;
-  let {send, setMode, config} = await createUDP(ip, port, ssrc);
+  let { modes, ip, port, ssrc } = data.d;
+  let { send, setMode, config } = await createUDP(ip, port, ssrc);
 
   Global.UDPSend = send;
   Global.UDPSetMode = setMode;
@@ -159,7 +159,7 @@ async function Ready(ws: WebSocket, data: DiscordData) {
 }
 
 async function Heartbeat(ws: WebSocket, data: DiscordData) {
-  await send(ws, {...data, d: Date.now()});
+  await send(ws, { ...data, d: Date.now() });
 }
 
 async function SessionDescription(ws: WebSocket, data: DiscordData) {
@@ -175,8 +175,8 @@ async function Speaking(ws: WebSocket) {
     d: {
       speaking: 5,
       delay: 0,
-      ssrc: Global.ssrc
-    }
+      ssrc: Global.ssrc,
+    },
   });
 }
 
@@ -208,5 +208,4 @@ async function Resumed(ws: WebSocket, data: DiscordData) {
   debug("voice websocket resumed.");
 }
 
-async function ClientDisconnect(ws: WebSocket, data: DiscordData) {
-}
+async function ClientDisconnect(ws: WebSocket, data: DiscordData) {}

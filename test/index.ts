@@ -8,7 +8,7 @@ import {
   onResumed,
   ReadyEventData,
 } from "../src";
-import {debug} from "../src/logger";
+import { debug } from "../src/logger";
 
 export async function BotTest(): Promise<void> {
   createBot(process.env["DBM_TOKEN"] as string, {
