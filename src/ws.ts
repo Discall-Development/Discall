@@ -187,18 +187,18 @@ function encode(data: DiscordData): Buffer {
 
 async function processData(ws: WebSocket, data: DiscordData): Promise<void> {
     switch (data.op) {
-        case Opcode.Dispatch:
-            return await Dispatch(data);
-        case Opcode.Heartbeat:
-            return await Heartbeat(ws, data);
-        case Opcode.Reconnect:
-            return await Reconnect(data);
-        case Opcode.InvalidSession:
-            return await InvalidSession(ws, data);
-        case Opcode.Hello:
-            return await Hello(ws, data);
-        case Opcode.HeartbeatACK:
-            return await HeartbeatACK(data);
+    case Opcode.Dispatch:
+        return await Dispatch(data);
+    case Opcode.Heartbeat:
+        return await Heartbeat(ws, data);
+    case Opcode.Reconnect:
+        return await Reconnect(data);
+    case Opcode.InvalidSession:
+        return await InvalidSession(ws, data);
+    case Opcode.Hello:
+        return await Hello(ws, data);
+    case Opcode.HeartbeatACK:
+        return await HeartbeatACK(data);
     }
 }
 
@@ -316,12 +316,12 @@ async function RequestGuildMembers(
     };
 
     switch (type) {
-        case "get":
-            data.user_ids = param;
-            break;
-        case "search":
-            data.query = param;
-            break;
+    case "get":
+        data.user_ids = param;
+        break;
+    case "search":
+        data.query = param;
+        break;
     }
 
     if (presences !== undefined) data.presences = presences;
