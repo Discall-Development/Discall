@@ -1,5 +1,5 @@
-import {createWS} from "./ws";
-import {SnowflakeData, WSOptions} from "./dataType";
+import { createWS } from "./ws";
+import { SnowflakeData, WSOptions } from "./dataType";
 
 let anyCall = (cb: () => Promise<any>) => () => cb;
 let anyPromise = async (...params: any) => new Promise<any>(() => {});
@@ -321,8 +321,6 @@ export async function connectChannel(
   await Global.setVoiceState(guild_id, channel_id, mute, deaf);
 }
 
-export async function disconnectChannel(
-    guild_id: SnowflakeData
-) {
+export async function disconnectChannel(guild_id: SnowflakeData) {
   await Global.setVoiceState(guild_id, null, false, false);
 }
