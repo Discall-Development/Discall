@@ -234,9 +234,9 @@ async function Identity(
             token,
             intents,
             properties: {
-                $os: "linux",
-                $browser: "disfunc",
-                $device: "disfunc",
+                os: "linux",
+                browser: "disfunc",
+                device: "disfunc",
             },
         },
     });

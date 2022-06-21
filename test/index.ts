@@ -22,7 +22,9 @@ export async function BotTest(): Promise<void> {
         await connectChannel(757188229651890186n, 761424295528235008n, false, true);
     });
 
-    onGuildCreate(async (data: GuildCreateEventData) => {});
+    onGuildCreate(async (data: GuildCreateEventData) => {
+        console.log(data.name);
+    });
 
     onResumed(async (data) => {
         console.log(data);
