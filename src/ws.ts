@@ -14,11 +14,13 @@ import {callEvent, packEvent} from "./event";
 import {createVoiceWS} from "./voice";
 
 let Global: {
+    heartbeatID: any;
     session_id: string | null;
     sequence: number | null;
     user_id: SnowflakeData | null;
     identified: boolean;
 } = {
+    heartbeatID: 0,
     session_id: null,
     sequence: null,
     user_id: null,
@@ -135,7 +137,8 @@ async function onOpen(
     resume: boolean
 ): Promise<void> {
     debug("websocket opened");
-    await Identity(ws, token, intents);
+    if (!resume)
+        await Identity(ws, token, intents);
     if (resume)
         await Resume(ws, token, intents, version, resume);
 }
@@ -151,7 +154,7 @@ async function onClose(
 
     message(`close code: ${event.code}`);
     if (event.code < 4000 || event.code === 4015) {
-        ws.resume();
+        clearInterval(Global.heartbeatID);
         return await Resume(ws, token, intents, version, false);
     }
 
@@ -186,6 +189,7 @@ function encode(data: DiscordData): Buffer {
 }
 
 async function processData(ws: WebSocket, data: DiscordData): Promise<void> {
+    // if (data.op !== 0) console.log(data);
     switch (data.op) {
         case Opcode.Dispatch:
             return await Dispatch(data);
@@ -342,7 +346,7 @@ async function InvalidSession(ws: WebSocket, data: DiscordData): Promise<void> {
 }
 
 async function Hello(ws: WebSocket, data: DiscordData): Promise<void> {
-    setInterval(Heartbeat, data.d.heartbeat_interval, ws, {
+    Global.heartbeatID = setInterval(Heartbeat, data.d.heartbeat_interval, ws, {
         op: Opcode.Heartbeat,
     });
 }

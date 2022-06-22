@@ -7,6 +7,7 @@ import {
     onReady,
     onResumed,
     ReadyEventData,
+    ResumeEventData,
 } from "../src";
 import {debug} from "../src/logger";
 
@@ -26,8 +27,7 @@ export async function BotTest(): Promise<void> {
         console.log(data.name);
     });
 
-    onResumed(async (data) => {
-        console.log(data);
+    onResumed(async (data: ResumeEventData) => {
         debug("websocket resumed.");
     });
 
