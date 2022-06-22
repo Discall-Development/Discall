@@ -157,14 +157,14 @@ function encryptData(data: Buffer, secretKey: Uint8Array, nonce?: number) {
     let buf = Buffer.alloc(24);
     let rand: Uint8Array;
     switch (Global.mode) {
-        case "xsalsa20_poly1305_lite":
-            buf.writeUint32BE(nonce as number, 0);
-            return [close(data, buf, secretKey), buf.slice(0, 4)];
-        case "xsalsa20_poly1305_suffix":
-            rand = random(24, buf);
-            return [close(data, rand as Buffer, secretKey), rand];
-        case "xsalsa20_poly1305":
-            return [close(data, Global.nonce, secretKey)];
+    case "xsalsa20_poly1305_lite":
+        buf.writeUint32BE(nonce as number, 0);
+        return [close(data, buf, secretKey), buf.slice(0, 4)];
+    case "xsalsa20_poly1305_suffix":
+        rand = random(24, buf);
+        return [close(data, rand as Buffer, secretKey), rand];
+    case "xsalsa20_poly1305":
+        return [close(data, Global.nonce, secretKey)];
     }
     return [];
 }
