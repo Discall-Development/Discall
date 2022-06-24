@@ -36,7 +36,7 @@ export async function BotTest(): Promise<void> {
     });
 
     onInteractionCreate(async (data: InteractionCreateEventData) => {
-       console.log(data.data?.name);
+        console.log(data.data?.name);
     });
 
     // onInviteCreate(async (data: any) => {
@@ -53,10 +53,10 @@ export async function BotTest(): Promise<void> {
 }
 
 export async function ApplicationCommandTest(): Promise<void> {
-    let clientSend = await createClient(process.env['DBM_TOKEN'] as string);
-    let slashCommandCreator = createApplicationCommand('slash');
+    let clientSend = await createClient(process.env["DBM_TOKEN"] as string);
+    let slashCommandCreator = createApplicationCommand("slash");
     let globalSlashCommandCreator = slashCommandCreator();
     let globalSlashCommandContentCreator = globalSlashCommandCreator(761231211020419082n);
 
-    await clientSend(globalSlashCommandContentCreator('test-name', 'test to get application command name'));
+    await clientSend(globalSlashCommandContentCreator("test-name", "test to get application command name"));
 }

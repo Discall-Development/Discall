@@ -1,13 +1,13 @@
 import {ApplicationCommandOptionData, ApplicationCommandType, SnowflakeData} from "../dataType";
 
-export function createApplicationCommand(type: 'slash' | 'user' | 'message'): typeof createSlashCommand | typeof createUserCommand | typeof createMessageCommand {
+export function createApplicationCommand(type: "slash" | "user" | "message"): typeof createSlashCommand | typeof createUserCommand | typeof createMessageCommand {
     switch (type) {
-        case "slash":
-            return createSlashCommand;
-        case "user":
-            return createUserCommand;
-        case "message":
-            return createMessageCommand;
+    case "slash":
+        return createSlashCommand;
+    case "user":
+        return createUserCommand;
+    case "message":
+        return createMessageCommand;
     }
 }
 
@@ -20,7 +20,7 @@ function createSlashCommand(guild_id?: SnowflakeData) {
                         base.pathname += `applications/${application_id}/commands`;
                         return {
                             uri: base.toString(),
-                            mode: 'POST'
+                            mode: "POST"
                         };
                     },
                     data: {
@@ -30,7 +30,7 @@ function createSlashCommand(guild_id?: SnowflakeData) {
                         type: ApplicationCommandType.CHAT_INPUT
                     }
                 };
-            }
+            };
         };
     }
     return function (application_id: SnowflakeData) {
@@ -40,7 +40,7 @@ function createSlashCommand(guild_id?: SnowflakeData) {
                     base.pathname += `applications/${application_id}/guilds/${guild_id}/commands`;
                     return {
                         uri: base.toString(),
-                        mode: 'POST'
+                        mode: "POST"
                     };
                 },
                 data: {
@@ -50,7 +50,7 @@ function createSlashCommand(guild_id?: SnowflakeData) {
                     type: ApplicationCommandType.CHAT_INPUT
                 }
             };
-        }
+        };
     };
 }
 
@@ -63,7 +63,7 @@ function createUserCommand(guild_id?: SnowflakeData) {
                         base.pathname += `applications/${application_id}/commands`;
                         return {
                             uri: base.toString(),
-                            mode: 'POST'
+                            mode: "POST"
                         };
                     },
                     data: {
@@ -71,7 +71,7 @@ function createUserCommand(guild_id?: SnowflakeData) {
                         type: ApplicationCommandType.USER
                     }
                 };
-            }
+            };
         };
     }
     return function (application_id: SnowflakeData) {
@@ -81,7 +81,7 @@ function createUserCommand(guild_id?: SnowflakeData) {
                     base.pathname += `applications/${application_id}/guilds/${guild_id}/commands`;
                     return {
                         uri: base.toString(),
-                        mode: 'POST'
+                        mode: "POST"
                     };
                 },
                 data: {
@@ -89,7 +89,7 @@ function createUserCommand(guild_id?: SnowflakeData) {
                     type: ApplicationCommandType.USER
                 }
             };
-        }
+        };
     };
 }
 
@@ -102,7 +102,7 @@ function createMessageCommand(guild_id?: SnowflakeData) {
                         base.pathname += `applications/${application_id}/commands`;
                         return {
                             uri: base.toString(),
-                            mode: 'POST'
+                            mode: "POST"
                         };
                     },
                     data: {
@@ -110,7 +110,7 @@ function createMessageCommand(guild_id?: SnowflakeData) {
                         type: ApplicationCommandType.MESSAGE
                     }
                 };
-            }
+            };
         };
     }
     return function (application_id: SnowflakeData) {
@@ -120,7 +120,7 @@ function createMessageCommand(guild_id?: SnowflakeData) {
                     base.pathname += `applications/${application_id}/guilds/${guild_id}/commands`;
                     return {
                         uri: base.toString(),
-                        mode: 'POST'
+                        mode: "POST"
                     };
                 },
                 data: {
@@ -128,19 +128,19 @@ function createMessageCommand(guild_id?: SnowflakeData) {
                     type: ApplicationCommandType.MESSAGE
                 }
             };
-        }
+        };
     };
 }
 
 export function getGlobalApplicationCommands() {
     return {
         uri: (base: URL) => {
-            base.pathname += `applications/{application.id}/commands`;
-            base.searchParams.set('with_localizations', 'false');
+            base.pathname += "applications/{application.id}/commands";
+            base.searchParams.set("with_localizations", "false");
             return {
                 uri: base.toString(),
-                mode: 'GET'
+                mode: "GET"
             };
         }
-    }
+    };
 }
