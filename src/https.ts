@@ -1,6 +1,6 @@
 import {ApplicationCommandData} from "./dataType";
 
-const fetch = (url: string, option: any) => import('node-fetch').then(({default: fetch}) => fetch(url, option));
+const fetch = (url: string, option: any) => import("node-fetch").then(({default: fetch}) => fetch(url, option));
 
 let Global: {
     slashCommand: {
@@ -26,7 +26,7 @@ export function createClient(token: string, version: 9 | 10 = 10) {
         data?: any
     }) {
         return await sendRequest(uri(baseUri), token, data);
-    }
+    };
 }
 
 function getBase(version: number) {
@@ -35,8 +35,8 @@ function getBase(version: number) {
 
 async function sendRequest({ uri, mode }: { uri: string, mode: string }, token: string, data?: any) {
     let headers = {
-        'Authorization': `Bot ${token}`,
-        'Content-Type': 'application/json'
+        "Authorization": `Bot ${token}`,
+        "Content-Type": "application/json"
     };
 
     if (data)
