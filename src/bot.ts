@@ -304,10 +304,6 @@ export function onVoiceStateUpdate(cb: (...item: any) => Promise<any>) {
     Global.voice_state_update(cb);
 }
 
-export function onVoiceServerUpdate(cb: (...item: any) => Promise<any>) {
-    Global.voice_server_update(cb);
-}
-
 export function onWebhookUpdate(cb: (...item: any) => Promise<any>) {
     Global.webhooks_update(cb);
 }

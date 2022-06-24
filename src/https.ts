@@ -23,9 +23,9 @@ export function createClient(token: string, version: 9 | 10 = 10) {
 
     return async function({ uri, data }: {
         uri: (base: URL) => { uri: string, mode: string },
-        data: any
+        data?: any
     }) {
-        await sendRequest(uri(baseUri), token, data);
+        return await sendRequest(uri(baseUri), token, data);
     }
 }
 
