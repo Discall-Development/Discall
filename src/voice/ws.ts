@@ -31,10 +31,6 @@ export function createVoiceWS(
     ws.onclose = (event) => onClose(ws, event, token, server_id, session_id, endpoint, user_id);
     ws.onerror = (event) => onError(ws, event);
     ws.onmessage = (event) => onMessage(ws, event);
-
-    return {
-        ws,
-    };
 }
 
 async function onOpen(
@@ -207,8 +203,8 @@ async function Resume(
         await send(ws, {
             op: VoiceOpcode.Resume,
             d: {
-                server_id,
-                session_id,
+                server_id: server_id.toString(),
+                user_id: user_id.toString(),
                 token,
             },
         });

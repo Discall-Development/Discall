@@ -1,5 +1,3 @@
-import WebSocket from "ws";
-
 type Timestamp = string;
 
 export interface DiscordData {
@@ -68,7 +66,8 @@ export interface ReadyEventData {
     guilds: UnavailableGuildData[];
     session_id: string;
     shard?: [number, number];
-    application: { flags: ApplicationFlag; id: SnowflakeData };
+    application: { flags: ApplicationFlag;
+        id: SnowflakeData };
 }
 
 export interface ResumeEventData {}
@@ -139,7 +138,10 @@ export interface GuildCreateEventData extends GuildData {
     channels: ChannelData[];
     threads: ChannelData[];
     presences: {
-        user: UserData; status: string; activities: ActivityData[]; client_status: ClientStatusData;
+        user: UserData;
+        status: string;
+        activities: ActivityData[];
+        client_status: ClientStatusData;
     }[];
     stage_instances: StageInstanceData[];
     guild_scheduled_events: GuildScheduledEventData;
@@ -268,7 +270,8 @@ export interface InviteCreateEventData {
     max_uses: number;
     target_type?: InviteTargetType;
     target_user?: UserData;
-    target_application?: { flags: ApplicationFlag; id: SnowflakeData };
+    target_application?: { flags: ApplicationFlag;
+        id: SnowflakeData };
     temporary: boolean;
     uses: number;
 }
@@ -378,12 +381,67 @@ export interface StageInstanceDeleteEventData extends StageInstanceData {
 export type replaceCallback = (cb: (...item: any) => Promise<any>) => any;
 
 export interface WSObject {
-    ws: WebSocket;
     events: {
-        ready: replaceCallback; resumed: replaceCallback; application_command_permissions_update: replaceCallback; channel_create: replaceCallback; channel_update: replaceCallback; channel_delete: replaceCallback; channel_pins_update: replaceCallback; thread_create: replaceCallback; thread_update: replaceCallback; thread_delete: replaceCallback; thread_list_sync: replaceCallback; thread_member_update: replaceCallback; thread_members_update: replaceCallback; guild_create: replaceCallback; guild_update: replaceCallback; guild_delete: replaceCallback; guild_ban_add: replaceCallback; guild_ban_remove: replaceCallback; guild_emojis_update: replaceCallback; guild_stickers_update: replaceCallback; guild_integrations_update: replaceCallback; guild_member_add: replaceCallback; guild_member_remove: replaceCallback; guild_member_update: replaceCallback; guild_member_chunk: replaceCallback; guild_role_create: replaceCallback; guild_role_update: replaceCallback; guild_role_delete: replaceCallback; guild_scheduled_event_create: replaceCallback; guild_scheduled_event_update: replaceCallback; guild_scheduled_event_delete: replaceCallback; guild_scheduled_event_user_add: replaceCallback; guild_scheduled_event_user_remove: replaceCallback; integration_create: replaceCallback; integration_update: replaceCallback; integration_delete: replaceCallback; interaction_create: replaceCallback; invite_create: replaceCallback; invite_delete: replaceCallback; message_create: replaceCallback; message_update: replaceCallback; message_delete: replaceCallback; message_delete_bulk: replaceCallback; message_reaction_add: replaceCallback; message_reaction_remove: replaceCallback; message_reaction_remove_all: replaceCallback; message_reaction_remove_emoji: replaceCallback; presence_update: replaceCallback; stage_instance_create: replaceCallback; stage_instance_delete: replaceCallback; stage_instance_update: replaceCallback; typing_start: replaceCallback; user_update: replaceCallback; voice_state_update: replaceCallback; voice_server_update: replaceCallback; webhooks_update: replaceCallback;
+        ready: replaceCallback;
+        resumed: replaceCallback;
+        application_command_permissions_update: replaceCallback;
+        channel_create: replaceCallback;
+        channel_update: replaceCallback;
+        channel_delete: replaceCallback;
+        channel_pins_update: replaceCallback;
+        thread_create: replaceCallback;
+        thread_update: replaceCallback;
+        thread_delete: replaceCallback;
+        thread_list_sync: replaceCallback;
+        thread_member_update: replaceCallback;
+        thread_members_update: replaceCallback;
+        guild_create: replaceCallback;
+        guild_update: replaceCallback;
+        guild_delete: replaceCallback;
+        guild_ban_add: replaceCallback;
+        guild_ban_remove: replaceCallback;
+        guild_emojis_update: replaceCallback;
+        guild_stickers_update: replaceCallback;
+        guild_integrations_update: replaceCallback;
+        guild_member_add: replaceCallback;
+        guild_member_remove: replaceCallback;
+        guild_member_update: replaceCallback;
+        guild_member_chunk: replaceCallback;
+        guild_role_create: replaceCallback;
+        guild_role_update: replaceCallback;
+        guild_role_delete: replaceCallback;
+        guild_scheduled_event_create: replaceCallback;
+        guild_scheduled_event_update: replaceCallback;
+        guild_scheduled_event_delete: replaceCallback;
+        guild_scheduled_event_user_add: replaceCallback;
+        guild_scheduled_event_user_remove: replaceCallback;
+        integration_create: replaceCallback;
+        integration_update: replaceCallback;
+        integration_delete: replaceCallback;
+        interaction_create: replaceCallback;
+        invite_create: replaceCallback;
+        invite_delete: replaceCallback;
+        message_create: replaceCallback;
+        message_update: replaceCallback;
+        message_delete: replaceCallback;
+        message_delete_bulk: replaceCallback;
+        message_reaction_add: replaceCallback;
+        message_reaction_remove: replaceCallback;
+        message_reaction_remove_all: replaceCallback;
+        message_reaction_remove_emoji: replaceCallback;
+        presence_update: replaceCallback;
+        stage_instance_create: replaceCallback;
+        stage_instance_delete: replaceCallback;
+        stage_instance_update: replaceCallback;
+        typing_start: replaceCallback;
+        user_update: replaceCallback;
+        voice_state_update: replaceCallback;
+        webhooks_update: replaceCallback;
     };
     gateway_commands: {
-        getMember: (...params: any) => Promise<void>; setPresence: (...params: any) => Promise<void>; setVoiceState: (...params: any) => Promise<void>;
+        getMember: (...params: any) => Promise<void>;
+        setPresence: (...params: any) => Promise<void>;
+        setVoiceState: (...params: any) => Promise<void>;
     };
 }
 
@@ -968,7 +1026,8 @@ export interface MessageData {
     webhook_id?: SnowflakeData;
     type: MessageType;
     activity?: MessageActivityData;
-    application?: { flags: ApplicationFlag; id: SnowflakeData };
+    application?: { flags: ApplicationFlag;
+        id: SnowflakeData };
     application_id?: SnowflakeData;
     message_reference?: MessageReferenceData;
     flag?: MessageFlag;
@@ -977,7 +1036,8 @@ export interface MessageData {
     thread?: ChannelData;
     components?: MessageComponentData[];
     sticker_items?: MessageStickerItemData[];
-    stickers?: StickerData[]; // Deprecated
+    stickers?: StickerData[];
+    // Deprecated
 }
 
 export interface ChannelMentionData {
@@ -1161,7 +1221,9 @@ export interface ButtonData {
     style: ButtonStyle;
     label?: string;
     emoji?: {
-        id: SnowflakeData | null; name: string | null; animated?: boolean;
+        id: SnowflakeData | null;
+        name: string | null;
+        animated?: boolean;
     };
     custom_id: string;
     url?: string;
@@ -1203,7 +1265,9 @@ export interface SelectOption {
     value: string;
     description?: string;
     emoji?: {
-        id: SnowflakeData | null; name: string | null; animated?: boolean;
+        id: SnowflakeData | null;
+        name: string | null;
+        animated?: boolean;
     };
     default?: boolean;
 }
@@ -1267,4 +1331,57 @@ export interface ApplicationCommandInteractionDataOptionData {
 
 export enum ApplicationCommandOptionType {
     SUB_COMMAND = 1, SUB_COMMAND_GROUP, STRING, INTEGER, BOOLEAN, USER, CHANNEL, ROLE, MENTIONABLE, NUMBER, ATTACHMENT,
+}
+
+export interface ApplicationCommandData {
+    id: SnowflakeData;
+    type?: ApplicationCommandType;
+    application_id: SnowflakeData;
+    guild_id?: SnowflakeData;
+    name: string;
+    name_localizations?: {
+        [k: string]: string;
+    } | null;
+    description: string;
+    description_localizations?: {
+        [k: string]: string;
+    } | null;
+    options?: ApplicationCommandOptionData[];
+    default_member_permissions: string | null;
+    dm_permission?: boolean;
+    default_permission?: boolean | null;
+    version: SnowflakeData;
+}
+
+export enum ApplicationCommandType {
+    CHAT_INPUT = 1,
+    USER,
+    MESSAGE
+}
+
+export interface ApplicationCommandOptionData {
+    type: ApplicationCommandOptionType;
+    name: string;
+    name_localizations?: {
+        [k: string]: string;
+    } | null;
+    description: string;
+    description_localizations?: {
+        [k: string]: string;
+    } | null;
+    required?: boolean;
+    choices?: ApplicationCommandOptionChoiceData[];
+    options?: ApplicationCommandOptionData[];
+    channel_types: ChannelTypes[];
+    min_value?: number;
+    max_value?: number;
+    autocomplete?: boolean;
+}
+
+export interface ApplicationCommandOptionChoiceData {
+    name: string;
+    name_localizations?: {
+        [k: string]: string;
+    } | null;
+    value: string | number;
 }

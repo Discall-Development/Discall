@@ -48,7 +48,7 @@ export function createWS(
 
     packEvent("voice_server_update")(async (data: VoiceServerUpdateEventData) => {
         if (data.endpoint) {
-            let obj = createVoiceWS(
+            createVoiceWS(
                 data.endpoint,
                 Global.user_id as SnowflakeData,
                 data.token,
@@ -59,7 +59,6 @@ export function createWS(
     });
 
     return {
-        ws,
         events: {
             ready: packEvent("ready"),
             resumed: packEvent("resumed"),
@@ -117,7 +116,6 @@ export function createWS(
             typing_start: packEvent("typing_start"),
             user_update: packEvent("user_update"),
             voice_state_update: packEvent("voice_state_update"),
-            voice_server_update: packEvent("voice_server_update"),
             webhooks_update: packEvent("webhooks_update"),
         },
         gateway_commands: {
@@ -152,7 +150,6 @@ async function onClose(
 ): Promise<void> {
     debug("websocket closed");
 
-    message(`close code: ${event.code}`);
     if (event.code < 4000 || event.code === 4015) {
         clearInterval(Global.heartbeatID);
         return await Resume(ws, token, intents, version, false);

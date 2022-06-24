@@ -59,7 +59,6 @@ let Global = {
     typing_start: anyCall,
     user_update: anyCall,
     voice_state_update: anyCall,
-    voice_server_update: anyCall,
     webhooks_update: anyCall,
     getMember: anyPromise,
     setPresence: anyPromise,

@@ -2,4 +2,7 @@ export * from "./src";
 
 import * as Tests from "./test";
 
-Tests.BotTest();
+void (async () => {
+    await Tests.BotTest();
+    await Tests.ApplicationCommandTest();
+})();
