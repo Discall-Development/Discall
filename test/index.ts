@@ -1,35 +1,40 @@
 import {
     allIntents,
     connectChannel,
+    createApplicationCommand,
     createBot,
+    deleteApplicationCommand,
+    getApplicationCommand,
+    getApplicationCommands,
     GuildCreateEventData,
     InteractionCreateEventData,
+    MessageCreateEventData,
     onGuildCreate,
     onInteractionCreate,
+    onMessageCreate,
     onReady,
     onResumed,
     ReadyEventData,
     ResumeEventData,
+    SnowflakeData,
+    updateApplicationCommand
 } from "../src";
 import {debug} from "../src/logger";
 import {createClient} from "../src/https";
-import {
-    createApplicationCommand,
-    deleteApplicationCommand,
-    getApplicationCommand,
-    getApplicationCommands,
-    updateApplicationCommand
-} from "../src/application";
+import {createAttachments, createMessage} from "../src/channel";
 
 export async function BotTest(): Promise<void> {
-    createBot(process.env["DBM_TOKEN"] as string, {
+    let send = createBot(process.env["DBM_TOKEN"] as string, {
         intents: allIntents(),
         prefix: "!",
     });
 
+    let user_id: SnowflakeData;
     onReady(async (data: ReadyEventData) => {
         console.log(`API Version: ${data.v}`);
         console.log(`Login with '${data.user.username}'`);
+
+        user_id = data.user.id;
         await connectChannel(757188229651890186n, 761424295528235008n, false, true);
     });
 
@@ -42,20 +47,22 @@ export async function BotTest(): Promise<void> {
     });
 
     onInteractionCreate(async (data: InteractionCreateEventData) => {
-       console.log(data.data?.name);
+        console.log(data.data?.name);
     });
 
-    // onInviteCreate(async (data: any) => {
-    //     console.log(data);
-    // });
+    onMessageCreate(async (data: MessageCreateEventData) => {
+        if (data.author.id !== user_id) {
+            let d = await send(createMessage(data.channel_id)({
+                content: data.content,
+                attachments: createAttachments({
+                    'index.ts': 'a test file'
+                })
+            }));
 
-    // onMessageCreate(async (data: MessageData) => {
-    //     console.log(data);
-    // });
-
-    // onMessageUpdate(async (data: any) => {
-    //     console.log(data);
-    // })
+            console.log(d.errors.attachments[0]);
+            console.log(d);
+        }
+    })
 }
 
 export async function CreateApplicationCommandTest(): Promise<void> {
@@ -65,7 +72,7 @@ export async function CreateApplicationCommandTest(): Promise<void> {
     let globalSlashCommandCreator = slashCommandCreator();
     let globalSlashCommandContentCreator = globalSlashCommandCreator(761231211020419082n);
 
-    let newCommand = await clientSend(globalSlashCommandContentCreator('test-name', 'test to get application command name'));
+    console.log(await clientSend(globalSlashCommandContentCreator('test-name', 'test to get application command name')));
 }
 
 export async function GetApplicationCommandsTest(): Promise<void> {
@@ -73,7 +80,7 @@ export async function GetApplicationCommandsTest(): Promise<void> {
     let clientSend = await createClient(process.env['DBM_TOKEN'] as string);
     let globalApplicationCommandsGetter = getApplicationCommands();
 
-    let globalApplicationCommands = await clientSend(globalApplicationCommandsGetter(761231211020419082n))
+    console.log(await clientSend(globalApplicationCommandsGetter(761231211020419082n)));
 }
 
 export async function GetApplicationCommandTest(): Promise<void> {
@@ -81,7 +88,7 @@ export async function GetApplicationCommandTest(): Promise<void> {
     let clientSend = await createClient(process.env['DBM_TOKEN'] as string);
     let globalApplicationCommandGetter = getApplicationCommand();
 
-    let globalApplicationCommand = await clientSend(globalApplicationCommandGetter(761231211020419082n, 989091904509579305n))
+    console.log(await clientSend(globalApplicationCommandGetter(761231211020419082n, 989091904509579305n)));
 }
 
 export async function UpdateApplicationCommandTest(): Promise<void> {
@@ -95,7 +102,7 @@ export async function UpdateApplicationCommandTest(): Promise<void> {
 
     let globalApplicationCommandUpdater = updateApplicationCommand();
     let globalApplicationCommandContentUpdater = globalApplicationCommandUpdater(761231211020419082n);
-    let newCommand = await clientSend(globalApplicationCommandContentUpdater(989090441225977856n, newCommandData));
+    console.log(await clientSend(globalApplicationCommandContentUpdater(989090441225977856n, newCommandData)));
 }
 
 export async function DeleteApplicationCommandTest(): Promise<void> {
@@ -104,5 +111,5 @@ export async function DeleteApplicationCommandTest(): Promise<void> {
     let globalApplicationCommandDeleter = deleteApplicationCommand();
     let globalApplicationCommandContentDeleter = globalApplicationCommandDeleter(761231211020419082n);
 
-    let result = await clientSend(globalApplicationCommandContentDeleter(989091904509579305n));
+    console.log(await clientSend(globalApplicationCommandContentDeleter(989091904509579305n)));
 }

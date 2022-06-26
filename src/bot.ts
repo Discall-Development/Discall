@@ -1,5 +1,6 @@
 import {createWS} from "./ws";
 import {SnowflakeData, WSOptions} from "./dataType";
+import {createClient} from "./https";
 
 let anyCall = (cb: () => Promise<any>) => () => cb;
 let anyPromise = async (...params: any) => new Promise<any>(() => {
@@ -69,9 +70,11 @@ export function createBot(
     token: string,
     data: { intents: number; prefix: string },
     options?: WSOptions
-): void {
+) {
     let obj = createWS(token, data.intents, 9);
     Global = {...obj.events, ...obj.gateway_commands};
+
+    return createClient(token);
 }
 
 export function onReady(cb: (...item: any) => Promise<any>) {

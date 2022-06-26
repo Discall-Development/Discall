@@ -4,5 +4,5 @@ import * as Tests from "./test";
 
 void (async () => {
     await Tests.BotTest();
-    await Tests.ApplicationCommandTest();
+    // await Tests.GetApplicationCommandTest();
 })();

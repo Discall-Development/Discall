@@ -1,4 +1,4 @@
-import {ApplicationCommandOptionData, ApplicationCommandType, SnowflakeData} from "../dataType";
+import {ApplicationCommandOptionData, ApplicationCommandType, SnowflakeData} from "./dataType";
 
 export function createApplicationCommand(type: 'slash' | 'user' | 'message'): typeof createSlashCommand | typeof createUserCommand | typeof createMessageCommand {
     switch (type) {
@@ -251,4 +251,8 @@ export function updateApplicationCommand(guild_id?: SnowflakeData) {
             }
         }
     }
+}
+
+export function getApplicationCommandPermission(guild_id: SnowflakeData) {
+
 }

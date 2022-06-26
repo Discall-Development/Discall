@@ -1,6 +1,6 @@
 import WebSocket from "ws";
 import {pack, unpack} from "etf.js";
-import {debug, error, message} from "./logger";
+import {error, message} from "./logger";
 import {
     ActivityData,
     DiscordData,
@@ -134,7 +134,6 @@ async function onOpen(
     version: Version,
     resume: boolean
 ): Promise<void> {
-    debug("websocket opened");
     if (!resume)
         await Identity(ws, token, intents);
     if (resume)
@@ -148,8 +147,6 @@ async function onClose(
     intents: number,
     version: Version
 ): Promise<void> {
-    debug("websocket closed");
-
     if (event.code < 4000 || event.code === 4015) {
         clearInterval(Global.heartbeatID);
         return await Resume(ws, token, intents, version, false);
@@ -236,8 +233,8 @@ async function Identity(
             intents,
             properties: {
                 os: "linux",
-                browser: "disfunc",
-                device: "disfunc",
+                browser: "discall",
+                device: "discall",
             },
         },
     });

@@ -1,9 +1,9 @@
-import {createUDP} from "./UDP";
-
 import WebSocket from "ws";
 import {DiscordData, SnowflakeData, VoiceOpcode} from "../dataType";
-import {debug, message} from "../logger";
+import {debug} from "../logger";
 import {NoneValidEncryptionMode} from "../errors";
+import {createUDP} from "./UDP";
+import * as JSON from 'json-bigint';
 
 let Global: {
     heartbeatID: any;
@@ -42,7 +42,6 @@ async function onOpen(
     resume: boolean,
     endpoint: string
 ) {
-    debug("voice websocket opened");
     if (!resume)
         await Identify(ws, user_id, token, server_id, session_id);
     if (resume)
@@ -58,9 +57,6 @@ async function onClose(
     endpoint: string,
     user_id: SnowflakeData
 ) {
-    debug("voice websocket closed");
-
-    message(`close code: ${event.code}`);
     if (event.code < 4000 || event.code === 4015) {
         clearInterval(Global.heartbeatID);
         return await Resume(ws, token, server_id, session_id, true, endpoint, user_id);

@@ -571,7 +571,7 @@ export interface UnavailableGuildData {
     unavailable?: boolean;
 }
 
-export type SnowflakeData = bigint;
+export type SnowflakeData = bigint | string;
 export type LocaleOption =
     | "da"
     | "de"
