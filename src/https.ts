@@ -1,6 +1,6 @@
 import {ApplicationCommandData} from "./dataType";
 import * as fs from "node:fs/promises";
-import * as JSON from 'json-bigint';
+import * as JSON from "json-bigint";
 
 const fetch = (url: string, option: any) => import("node-fetch").then(({default: fetch}) => fetch(url, option));
 let FormData: any;
@@ -80,9 +80,9 @@ async function jsonToFormData(json: any): Promise<FormData> {
     await (async function (body: FormData) {
         for (const [key, data] of body.entries()) {
             if (data instanceof Blob)
-                console.log(key + ':', await data.arrayBuffer());
+                console.log(key + ":", await data.arrayBuffer());
             else
-                console.log(key + ':', data);
+                console.log(key + ":", data);
         }
     })(body);
 
