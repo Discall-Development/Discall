@@ -1,2 +1,2 @@
-export * from './isCircular';
-export * from './isEmpty';
+export * from "./isCircular";
+export * from "./isEmpty";

@@ -99,7 +99,7 @@ export function createEmbeds(embeds: {
             obj.image = { url };
 
             if (file)
-                files[file] = '';
+                files[file] = "";
         }
 
         if (data.thumbnail !== undefined && !isEmpty(data.thumbnail)) {
@@ -107,11 +107,11 @@ export function createEmbeds(embeds: {
             obj.thumbnail = { url };
 
             if (file)
-                files[file] = '';
+                files[file] = "";
         }
 
         if (!isEmpty(obj))
-            result.push({ ...obj, type: 'rich' });
+            result.push({ ...obj, type: "rich" });
     }
 
     return { embeds: result, attachments: createAttachments(files) };
@@ -121,13 +121,13 @@ function pathToUrlWithFile(path: string): {
     url: string,
     file: string | null
 } {
-    if (path.startsWith('https://'))
+    if (path.startsWith("https://"))
         return { url: path, file: null };
 
-    if (path.startsWith('attachment://'))
-        return { url: path, file: path.split('attachment://')[1] }
+    if (path.startsWith("attachment://"))
+        return { url: path, file: path.split("attachment://")[1] };
 
-    return { url: 'attachment://' + path.split('/').slice(-1), file: path }
+    return { url: "attachment://" + path.split("/").slice(-1), file: path };
 }
 
 export function createStickers(stickers: StickerData[]) {

@@ -1,6 +1,6 @@
 import {ApplicationCommandData} from "./dataType";
 import * as fs from "node:fs/promises";
-import * as JSON from 'json-bigint';
+import * as JSON from "json-bigint";
 
 const fetch = (url: string, option: any) => import("node-fetch").then(({default: fetch}) => fetch(url, option));
 let FormData: any;

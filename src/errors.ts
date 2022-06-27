@@ -18,6 +18,6 @@ export class NoneValidEncryptionMode extends Error {
 
 export class EmptyMessageError extends Error {
     constructor() {
-        super(`Can't create empty message.`);
+        super("Can't create empty message.");
     }
 }

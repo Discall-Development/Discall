@@ -1394,7 +1394,7 @@ export interface AllowMentionsData {
 }
 
 export enum AllowMentionType {
-    Role_Mentions = 'roles',
-    User_Mentions = 'users',
-    EveryoneMentions = 'everyone'
+    Role_Mentions = "roles",
+    User_Mentions = "users",
+    EveryoneMentions = "everyone"
 }
