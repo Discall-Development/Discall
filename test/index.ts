@@ -17,11 +17,13 @@ import {
     ReadyEventData,
     ResumeEventData,
     SnowflakeData,
+    StickerData,
     updateApplicationCommand
 } from "../src";
 import {debug} from "../src/logger";
+import * as util from 'node:util';
 import {createClient} from "../src/https";
-import {createAttachments, createMessage} from "../src/channel";
+import {createEmbeds, createMessage, createStickers} from "../src/channel";
 
 export async function BotTest(): Promise<void> {
     let send = createBot(process.env["DBM_TOKEN"] as string, {
@@ -38,7 +40,9 @@ export async function BotTest(): Promise<void> {
         await connectChannel(757188229651890186n, 761424295528235008n, false, true);
     });
 
+    let stickers: { [k: string]: StickerData[] } = {};
     onGuildCreate(async (data: GuildCreateEventData) => {
+        stickers[data.id as string] = data.stickers;
         console.log(data.name);
     });
 
@@ -53,16 +57,17 @@ export async function BotTest(): Promise<void> {
     onMessageCreate(async (data: MessageCreateEventData) => {
         if (data.author.id !== user_id) {
             let d = await send(createMessage(data.channel_id)({
-                content: data.content,
-                attachments: createAttachments({
-                    'index.ts': 'a test file'
-                })
+                ...createEmbeds([{
+                    title: 'test title',
+                    description: 'test description',
+                    image: 'IMG_9080.jpg'
+                }]),
+                sticker_ids: createStickers(stickers[data.guild_id as string])
             }));
 
-            console.log(d.errors.attachments[0]);
-            console.log(d);
+            console.log(util.inspect(d, false, null));
         }
-    })
+    });
 }
 
 export async function CreateApplicationCommandTest(): Promise<void> {

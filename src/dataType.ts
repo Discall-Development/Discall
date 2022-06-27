@@ -1073,7 +1073,7 @@ export interface EmbedData {
     video?: EmbedVideoData;
     provider?: EmbedProviderData;
     author?: EmbedAuthorData;
-    fields: EmbedFieldData[];
+    fields?: EmbedFieldData[];
 }
 
 export interface EmbedFooterData {
@@ -1384,4 +1384,17 @@ export interface ApplicationCommandOptionChoiceData {
         [k: string]: string;
     } | null;
     value: string | number;
+}
+
+export interface AllowMentionsData {
+    parse: AllowMentionType[];
+    roles: SnowflakeData[];
+    users: SnowflakeData[];
+    replied_user: boolean;
+}
+
+export enum AllowMentionType {
+    Role_Mentions = 'roles',
+    User_Mentions = 'users',
+    EveryoneMentions = 'everyone'
 }

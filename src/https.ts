@@ -27,7 +27,7 @@ export function createClient(token: string, version: 9 | 10 = 10) {
         uri: (base: URL) => { uri: string, mode: string },
         data?: any
     }) {
-        return await sendRequest(uri(getBase(version)), token, data);
+        return await sendRequest(uri(getBase(version)), token, version, data);
     };
 }
 
@@ -35,13 +35,15 @@ function getBase(version: number) {
     return new URL(`https://discord.com/api/v${version}`);
 }
 
-async function sendRequest({ uri, mode }: { uri: string, mode: string }, token: string, data?: any) {
+async function sendRequest({ uri, mode }: { uri: string, mode: string }, token: string, version: number, data?: any) {
     let headers: {
         "Authorization": string;
+        "User-Agent": string;
         "Content-Type"?: string;
     } = {
         "Authorization": `Bot ${token}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "User-Agent": `DiscordBot (${uri}, ${version})`
     };
 
     if (!data)
@@ -74,17 +76,8 @@ async function jsonToFormData(json: any): Promise<FormData> {
         let filename = filenames[idx].filename;
         let data = await fs.readFile(filename);
 
-        body.append(`file[${idx}]`, new Blob([data]), filename);
+        body.append(`files[${idx}]`, new Blob([data]), filename);
     }
-
-    await (async function (body: FormData) {
-        for (const [key, data] of body.entries()) {
-            if (data instanceof Blob)
-                console.log(key + ':', await data.arrayBuffer());
-            else
-                console.log(key + ':', data);
-        }
-    })(body);
 
     return body;
 }

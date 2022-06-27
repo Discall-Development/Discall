@@ -13,6 +13,7 @@
     "@types/libsodium-wrappers": "^0.7.9",
     "@types/mime-types": "^2.1.1",
     "chalk": "^5.0.1",
+    "deep-empty-object": "^1.0.5",
     "esbuild": "^0.14.39",
     "etf.js": "^1.0.1",
     "json-bigint": "^1.0.0",

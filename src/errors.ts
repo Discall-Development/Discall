@@ -12,6 +12,12 @@ export class EncodingError extends Error {
 
 export class NoneValidEncryptionMode extends Error {
     constructor(modes: string[]) {
-        super(`modes ${modes} doesn't have valid mode.`);
+        super(`Modes ${modes} doesn't have valid mode.`);
+    }
+}
+
+export class EmptyMessageError extends Error {
+    constructor() {
+        super(`Can't create empty message.`);
     }
 }
