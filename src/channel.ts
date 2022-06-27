@@ -36,7 +36,7 @@ export function createMessage(channel_id: SnowflakeData) {
                 base.pathname += `/channels/${channel_id}/messages`;
                 return {
                     uri: base.toString(),
-                    mode: 'POST'
+                    mode: "POST"
                 };
             },
             data: {

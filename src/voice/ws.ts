@@ -3,7 +3,7 @@ import {DiscordData, SnowflakeData, VoiceOpcode} from "../dataType";
 import {debug} from "../logger";
 import {NoneValidEncryptionMode} from "../errors";
 import {createUDP} from "./UDP";
-import * as JSON from 'json-bigint';
+import * as JSON from "json-bigint";
 
 let Global: {
     heartbeatID: any;
