@@ -5,7 +5,7 @@ export default function isEmpty(obj: any, seenObjects?: Map<any, any>) {
     if (["boolean", "function", "number"].includes(typeof obj))
         return false;
 
-    if (typeof obj !== 'object')
+    if (typeof obj !== "object")
         return !obj;
 
     let emptys: any[] = [];
