@@ -65,7 +65,7 @@ export async function BotTest(): Promise<void> {
                 sticker_ids: createStickers(stickers[data.guild_id as string])
             }));
 
-            console.log(util.inspect(d, false, null));
+            console.log(util.inspect(d, false, null))
         }
     });
 }
