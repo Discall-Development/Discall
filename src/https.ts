@@ -87,3 +87,4 @@ function partial(func: (...params: any) => any, ...params: any) {
         func(...params, ..._params);
     };
 }
+

@@ -1,11 +1,18 @@
 import {
     AllowMentionsData,
     AttachmentData,
+    ChannelCreateEventData,
+    ChannelData,
+    ChannelDeleteEventData,
+    ChannelUpdateEventData,
     EmbedAuthorData,
     EmbedData,
     EmbedFieldData,
     EmbedFooterData,
+    GuildCreateEventData,
     MessageComponentData,
+    MessageCreateEventData,
+    MessageData,
     MessageFlag,
     MessageReferenceData,
     SnowflakeData,
@@ -13,6 +20,37 @@ import {
 } from "./dataType";
 import {EmptyMessageError} from "./errors";
 import isEmpty from "./util/isEmpty";
+import {packEvent} from "./event";
+
+let Global: {
+    channelCache: Map<SnowflakeData, ChannelData>
+    messageCache: Map<SnowflakeData, MessageData>
+} = {
+    channelCache: new Map(),
+    messageCache: new Map()
+}
+
+packEvent("guild_create")(async (data: GuildCreateEventData) => {
+    for (const channel of data.channels) {
+        Global.channelCache.set(channel.id, channel);
+    }
+});
+
+packEvent("channel_create")(async (data: ChannelCreateEventData) => {
+    Global.channelCache.set(data.id, data);
+});
+
+packEvent("channel_update")(async (data: ChannelUpdateEventData) => {
+    Global.channelCache.set(data.id, data);
+});
+
+packEvent("channel_delete")(async (data: ChannelDeleteEventData) => {
+    Global.channelCache.delete(data.id);
+});
+
+packEvent("message_create")(async (data: MessageCreateEventData) => {
+    Global.messageCache.set(data.id, data);
+});
 
 export function createMessage(channel_id: SnowflakeData) {
     return function(message: {
@@ -132,4 +170,30 @@ function pathToUrlWithFile(path: string): {
 
 export function createStickers(stickers: StickerData[]) {
     return stickers.map(v => v.id);
+}
+
+export async function fetchChannel(channel_id: SnowflakeData) {
+    return {
+        uri: (base: URL) => {
+            base.pathname += `/channels/${channel_id}`;
+            return {
+                uri: base.toString(),
+                mode: "GET"
+            };
+        }
+    };
+}
+
+export async function getChannel(channel_id: SnowflakeData) {
+    if (Global.channelCache.has(channel_id)) {
+        return {
+            uri: {
+                uri: "",
+                mode: "NONE"
+            },
+            cache: (data: ChannelData) => {
+                Global.channelCache.set(data.id, data);
+            }
+        };
+    }
 }
