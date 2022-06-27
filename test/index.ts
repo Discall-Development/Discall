@@ -24,6 +24,7 @@ import {debug} from "../src/logger";
 import * as util from "node:util";
 import {createClient} from "../src/https";
 import {createEmbeds, createMessage, createStickers} from "../src/channel";
+import isEmpty from "../src/util/isEmpty";
 
 export async function BotTest(): Promise<void> {
     let send = createBot(process.env["DBM_TOKEN"] as string, {
@@ -117,4 +118,12 @@ export async function DeleteApplicationCommandTest(): Promise<void> {
     let globalApplicationCommandContentDeleter = globalApplicationCommandDeleter(761231211020419082n);
 
     console.log(await clientSend(globalApplicationCommandContentDeleter(989091904509579305n)));
+}
+
+export function utilTest() {
+    let a: any = {};
+    a.a = a;
+    let b: any = { a };
+    console.log(isEmpty(a));
+    console.log(isEmpty(b));
 }

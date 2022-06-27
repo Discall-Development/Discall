@@ -1,18 +1,19 @@
-import isCircular from "./isCircular";
+export default function isEmpty(obj: any, seenObjects?: Map<any, any>) {
+    seenObjects = seenObjects || new Map();
+    seenObjects.set(obj, undefined);
 
-export default function isEmpty(obj: any): boolean {
-    if (["boolean", "function"].includes(typeof obj))
+    if (["boolean", "function", "number"].includes(typeof obj))
         return false;
 
-    if (typeof obj !== "object")
+    if (typeof obj !== 'object')
         return !obj;
 
+    let emptys: any[] = [];
     for (const prop of Object.values(obj)) {
-        if (isCircular(prop))
-            continue;
-
-        if (!isEmpty(prop))
-            return false;
+        if (!seenObjects.has(prop))
+            seenObjects.set(prop, isEmpty(prop, seenObjects));
+        emptys.push(seenObjects.get(prop));
     }
-    return true;
+
+    return !emptys.includes(false);
 }
