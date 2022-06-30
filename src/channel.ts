@@ -33,7 +33,7 @@ let Global: {
 } = {
     channelCache: new Map(),
     messageCache: new Map()
-}
+};
 
 packEvent("guild_create")(async (data: GuildCreateEventData) => {
     for (const channel of data.channels) {
