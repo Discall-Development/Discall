@@ -244,12 +244,12 @@ export function getChannel(channel_id: SnowflakeData) {
 
 export function editChannel(type: "dm" | "guild" | "thread") {
     switch (type) {
-        case "dm":
-            return editDMChannel;
-        case "guild":
-            return editGuildChannel;
-        case "thread":
-            return editGuildThread;
+    case "dm":
+        return editDMChannel;
+    case "guild":
+        return editGuildChannel;
+    case "thread":
+        return editGuildThread;
     }
 }
 
