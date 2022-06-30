@@ -244,12 +244,12 @@ export function getChannel(channel_id: SnowflakeData) {
 
 export function editChannel(type: "dm" | "guild" | "thread") {
     switch (type) {
-        case "dm":
-            return editDMChannel;
-        case "guild":
-            return editGuildChannel;
-        case "thread":
-            return editGuildThread;
+    case "dm":
+        return editDMChannel;
+    case "guild":
+        return editGuildChannel;
+    case "thread":
+        return editGuildThread;
     }
 }
 
@@ -261,7 +261,7 @@ function editDMChannel(channel_id: SnowflakeData) {
         if (isEmpty(data))
             throw new EditWithEmptyData("dm_channel");
 
-        if (data.name === '')
+        if (data.name === "")
             delete data.name;
 
         return {
@@ -274,8 +274,8 @@ function editDMChannel(channel_id: SnowflakeData) {
             },
             data,
             cache: (data: ChannelData) => Global.channelCache.set(data.id, data)
-        }
-    }
+        };
+    };
 }
 
 function editGuildChannel(channel_id: SnowflakeData) {
@@ -297,7 +297,7 @@ function editGuildChannel(channel_id: SnowflakeData) {
         if (isEmpty(data))
             throw new EditWithEmptyData("guild_channel");
 
-        if (data.name === '')
+        if (data.name === "")
             delete data.name;
 
         return {
@@ -310,8 +310,8 @@ function editGuildChannel(channel_id: SnowflakeData) {
             },
             data,
             cache: (data: ChannelData) => Global.channelCache.set(data.id, data)
-        }
-    }
+        };
+    };
 }
 
 function editGuildThread(channel_id: SnowflakeData) {
@@ -327,7 +327,7 @@ function editGuildThread(channel_id: SnowflakeData) {
         if (isEmpty(data))
             throw new EditWithEmptyData("guild_thread");
 
-        if (data.name === '')
+        if (data.name === "")
             delete data.name;
 
         return {
@@ -340,6 +340,6 @@ function editGuildThread(channel_id: SnowflakeData) {
             },
             data,
             cache: (data: ChannelData) => Global.channelCache.set(data.id, data)
-        }
-    }
+        };
+    };
 }
