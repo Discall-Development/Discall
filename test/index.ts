@@ -51,10 +51,15 @@ export async function BotTest(): Promise<void> {
     });
 
     onMessageCreate(async (data: MessageCreateEventData) => {
-        if (data.content.startsWith("changeName"))
-            await send(editChannel("guild")(991956052495048834n)({
+        if (data.content.startsWith("changeName "))
+            await send(await editChannel("guild")(991956052495048834n)({
                 name: data.content.slice(10)
             }));
+
+        // if (data.content.startsWith("say ") && data.author.id !== user_id)
+        //     await send(createMessage(data.channel_id)({
+        //         content: data.content.slice(3)
+        //     }));
     });
 }
 

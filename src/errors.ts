@@ -4,12 +4,6 @@ export class VersionError extends Error {
     }
 }
 
-export class EncodingError extends Error {
-    constructor(encoding: string) {
-        super(`Encoding ${encoding} is not a valid encoding.`);
-    }
-}
-
 export class NoneValidEncryptionMode extends Error {
     constructor(modes: string[]) {
         super(`Modes ${modes} doesn't have valid mode.`);
@@ -25,5 +19,11 @@ export class EmptyMessageError extends Error {
 export class EditWithEmptyData extends Error {
     constructor(type: string) {
         super(`Can't edit ${type} type with empty data.`);
+    }
+}
+
+export class InvalidHttpRequest extends Error {
+    constructor() {
+        super("Can't send http request with invalid request object.");
     }
 }

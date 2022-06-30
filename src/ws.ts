@@ -12,6 +12,7 @@ import {
 } from "./dataType";
 import {callEvent, packEvent} from "./event";
 import {createVoiceWS} from "./voice";
+import {VersionError} from "./errors";
 
 let Global: {
     heartbeatID: any;
@@ -34,6 +35,10 @@ export function createWS(
     version: Version = 10,
     resume: boolean = false
 ): WSObject {
+    // @ts-ignore
+    if (version !== 9 || version !== 10)
+        throw new VersionError(version);
+
     let ws = new WebSocket(`wss://gateway.discord.gg?v=${version}&encoding=etf`);
 
     ws.onopen = (data) => onOpen(ws, data, token, intents, version, resume);

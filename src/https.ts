@@ -1,6 +1,7 @@
 import {ApplicationCommandData} from "./dataType";
 import * as fs from "node:fs/promises";
 import * as JSON from "json-bigint";
+import {InvalidHttpRequest} from "./errors";
 
 const fetch = (url: string, option: any) => import("node-fetch").then(({default: fetch}) => fetch(url, option));
 let FormData: any;
@@ -28,6 +29,9 @@ export function createClient(token: string, version: 9 | 10 = 10) {
         data?: any,
         cache?: any
     }) {
+        if (typeof uri !== "function")
+            throw new InvalidHttpRequest();
+
         return await sendRequest(uri(getBase(version)), token, version, { data, cache });
     };
 }
