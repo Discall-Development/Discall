@@ -23,11 +23,12 @@ let Global: {
 };
 
 export function createClient(token: string, version: 9 | 10 = 10) {
-    return async function({ uri, data }: {
+    return async function({ uri, data, cache }: {
         uri: (base: URL) => { uri: string, mode: string },
-        data?: any
+        data?: any,
+        cache?: any
     }) {
-        return await sendRequest(uri(getBase(version)), token, version, data);
+        return await sendRequest(uri(getBase(version)), token, version, { data, cache });
     };
 }
 
@@ -35,7 +36,13 @@ function getBase(version: number) {
     return new URL(`https://discord.com/api/v${version}`);
 }
 
-async function sendRequest({ uri, mode }: { uri: string, mode: string }, token: string, version: number, data?: any) {
+async function sendRequest({ uri, mode }: { uri: string, mode: string }, token: string, version: number, { data, cache }: {
+    data?: any;
+    cache?: (...param: any) => any;
+}) {
+    if (mode === "NONE")
+        return cache?.();
+
     let headers: {
         "Authorization": string;
         "User-Agent": string;
@@ -46,25 +53,33 @@ async function sendRequest({ uri, mode }: { uri: string, mode: string }, token: 
         "User-Agent": `DiscordBot (${uri}, ${version})`
     };
 
+    let result: any;
     if (!data)
-        return await fetch(uri, {
+        result = await fetch(uri, {
             method: mode,
             headers
-        }).then(r => r.json()) as any;
+        }).then(r => r.json());
 
     if (!data.attachments)
-        return await fetch(uri, {
+        result = await fetch(uri, {
             method: mode,
             body: JSON.stringify(data),
             headers
-        }).then(r => r.json()) as any;
+        }).then(r => r.json());
 
-    delete headers["Content-Type"];
-    return await fetch(uri, {
-        method: mode,
-        body: await jsonToFormData(data),
-        headers
-    }).then(r => r.json());
+    if (data.attachments) {
+        delete headers["Content-Type"];
+        result = await fetch(uri, {
+            method: mode,
+            body: await jsonToFormData(data),
+            headers
+        }).then(r => r.json());
+    }
+
+    if (cache)
+        cache(result);
+
+    return result;
 }
 
 async function jsonToFormData(json: any): Promise<FormData> {

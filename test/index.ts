@@ -1,33 +1,32 @@
+import dotenv from "dotenv";
 import {
     allIntents,
-    connectChannel,
     createApplicationCommand,
     createBot,
     deleteApplicationCommand,
+    editChannel,
     getApplicationCommand,
     getApplicationCommands,
     GuildCreateEventData,
     InteractionCreateEventData,
+    isEmpty,
     MessageCreateEventData,
     onGuildCreate,
     onInteractionCreate,
     onMessageCreate,
     onReady,
-    onResumed,
     ReadyEventData,
-    ResumeEventData,
     SnowflakeData,
     StickerData,
     updateApplicationCommand
 } from "../src";
-import {debug} from "../src/logger";
-import * as util from "node:util";
 import {createClient} from "../src/https";
-import {createEmbeds, createMessage, createStickers} from "../src/channel";
-import isEmpty from "../src/util/isEmpty";
+import * as process from "process";
+
+dotenv.config();
 
 export async function BotTest(): Promise<void> {
-    let send = createBot(process.env["DBM_TOKEN"] as string, {
+    let send = createBot(process.env.discall as string, {
         intents: allIntents(),
         prefix: "!",
     });
@@ -38,7 +37,7 @@ export async function BotTest(): Promise<void> {
         console.log(`Login with '${data.user.username}'`);
 
         user_id = data.user.id;
-        await connectChannel(757188229651890186n, 761424295528235008n, false, true);
+        // await connectChannel(757188229651890186n, 761424295528235008n, false, true);
     });
 
     let stickers: { [k: string]: StickerData[] } = {};
@@ -47,27 +46,15 @@ export async function BotTest(): Promise<void> {
         console.log(data.name);
     });
 
-    onResumed(async (data: ResumeEventData) => {
-        debug("websocket resumed.");
-    });
-
     onInteractionCreate(async (data: InteractionCreateEventData) => {
         console.log(data.data?.name);
     });
 
     onMessageCreate(async (data: MessageCreateEventData) => {
-        if (data.author.id !== user_id) {
-            let d = await send(createMessage(data.channel_id)({
-                ...createEmbeds([{
-                    title: "test title",
-                    description: "test description",
-                    image: "IMG_9080.jpg"
-                }]),
-                sticker_ids: createStickers(stickers[data.guild_id as string])
+        if (data.content.startsWith("changeName"))
+            await send(editChannel("guild")(991956052495048834n)({
+                name: data.content.slice(10)
             }));
-
-            console.log(util.inspect(d, false, null));
-        }
     });
 }
 
@@ -123,7 +110,7 @@ export async function DeleteApplicationCommandTest(): Promise<void> {
 export function utilTest() {
     let a: any = {};
     a.a = a;
-    let b: any = { a };
+    let b: any = {a};
     console.log(isEmpty(a));
     console.log(isEmpty(b));
 }

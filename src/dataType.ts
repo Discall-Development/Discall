@@ -531,7 +531,7 @@ export interface ChannelData {
     parent_id?: SnowflakeData | null;
     last_pin_timestamp?: Timestamp | null;
     rtc_region?: string | null;
-    video_quality_mode?: VideQualityModes;
+    video_quality_mode?: VideoQualityModes;
     message_count?: number;
     member_count?: number;
     thread_metadata?: ThreadMetadataData;
@@ -770,7 +770,7 @@ export enum ChannelTypes {
     GUILD_FORUM,
 }
 
-export enum VideQualityModes {
+export enum VideoQualityModes {
     AUTO = 1, FULL,
 }
 

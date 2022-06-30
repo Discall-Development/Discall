@@ -21,3 +21,9 @@ export class EmptyMessageError extends Error {
         super("Can't create empty message.");
     }
 }
+
+export class EditWithEmptyData extends Error {
+    constructor(type: string) {
+        super(`Can't edit ${type} type with empty data.`);
+    }
+}

@@ -9,24 +9,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/json-bigint": "^1.0.1",
-    "@types/libsodium-wrappers": "^0.7.9",
-    "@types/mime-types": "^2.1.1",
-    "chalk": "^5.0.1",
-    "deep-empty-object": "^1.0.5",
     "esbuild": "^0.14.39",
     "etf.js": "^1.0.1",
     "json-bigint": "^1.0.0",
     "libsodium-wrappers": "^0.7.10",
-    "mime-types": "^2.1.35",
     "node-fetch": "^3.2.4",
     "ramda": "^0.28.0",
-    "ws": "^8.6.0"
+    "ws": "^8.8.0"
   },
   "devDependencies": {
-    "@types/ws": "^8.5.3",
+    "@types/json-bigint": "^1.0.1",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
+    "chalk": "^5.0.1",
+    "dotenv": "^16.0.1",
     "typescript": "^4.7.4"
   },
   "directories": {

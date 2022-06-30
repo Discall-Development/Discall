@@ -1,4 +1,4 @@
-export default function isEmpty(obj: any, seenObjects?: Map<any, any>) {
+export function isEmpty(obj: any, seenObjects?: Map<any, any>) {
     seenObjects = seenObjects || new Map();
     seenObjects.set(obj, undefined);
 

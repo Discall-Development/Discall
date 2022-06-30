@@ -4,6 +4,8 @@ import {
     ChannelCreateEventData,
     ChannelData,
     ChannelDeleteEventData,
+    ChannelFlags,
+    ChannelTypes,
     ChannelUpdateEventData,
     EmbedAuthorData,
     EmbedData,
@@ -13,18 +15,21 @@ import {
     MessageComponentData,
     MessageCreateEventData,
     MessageData,
-    MessageFlag,
+    MessageDeleteEventData,
     MessageReferenceData,
+    MessageUpdateEventData,
+    OverwriteData,
     SnowflakeData,
-    StickerData
+    StickerData,
+    VideoQualityModes
 } from "./dataType";
-import {EmptyMessageError} from "./errors";
-import isEmpty from "./util/isEmpty";
+import {EditWithEmptyData, EmptyMessageError} from "./errors";
 import {packEvent} from "./event";
+import {isEmpty} from "./util";
 
 let Global: {
     channelCache: Map<SnowflakeData, ChannelData>
-    messageCache: Map<SnowflakeData, MessageData>
+    messageCache: Map<[SnowflakeData, SnowflakeData], MessageData>
 } = {
     channelCache: new Map(),
     messageCache: new Map()
@@ -49,7 +54,15 @@ packEvent("channel_delete")(async (data: ChannelDeleteEventData) => {
 });
 
 packEvent("message_create")(async (data: MessageCreateEventData) => {
-    Global.messageCache.set(data.id, data);
+    Global.messageCache.set([data.channel_id, data.id], data);
+});
+
+packEvent("message_update")(async (data: MessageUpdateEventData) => {
+    Global.messageCache.set([data.channel_id, data.id], data);
+});
+
+packEvent("message_delete")(async (data: MessageDeleteEventData) => {
+    Global.messageCache.delete([data.channel_id, data.id]);
 });
 
 export function createMessage(channel_id: SnowflakeData) {
@@ -63,7 +76,6 @@ export function createMessage(channel_id: SnowflakeData) {
         allow_mentions: AllowMentionsData;
         message_reference?: MessageReferenceData;
         components?: MessageComponentData[];
-        flags?: MessageFlag;
     }) {
         if (isEmpty(message))
             throw new EmptyMessageError();
@@ -82,10 +94,40 @@ export function createMessage(channel_id: SnowflakeData) {
                 embeds,
                 sticker_ids,
                 attachments,
-                ...option
-            }
+                ...option,
+                flag: 0
+            },
+            cache: (data: MessageData) => Global.messageCache.set([data.channel_id, data.id], data)
         };
     };
+}
+
+export function fetchMessage(channel_id: SnowflakeData, message_id: SnowflakeData) {
+    return {
+        uri: (base: URL) => {
+            base.pathname += `/channels/${channel_id}/messages/${message_id}`;
+            return {
+                uri: base.toString(),
+                mode: "GET"
+            };
+        },
+        cache: (data: MessageData) => Global.messageCache.set([data.channel_id, data.id], data)
+    };
+}
+
+export function getMessage(channel_id: SnowflakeData, message_id: SnowflakeData) {
+    if (Global.messageCache.has([channel_id, message_id]))
+        return {
+            uri: (base: URL) => {
+                return {
+                    uri: "",
+                    mode: "NONE"
+                };
+            },
+            cache: () => Global.messageCache.get([channel_id, message_id])
+        };
+
+    return fetchMessage(channel_id, message_id);
 }
 
 export function createAttachments(files: Record<string, string>): Partial<AttachmentData>[] | undefined {
@@ -172,7 +214,7 @@ export function createStickers(stickers: StickerData[]) {
     return stickers.map(v => v.id);
 }
 
-export async function fetchChannel(channel_id: SnowflakeData) {
+export function fetchChannel(channel_id: SnowflakeData) {
     return {
         uri: (base: URL) => {
             base.pathname += `/channels/${channel_id}`;
@@ -180,20 +222,124 @@ export async function fetchChannel(channel_id: SnowflakeData) {
                 uri: base.toString(),
                 mode: "GET"
             };
-        }
+        },
+        cache: (data: ChannelData) => Global.channelCache.set(data.id, data)
     };
 }
 
-export async function getChannel(channel_id: SnowflakeData) {
-    if (Global.channelCache.has(channel_id)) {
+export function getChannel(channel_id: SnowflakeData) {
+    if (Global.channelCache.has(channel_id))
         return {
-            uri: {
-                uri: "",
-                mode: "NONE"
+            uri: (base: URL) => {
+                return {
+                    uri: "",
+                    mode: "NONE"
+                };
             },
-            cache: (data: ChannelData) => {
-                Global.channelCache.set(data.id, data);
-            }
+            cache: () => Global.channelCache.get(channel_id)
         };
+
+    return fetchChannel(channel_id);
+}
+
+export function editChannel(type: "dm" | "guild" | "thread") {
+    switch (type) {
+        case "dm":
+            return editDMChannel;
+        case "guild":
+            return editGuildChannel;
+        case "thread":
+            return editGuildThread;
+    }
+}
+
+function editDMChannel(channel_id: SnowflakeData) {
+    return function(data: {
+        name?: string;
+        icon?: string;
+    }) {
+        if (isEmpty(data))
+            throw new EditWithEmptyData("dm_channel");
+
+        if (data.name === '')
+            delete data.name;
+
+        return {
+            uri: (base: URL) => {
+                base.pathname += `/channels/${channel_id}`;
+                return {
+                    uri: base.toString(),
+                    mode: "PATCH"
+                };
+            },
+            data,
+            cache: (data: ChannelData) => Global.channelCache.set(data.id, data)
+        }
+    }
+}
+
+function editGuildChannel(channel_id: SnowflakeData) {
+    return function(data: {
+        name?: string;
+        type?: ChannelTypes;
+        position?: number | null;
+        topic?: string | null;
+        nsfw?: boolean | null;
+        rate_limit_per_user?: number | null;
+        bitrate?: number | null;
+        user_limit?: number | null;
+        permission_overwrites?: OverwriteData[] | null;
+        parent_id?: SnowflakeData | null;
+        rtc_region?: string | null;
+        video_quality_mode?: VideoQualityModes | null;
+        default_auto_archive_duration?: number | null;
+    }) {
+        if (isEmpty(data))
+            throw new EditWithEmptyData("guild_channel");
+
+        if (data.name === '')
+            delete data.name;
+
+        return {
+            uri: (base: URL) => {
+                base.pathname += `/channels/${channel_id}`;
+                return {
+                    uri: base.toString(),
+                    mode: "PATCH"
+                };
+            },
+            data,
+            cache: (data: ChannelData) => Global.channelCache.set(data.id, data)
+        }
+    }
+}
+
+function editGuildThread(channel_id: SnowflakeData) {
+    return function(data: {
+        name?: string;
+        archived?: boolean;
+        auto_archive_duration?: number;
+        locked?: boolean;
+        invitable?: boolean;
+        rate_limit_per_user?: number | null;
+        flags?: ChannelFlags;
+    }) {
+        if (isEmpty(data))
+            throw new EditWithEmptyData("guild_thread");
+
+        if (data.name === '')
+            delete data.name;
+
+        return {
+            uri: (base: URL) => {
+                base.pathname += `/channels/${channel_id}`;
+                return {
+                    uri: base.toString(),
+                    mode: "PATCH"
+                };
+            },
+            data,
+            cache: (data: ChannelData) => Global.channelCache.set(data.id, data)
+        }
     }
 }
