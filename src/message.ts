@@ -183,5 +183,5 @@ export function createStickers(stickers: StickerData[]) {
 export function crosspostMessage(channel_id: SnowflakeData) {
     return async function(message_id: SnowflakeData) {
 
-    }
+    };
 }
