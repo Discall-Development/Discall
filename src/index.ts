@@ -6,3 +6,5 @@ export * from "./dataType";
 export * from "./applicationCommand";
 export * from "./channel";
 export * from "./message";
+export * from "./reaction";
+

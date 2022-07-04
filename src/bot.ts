@@ -71,7 +71,7 @@ export function createBot(
     data: { intents: number; prefix: string },
     options?: WSOptions
 ) {
-    let obj = createWS(token, data.intents, 9);
+    let obj = createWS(token, data.intents);
     Global = {...obj.events, ...obj.gateway_commands};
 
     return createClient(token);

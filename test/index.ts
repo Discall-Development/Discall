@@ -8,11 +8,9 @@ import {
     getApplicationCommand,
     getApplicationCommands,
     GuildCreateEventData,
-    InteractionCreateEventData,
     isEmpty,
     MessageCreateEventData,
     onGuildCreate,
-    onInteractionCreate,
     onMessageCreate,
     onReady,
     ReadyEventData,
@@ -43,11 +41,6 @@ export async function BotTest(): Promise<void> {
     let stickers: { [k: string]: StickerData[] } = {};
     onGuildCreate(async (data: GuildCreateEventData) => {
         stickers[data.id as string] = data.stickers;
-        console.log(data.name);
-    });
-
-    onInteractionCreate(async (data: InteractionCreateEventData) => {
-        console.log(data.data?.name);
     });
 
     onMessageCreate(async (data: MessageCreateEventData) => {

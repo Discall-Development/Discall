@@ -62,14 +62,14 @@ async function sendRequest({ uri, mode }: { uri: string, mode: string }, token: 
         result = await fetch(uri, {
             method: mode,
             headers
-        }).then(r => r.json());
+        });
 
     if (!data.attachments)
         result = await fetch(uri, {
             method: mode,
             body: JSON.stringify(data),
             headers
-        }).then(r => r.json());
+        });
 
     if (data.attachments) {
         delete headers["Content-Type"];
@@ -77,11 +77,11 @@ async function sendRequest({ uri, mode }: { uri: string, mode: string }, token: 
             method: mode,
             body: await jsonToFormData(data),
             headers
-        }).then(r => r.json());
+        });
     }
 
-    if (cache)
-        cache(result);
+    if (cache && (result.code >= 200 && result < 300))
+        cache(result = await result.json());
 
     return result;
 }

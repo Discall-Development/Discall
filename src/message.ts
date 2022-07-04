@@ -182,6 +182,15 @@ export function createStickers(stickers: StickerData[]) {
 
 export function crosspostMessage(channel_id: SnowflakeData) {
     return async function(message_id: SnowflakeData) {
-
-    }
+        return {
+            uri: (base: URL) => {
+                base.pathname += `/channels/${channel_id}/messages/${message_id}/crosspost`;
+                return {
+                    uri: base.toString(),
+                    mode: "POST"
+                };
+            },
+            cache: (data: MessageData) => messageCache.set([data.channel_id, data.id], data)
+        };
+    };
 }

@@ -28,7 +28,7 @@ let Global: {
     identified: false,
 };
 
-type Version = 9 | 10
+type Version = 9 | 10;
 export function createWS(
     token: string,
     intents: number,
@@ -36,7 +36,7 @@ export function createWS(
     resume: boolean = false
 ): WSObject {
     // @ts-ignore
-    if (version !== 9 || version !== 10)
+    if (version !== 9 && version !== 10)
         throw new VersionError(version);
 
     let ws = new WebSocket(`wss://gateway.discord.gg?v=${version}&encoding=etf`);

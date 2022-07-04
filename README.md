@@ -4,6 +4,10 @@
 
 A async functional discord API wrapper.
 
+It let you process everything with function. (ex. message, reaction, voice, etc.)
+
+
+
 ## Why I want to make this library?
 
 ---
@@ -28,27 +32,28 @@ import {
     onReady,
     ReadyEventData,
     onMessageCreate,
-    MessageCreateEventData
-} from "discall";
+    MessageCreateEventData,
+    SnowflakeData
+} from "@discall/discall";
 
 void (async () => {
     let send = createBot("TOKEN", {
         intents: allIntents(),
         prefix: "!"
     });
-    
-    let user_id;
+
+    let userId: SnowflakeData;
     onReady(async (data: ReadyEventData) => {
-        user_id = data.user_id;
-        
+        userId = data.user_id;
+
         console.log("bot is online");
     });
 
     onMessageCreate(async (data: MessageCreateEventData) => {
-       if (data.content.startsWith("say") && data.author.id !== user_id)
-           await send(await createMessage(data.channel_id)({
-               content: data.content.slice(3)
-           }));
+        if (data.content.startsWith("say") && data.author.id !== userId)
+            await send(await createMessage(data.channel_id)({
+                content: data.content.slice(3)
+            }));
     });
 })();
 ```
