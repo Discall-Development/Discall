@@ -47,12 +47,12 @@ packEvent("message_reaction_remove")(async (data: MessageReactionRemoveEventData
         reactionCache.delete(packEmoji(data.emoji));
 
         if (userCache.size === 0)
-            cacheDelete(messageReactionUserCache, [data.channel_id, data.message_id, encodeEmoji(data.emoji)])
+            cacheDelete(messageReactionUserCache, [data.channel_id, data.message_id, encodeEmoji(data.emoji)]);
         else
             cacheSet(messageReactionUserCache, [data.channel_id, data.message_id, encodeEmoji(data.emoji)], userCache);
 
         if (reactionCache.size === 0)
-            cacheDelete(messageReactionCache, [data.channel_id, data.message_id])
+            cacheDelete(messageReactionCache, [data.channel_id, data.message_id]);
         else
             cacheSet(messageReactionCache, [data.channel_id, data.message_id], reactionCache);
     }
@@ -121,7 +121,7 @@ export function deleteReaction(channel_id: SnowflakeData, message_id: SnowflakeD
             uri: (base: URL) => {
                 base.pathname += `/channels/${channel_id}/messages/${message_id}/reactions/${encodeEmoji(emoji)}`;
                 if (user_id === bot.id)
-                    base.pathname += `/@me`;
+                    base.pathname += "/@me";
                 else
                     base.pathname += `/${user_id}`;
 

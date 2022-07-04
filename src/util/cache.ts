@@ -56,7 +56,7 @@ export function cacheDelete(cache: Map<any, any>, key: any) {
 
     function MapDelete(map: Map<any, any>, key: any) {
         if (map)
-            return map.delete(key)
+            return map.delete(key);
         return false;
     }
 
