@@ -19,7 +19,14 @@
   },
   "devDependencies": {
     "@types/json-bigint": "^1.0.1",
+<<<<<<< HEAD
     "@types/node": "^18.0.3",
+=======
+    "@typescript-eslint/eslint-plugin": "^5.30.4",
+    "@typescript-eslint/parser": "^5.30.4",
+    "chalk": "^5.0.1",
+    "dotenv": "^16.0.1",
+>>>>>>> d95691430e8fa6e18105ed2be7faa4bd43524e19
     "typescript": "^4.7.4"
   },
   "directories": {
