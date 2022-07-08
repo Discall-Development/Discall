@@ -24,7 +24,7 @@ export function createCommand(name: string, run: (...args: any[]) => Promise<any
             return channelDatas[name].shift();
         }
 
-        let reted = false
+        let reted = false;
     }
 
     let channel: DCommandChannel = {
