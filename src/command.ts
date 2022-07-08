@@ -31,21 +31,18 @@ export function createCommand(name: string, run: (...args: any[]) => Promise<any
     channelQueues[name] = [];
     channelDatas[name] = {};
 
-    async function send(...args: any[]) {
-        channelDatas[name][createUID(name)] = args;
-    }
-
-    async function getCommandData(name: string) {
-        if (channelDatas[name])
-            return channelDatas[name].shift();
-
-        return await getNextData(name).catch(() => {
-            throw new waitDataError(name);
-        });
-    }
-
     let channel: DCommandChannel = {
-        send, getCommandData,
+        async send(...args: any[]) {
+            channelDatas[name][createUID(name)] = args;
+        },
+        async getCommandData(name: string) {
+            if (channelDatas[name])
+                return channelDatas[name].shift();
+    
+            return await getNextData(name).catch(() => {
+                throw new waitDataError(name);
+            });
+        }
     };
 
     channels[name] = channel;
