@@ -7,24 +7,24 @@ export interface DiscordData {
     t?: string;
 }
 
-export interface IntentsOptionsInterface {
-    guilds?: boolean;
-    guildMembers?: boolean;
-    guildBans?: boolean;
-    guildEmojisAndStickers?: boolean;
-    guildIntegrations?: boolean;
-    guildWebhooks?: boolean;
-    guildInvites?: boolean;
-    guildVoiceStates?: boolean;
-    guildPresences?: boolean;
-    guildMessage?: boolean;
-    guildMessageReactions?: boolean;
-    guildMessageTyping?: boolean;
-    directMessage?: boolean;
-    directMessageReactions?: boolean;
-    directMessageTyping?: boolean;
-    messageContent?: boolean;
-    guildScheduledEvents?: boolean;
+export enum Intents {
+    GUILDS = 1 << 0,
+    GUILD_MEMBERS = 1 << 1,
+    GUILD_BANS = 1 << 2,
+    GUILD_EMOJIS_AND_STICKERS = 1 << 3,
+    GUILD_INTEGRATIONS = 1 << 4,
+    GUILD_WEBHOOKS = 1 << 5,
+    GUILD_INVITES = 1 << 6,
+    GUILD_VOICE_STATES = 1 << 7,
+    GUILD_PRESENCES = 1 << 8,
+    GUILD_MESSAGES = 1 << 9,
+    GUILD_MESSAGE_REACTIONS = 1 << 10,
+    GUILD_MESSAGE_TYPING = 1 << 11,
+    DIRECT_MESSAGES = 1 << 12,
+    DIRECT_MESSAGE_REACTIONS = 1 << 13,
+    DIRECT_MESSAGE_TYPING = 1 << 14,
+    MESSAGE_CONTENT = 1 << 15,
+    GUILD_SCHEDULED_EVENTS = 1 << 16,
 }
 
 export enum Opcode {
@@ -56,8 +56,8 @@ export enum VoiceOpcode {
 }
 
 export interface WSOptions {
-    encoding?: string;
-    version?: number;
+    version?: 9 | 10;
+    commandTimeout?: number;
 }
 
 export interface ReadyEventData {
@@ -378,66 +378,7 @@ export interface StageInstanceUpdateEventData extends StageInstanceData {
 export interface StageInstanceDeleteEventData extends StageInstanceData {
 }
 
-export type replaceCallback = (cb: (...item: any) => Promise<any>) => any;
-
 export interface WSObject {
-    events: {
-        ready: replaceCallback;
-        resumed: replaceCallback;
-        application_command_permissions_update: replaceCallback;
-        channel_create: replaceCallback;
-        channel_update: replaceCallback;
-        channel_delete: replaceCallback;
-        channel_pins_update: replaceCallback;
-        thread_create: replaceCallback;
-        thread_update: replaceCallback;
-        thread_delete: replaceCallback;
-        thread_list_sync: replaceCallback;
-        thread_member_update: replaceCallback;
-        thread_members_update: replaceCallback;
-        guild_create: replaceCallback;
-        guild_update: replaceCallback;
-        guild_delete: replaceCallback;
-        guild_ban_add: replaceCallback;
-        guild_ban_remove: replaceCallback;
-        guild_emojis_update: replaceCallback;
-        guild_stickers_update: replaceCallback;
-        guild_integrations_update: replaceCallback;
-        guild_member_add: replaceCallback;
-        guild_member_remove: replaceCallback;
-        guild_member_update: replaceCallback;
-        guild_member_chunk: replaceCallback;
-        guild_role_create: replaceCallback;
-        guild_role_update: replaceCallback;
-        guild_role_delete: replaceCallback;
-        guild_scheduled_event_create: replaceCallback;
-        guild_scheduled_event_update: replaceCallback;
-        guild_scheduled_event_delete: replaceCallback;
-        guild_scheduled_event_user_add: replaceCallback;
-        guild_scheduled_event_user_remove: replaceCallback;
-        integration_create: replaceCallback;
-        integration_update: replaceCallback;
-        integration_delete: replaceCallback;
-        interaction_create: replaceCallback;
-        invite_create: replaceCallback;
-        invite_delete: replaceCallback;
-        message_create: replaceCallback;
-        message_update: replaceCallback;
-        message_delete: replaceCallback;
-        message_delete_bulk: replaceCallback;
-        message_reaction_add: replaceCallback;
-        message_reaction_remove: replaceCallback;
-        message_reaction_remove_all: replaceCallback;
-        message_reaction_remove_emoji: replaceCallback;
-        presence_update: replaceCallback;
-        stage_instance_create: replaceCallback;
-        stage_instance_delete: replaceCallback;
-        stage_instance_update: replaceCallback;
-        typing_start: replaceCallback;
-        user_update: replaceCallback;
-        voice_state_update: replaceCallback;
-        webhooks_update: replaceCallback;
-    };
     gateway_commands: {
         getMember: (...params: any) => Promise<void>;
         setPresence: (...params: any) => Promise<void>;
@@ -1397,4 +1338,77 @@ export enum AllowMentionType {
     Role_Mentions = "roles",
     User_Mentions = "users",
     EveryoneMentions = "everyone"
+}
+
+export enum PermissionFlags {
+    CREATE_INSTANT_INVITE = 1 << 0,
+    KICK_MEMBERS = 1 << 1,
+    BAN_MEMBERS = 1 << 2,
+    ADMINISTRATOR = 1 << 3,
+    MANAGE_CHANNELS = 1 << 4,
+    MANAGE_GUILD = 1 << 5,
+    ADD_REACTIONS = 1 << 6,
+    VIEW_AUDIT_LOG = 1 << 7,
+    PRIORITY_SPEAKER = 1 << 8,
+    STREAM = 1 << 9,
+    VIEW_CHANNEL = 1 << 10,
+    SEND_MESSAGES = 1 << 11,
+    SEND_TTS_MESSAGES = 1 << 12,
+    MANAGE_MESSAGES = 1 << 13,
+    EMBED_LINKS = 1 << 14,
+    ATTACH_FILES = 1 << 15,
+    READ_MESSAGE_HISTORY = 1 << 16,
+    MENTION_EVERYONE = 1 << 17,
+    USE_EXTERNAL_EMOJIS = 1 << 18,
+    VIEW_GUILD_INSIGHTS = 1 << 19,
+    CONNECT = 1 << 20,
+    SPEAK = 1 << 21,
+    MUTE_MEMBERS = 1 << 22,
+    DEAFEN_MEMBERS = 1 << 23,
+    MOVE_MEMBERS = 1 << 24,
+    USE_VAD = 1 << 25,
+    CHANGE_NICKNAME = 1 << 26,
+    MANAGE_NICKNAMES = 1 << 27,
+    MANAGE_ROLES = 1 << 28,
+    MANAGE_WEBHOOKS = 1 << 29,
+    MANAGE_EMOJIS_AND_STICKERS = 1 << 30,
+    USE_APPLICATION_COMMANDS = 1 << 31,
+    REQUEST_TO_SPEAK = 0x100000000,
+    MANAGE_EVENTS = 0x200000000,
+    MANAGE_THREADS = 0x400000000,
+    CREATE_PUBLIC_THREADS = 0x800000000,
+    CREATE_PRIVATE_THREADS = 0x1000000000,
+    USE_EXTERNAL_STICKERS = 0x2000000000,
+    SEND_MESSAGES_IN_THREADS = 0x4000000000,
+    USE_EMBEDDED_ACTIVITIES = 0x8000000000,
+    MODERATE_MEMBERS = 0x10000000000
+}
+
+export interface DCommand {
+    name: string;
+    run: <TArgs extends any[]>(channel: DCommandChannel, ...params: TArgs) => Promise<any>;
+    permissions?: DCommandPermissionFlags;
+    option?: DCommandOption;
+}
+
+export interface DCommandOption {
+    description?: string;
+    aliases?: string[];
+    param_format?: RegExp;
+}
+
+export enum DCommandPermissionFlags {
+    BOT_OWNER = 1,
+    OWNER = 2,
+    ADMINISTRATOR = 4,
+    ROLE = 8,
+    USER = 16,
+    GUILD = 32,
+    DM = 64,
+    GROUP = 128
+}
+
+export interface DCommandChannel {
+    send: (message: string) => Promise<any>;
+    getCommandData: (name: string) => Promise<any>;
 }

@@ -1,4 +1,4 @@
-import {createSocket, Socket} from "dgram";
+import {createSocket, Socket} from "node:dgram";
 import {debug, error} from "../logger";
 import {close, random} from "./secret";
 
@@ -62,7 +62,7 @@ async function onMessage(
 ) {
     if (message.length === 8) {
         let counter = message.readUInt32LE(0);
-        let idx = keepAlives.findIndex(({value}) => value == counter);
+        let idx = keepAlives.findIndex(({value}) => value === counter);
         if (idx === -1) return;
 
         Global.ping = Date.now() - keepAlives[idx].timestamp;

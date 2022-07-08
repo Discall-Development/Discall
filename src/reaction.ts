@@ -12,7 +12,6 @@ import {
 } from "./dataType";
 import {packEvent} from "./event";
 import {cacheDelete, cacheGet, cacheHas, cacheSet} from "./util/cache";
-import * as util from "util";
 
 let emojiCache: Map<SnowflakeData, EmojiData[]> = new Map(); // guild_id -> emojis
 let messageReactionUserCache: Map<SnowflakeData, Map<SnowflakeData, Map<string, Set<SnowflakeData>>>> = new Map(); // channel_id -> message_id -> emoji -> user_ids
@@ -34,8 +33,6 @@ packEvent("message_reaction_add")(async (data: MessageReactionAddEventData) => {
 
     cacheSet(messageReactionUserCache, [data.channel_id, data.message_id, encodeEmoji(data.emoji)], userCache.add(data.user_id));
     cacheSet(messageReactionCache, [data.channel_id, data.message_id], reactionCache.add(packEmoji(data.emoji)));
-
-    console.log(util.inspect(emojiCache, false, null, true), util.inspect(messageReactionCache, false, null, true), util.inspect(messageReactionUserCache, false, null, true));
 });
 
 packEvent("message_reaction_remove")(async (data: MessageReactionRemoveEventData) => {
@@ -47,12 +44,12 @@ packEvent("message_reaction_remove")(async (data: MessageReactionRemoveEventData
         reactionCache.delete(packEmoji(data.emoji));
 
         if (userCache.size === 0)
-            cacheDelete(messageReactionUserCache, [data.channel_id, data.message_id, encodeEmoji(data.emoji)])
+            cacheDelete(messageReactionUserCache, [data.channel_id, data.message_id, encodeEmoji(data.emoji)]);
         else
             cacheSet(messageReactionUserCache, [data.channel_id, data.message_id, encodeEmoji(data.emoji)], userCache);
 
         if (reactionCache.size === 0)
-            cacheDelete(messageReactionCache, [data.channel_id, data.message_id])
+            cacheDelete(messageReactionCache, [data.channel_id, data.message_id]);
         else
             cacheSet(messageReactionCache, [data.channel_id, data.message_id], reactionCache);
     }
@@ -103,13 +100,6 @@ export function createReaction(channel_id: SnowflakeData, message_id: SnowflakeD
                     uri: base.toString(),
                     mode: "PUT"
                 };
-            },
-            cache: (_: {}) => {
-                let userCache = cacheGet(messageReactionUserCache, [channel_id, message_id, encodeEmoji(emoji)]) || new Set();
-                let reactionCache = cacheGet(messageReactionCache, [channel_id, message_id]) || new Set();
-
-                cacheSet(messageReactionUserCache, [channel_id, message_id, encodeEmoji(emoji)], userCache.add(bot.id));
-                cacheSet(messageReactionCache, [channel_id, message_id], reactionCache);
             }
         };
     };
@@ -121,7 +111,7 @@ export function deleteReaction(channel_id: SnowflakeData, message_id: SnowflakeD
             uri: (base: URL) => {
                 base.pathname += `/channels/${channel_id}/messages/${message_id}/reactions/${encodeEmoji(emoji)}`;
                 if (user_id === bot.id)
-                    base.pathname += `/@me`;
+                    base.pathname += "/@me";
                 else
                     base.pathname += `/${user_id}`;
 
@@ -129,17 +119,6 @@ export function deleteReaction(channel_id: SnowflakeData, message_id: SnowflakeD
                     uri: base.toString(),
                     mode: "DELETE"
                 };
-            },
-            cache: (_: {}) => {
-                let userCache = cacheGet(messageReactionUserCache, [channel_id, message_id, encodeEmoji(emoji)]);
-                let reactionCache = cacheGet(messageReactionCache, [channel_id, message_id]);
-                if (userCache !== undefined && reactionCache !== undefined) {
-                    userCache.delete(user_id);
-                    reactionCache.delete(emoji);
-
-                    cacheSet(messageReactionUserCache, [channel_id, message_id, encodeEmoji(emoji)], userCache);
-                    cacheSet(messageReactionCache, [channel_id, message_id], reactionCache);
-                }
             }
         };
     };
@@ -184,5 +163,35 @@ export function getReactions(channel_id: SnowflakeData, message_id: SnowflakeDat
             };
 
         return await fetchReactions(channel_id, message_id)(emoji);
+    };
+}
+
+export function deleteReactions(channel_id: SnowflakeData, message_id: SnowflakeData) {
+    return async function(reason?: string) {
+        return {
+            uri: (base: URL) => {
+                base.pathname += `/channels/${channel_id}/messages/${message_id}/reactions`;
+                return {
+                    uri: base.toString(),
+                    mode: "DELETE"
+                };
+            },
+            reason
+        };
+    };
+}
+
+export function deleteEmojiReactions(channel_id: SnowflakeData, message_id: SnowflakeData) {
+    return async function(emoji: EmojiData, reason?: string) {
+        return {
+            uri: (base: URL) => {
+                base.pathname += `/channels/${channel_id}/messages/${message_id}/reactions/${encodeEmoji(emoji)}`;
+                return {
+                    uri: base.toString(),
+                    mode: "DELETE"
+                };
+            },
+            reason
+        };
     };
 }

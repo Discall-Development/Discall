@@ -13,7 +13,7 @@ import {
 import {EditWithEmptyData} from "./errors";
 import {packEvent} from "./event";
 import {isEmpty} from "./util";
-import * as fs from "fs/promises";
+import * as fs from "node:fs/promises";
 
 let channelCache: Map<SnowflakeData, ChannelData> = new Map();
 packEvent("guild_create")(async (data: GuildCreateEventData) => {

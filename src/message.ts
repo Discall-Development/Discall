@@ -8,8 +8,8 @@ import {
     EmbedFooterData,
     MessageComponentData,
     MessageCreateEventData,
-    MessageData,
-    MessageDeleteEventData,
+    MessageData, MessageDeleteBulkEventData,
+    MessageDeleteEventData, MessageFlag,
     MessageReferenceData,
     MessageUpdateEventData,
     SnowflakeData,
@@ -17,18 +17,24 @@ import {
 } from "./dataType";
 import {isEmpty} from "./util";
 import {EmptyMessageError} from "./errors";
+import {cacheDelete, cacheGet, cacheHas, cacheSet} from "./util/cache";
 
-let messageCache: Map<[SnowflakeData, SnowflakeData], MessageData> = new Map();
+let messageCache: Map<SnowflakeData, Map<SnowflakeData, MessageData>> = new Map();
 packEvent("message_create")(async (data: MessageCreateEventData) => {
-    messageCache.set([data.channel_id, data.id], data);
+    cacheSet(messageCache, [data.channel_id, data.id], data);
 });
 
 packEvent("message_update")(async (data: MessageUpdateEventData) => {
-    messageCache.set([data.channel_id, data.id], data);
+    cacheSet(messageCache, [data.channel_id, data.id], data);
 });
 
 packEvent("message_delete")(async (data: MessageDeleteEventData) => {
-    messageCache.delete([data.channel_id, data.id]);
+    cacheDelete(messageCache, [data.channel_id, data.id]);
+});
+
+packEvent("message_delete_bulk")(async (data: MessageDeleteBulkEventData) => {
+    for (const id of data.ids)
+        cacheDelete(messageCache, [data.channel_id, id]);
 });
 
 export function createMessage(channel_id: SnowflakeData) {
@@ -42,11 +48,11 @@ export function createMessage(channel_id: SnowflakeData) {
         allow_mentions: AllowMentionsData;
         message_reference?: MessageReferenceData;
         components?: MessageComponentData[];
+        flags?: MessageFlag;
     }) {
         if (isEmpty(message))
             throw new EmptyMessageError();
 
-        let { content, embeds, sticker_ids, attachments } = message;
         return {
             uri: (base: URL) => {
                 base.pathname += `/channels/${channel_id}/messages`;
@@ -55,15 +61,8 @@ export function createMessage(channel_id: SnowflakeData) {
                     mode: "POST"
                 };
             },
-            data: {
-                content,
-                embeds,
-                sticker_ids,
-                attachments,
-                ...option,
-                flag: 0
-            },
-            cache: (data: MessageData) => messageCache.set([data.channel_id, data.id], data)
+            data: { ...message, ...option },
+            cache: (data: MessageData) => cacheSet(messageCache, [data.channel_id, data.id], data)
         };
     };
 }
@@ -77,12 +76,12 @@ export async function fetchMessage(channel_id: SnowflakeData, message_id: Snowfl
                 mode: "GET"
             };
         },
-        cache: (data: MessageData) => messageCache.set([data.channel_id, data.id], data)
+        cache: (data: MessageData) => cacheSet(messageCache, [data.channel_id, data.id], data)
     };
 }
 
 export async function getMessage(channel_id: SnowflakeData, message_id: SnowflakeData) {
-    if (messageCache.has([channel_id, message_id]))
+    if (cacheHas(messageCache, [channel_id, message_id]))
         return {
             uri: (base: URL) => {
                 return {
@@ -90,7 +89,7 @@ export async function getMessage(channel_id: SnowflakeData, message_id: Snowflak
                     mode: "NONE"
                 };
             },
-            cache: () => messageCache.get([channel_id, message_id])
+            cache: () => cacheGet(messageCache, [channel_id, message_id])
         };
 
     return await fetchMessage(channel_id, message_id);
@@ -180,17 +179,71 @@ export function createStickers(stickers: StickerData[]) {
     return stickers.map(v => v.id);
 }
 
-export function crosspostMessage(channel_id: SnowflakeData) {
-    return async function(message_id: SnowflakeData) {
+export async function crosspostMessage(channel_id: SnowflakeData, message_id: SnowflakeData) {
+    return {
+        uri: (base: URL) => {
+            base.pathname += `/channels/${channel_id}/messages/${message_id}/crosspost`;
+            return {
+                uri: base.toString(),
+                mode: "POST"
+            };
+        },
+        cache: (data: MessageData) => cacheSet(messageCache, [data.channel_id, data.id], data)
+    };
+}
+
+export function editMessage(channel_id: SnowflakeData, message_id: SnowflakeData) {
+    return async function(message: {
+        content: string;
+        embeds: EmbedData[];
+        attachments: AttachmentData[];
+    }, option?: {
+        components: MessageComponentData[];
+        allow_mentions?: AllowMentionsData;
+        flags?: MessageFlag;
+    }) {
+        if (isEmpty(message))
+            throw new EmptyMessageError();
+
         return {
             uri: (base: URL) => {
-                base.pathname += `/channels/${channel_id}/messages/${message_id}/crosspost`;
+                base.pathname += `/channels/${channel_id}/messages/${message_id}`;
+                return {
+                    uri: base.toString(),
+                    mode: "PATCH"
+                };
+            },
+            data: { ...message, ...option },
+            cache: (data: MessageData) => cacheSet(messageCache, [data.channel_id, data.id], data)
+        };
+    };
+}
+
+export function deleteMessage(channel_id: SnowflakeData, message_id: SnowflakeData) {
+    return async function() {
+        return {
+            uri: (base: URL) => {
+                base.pathname += `/channels/${channel_id}/messages/${message_id}`;
+                return {
+                    uri: base.toString(),
+                    mode: "DELETE"
+                };
+            }
+        };
+    };
+}
+
+export function deleteBulkMessage(channel_id: SnowflakeData) {
+    return async function(messages: SnowflakeData[]) {
+        return {
+            uri: (base: URL) => {
+                base.pathname += `/channels/${channel_id}/messages/bulk-delete`;
                 return {
                     uri: base.toString(),
                     mode: "POST"
                 };
             },
-            cache: (data: MessageData) => messageCache.set([data.channel_id, data.id], data)
+            data: { messages }
         };
     };
 }

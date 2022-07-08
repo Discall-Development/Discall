@@ -1,4 +1,3 @@
-import WebSocket from "ws";
 import {DiscordData, SnowflakeData, VoiceOpcode} from "../dataType";
 import {debug} from "../logger";
 import {NoneValidEncryptionMode} from "../errors";
@@ -50,7 +49,7 @@ async function onOpen(
 
 async function onClose(
     ws: WebSocket,
-    event: WebSocket.CloseEvent,
+    event: CloseEvent,
     token: string,
     server_id: SnowflakeData,
     session_id: string,
@@ -63,11 +62,11 @@ async function onClose(
     }
 }
 
-async function onError(ws: WebSocket, event: WebSocket.ErrorEvent) {
+async function onError(ws: WebSocket, event: Event) {
     debug("voice websocket failed");
 }
 
-async function onMessage(ws: WebSocket, event: WebSocket.MessageEvent) {
+async function onMessage(ws: WebSocket, event: MessageEvent) {
     let data: DiscordData = decode(event.data as string);
     await processData(ws, data);
 }

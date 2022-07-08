@@ -4,7 +4,10 @@
 .upm/*
 .vscode/*
 
-node_module/*
+node_modules/*
 
 *.xml
 *.iml
+
+bun.*
+*.bun

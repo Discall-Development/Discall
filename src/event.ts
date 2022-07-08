@@ -1,13 +1,13 @@
 let Global: {
-    events: { [k: string]: ((...item: any) => Promise<any>)[] };
+    events: { [k: string]: ((data: any) => Promise<any>)[] };
 } = {
     events: {},
 };
 
 export function packEvent(
     eventName: string
-): (cb: (...item: any) => Promise<any>) => any {
-    return function (cb: (...item: any) => Promise<any>): any {
+): (cb: (data: any) => Promise<any>) => any {
+    return function (cb: (data: any) => Promise<any>): any {
         if (Array.isArray(Global.events[eventName]))
             Global.events[eventName].push(cb);
         else Global.events[eventName] = [cb];
