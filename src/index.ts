@@ -7,4 +7,5 @@ export * from "./application";
 export * from "./channel";
 export * from "./message";
 export * from "./reaction";
-
+export * from "./command";
+export * from "./permissions";

@@ -18,12 +18,12 @@ export function createBot(
     options?: WSOptions
 ) {
     let obj: any;
-    if (options.version)
+    if (options && options.version)
         obj = createWS(token, data.intents, options.version || 10);
     else
         obj = createWS(token, data.intents);
-        
-    setupHandler(data.prefix, options.commandTimeout);
+
+    setupHandler(data.prefix, options && options.commandTimeout);
 
     Global = obj.gateway_commands;
     return createClient(token);

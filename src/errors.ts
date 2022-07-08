@@ -27,3 +27,9 @@ export class InvalidHttpRequest extends Error {
         super("Can't send http request with invalid request object.");
     }
 }
+
+export class waitDataError extends Error {
+    constructor(name: string) {
+        super(`Get data timeout from ${name} channel.`);
+    }
+}
