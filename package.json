@@ -1,44 +1,37 @@
 {
-  "name": "@discall/discall",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "bun run test/index.ts"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "bun-types": "0.0.83",
-    "erlpack": "^0.1.4",
-    "etf.js": "^1.0.1",
-    "json-bigint": "^1.0.0",
-    "libsodium-wrappers": "^0.7.10",
-    "ramda": "^0.28.0",
-    "ws": "^8.8.0"
-  },
-  "devDependencies": {
-    "@types/json-bigint": "^1.0.1",
-<<<<<<< HEAD
-    "@types/node": "^18.0.3",
-=======
-    "@typescript-eslint/eslint-plugin": "^5.30.4",
-    "@typescript-eslint/parser": "^5.30.4",
-    "chalk": "^5.0.1",
-    "dotenv": "^16.0.1",
->>>>>>> d95691430e8fa6e18105ed2be7faa4bd43524e19
-    "typescript": "^4.7.4"
-  },
-  "directories": {
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rexwu1104/Discall.git"
-  },
-  "bugs": {
-    "url": "https://github.com/rexwu1104/Discall/issues"
-  },
-  "homepage": "https://github.com/rexwu1104/Discall#readme",
-  "description": ""
+    "name": "@discall/discall",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "bun run test/index.ts"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "bun-types": "0.0.83",
+        "erlpack": "^0.1.4",
+        "etf.js": "^1.0.1",
+        "json-bigint": "^1.0.0",
+        "libsodium-wrappers": "^0.7.10",
+        "ramda": "^0.28.0",
+        "ws": "^8.8.0"
+    },
+    "devDependencies": {
+        "@types/json-bigint": "^1.0.1",
+        "@types/node": "^18.0.3",
+        "typescript": "^4.7.4"
+    },
+    "directories": {
+        "test": "test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/rexwu1104/Discall.git"
+    },
+    "bugs": {
+        "url": "https://github.com/rexwu1104/Discall/issues"
+    },
+    "homepage": "https://github.com/rexwu1104/Discall#readme",
+    "description": ""
 }
