@@ -56,7 +56,6 @@ if `mode` is `"NONE"`, cache is necessary.
 if `mode` is `"NONE"`, `"GET"` or `"DELETE"`, the `data` is disable.
 
 if `mode` is `"POST"` or `"PATCH"`, the `data` is necessary.
----
 
 # To do list
 ---
