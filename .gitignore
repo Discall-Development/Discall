@@ -11,4 +11,8 @@ node_modules/*
 
 bun.*
 *.bun
-.env
+.*
+
+!.github/
+!.eslintrc.json
+!.gitignore
