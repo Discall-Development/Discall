@@ -44,7 +44,7 @@ It is for send Https Request, and it accept our format.
 {
     uri: (base: URL) => { uri: string, mode: string };
     data?: any;
-    cache?: () => any | (data: any) => ant;
+    cache?: () => any | (data: any) => any;
     reason?: string;
 }
 ```
