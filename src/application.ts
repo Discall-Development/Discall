@@ -1,6 +1,7 @@
-import {ApplicationCommandOptionData, ApplicationCommandType, SnowflakeData} from "./dataType";
+import {ApplicationCommandData, ApplicationCommandOptionData, ApplicationCommandType, SnowflakeData} from "./dataType";
 
-export function createApplicationCommand(type: "slash" | "user" | "message"): typeof createSlashCommand | typeof createUserCommand | typeof createMessageCommand {
+let commandCache: Map<string, Map<SnowflakeData, ApplicationCommandData>> = new Map();
+export function createApplicationCommand(type: "slash" | "user" | "message") {
     switch (type) {
     case "slash":
         return createSlashCommand;
@@ -13,7 +14,7 @@ export function createApplicationCommand(type: "slash" | "user" | "message"): ty
 
 function createSlashCommand(guild_id?: SnowflakeData) {
     if (guild_id) {
-        return function (application_id: SnowflakeData) {
+        return function(application_id: SnowflakeData) {
             return function (name: string, description: string, options?: ApplicationCommandOptionData[]) {
                 return {
                     uri: (base: URL) => {
@@ -33,7 +34,7 @@ function createSlashCommand(guild_id?: SnowflakeData) {
             };
         };
     }
-    return function (application_id: SnowflakeData) {
+    return function(application_id: SnowflakeData) {
         return function (name: string, description: string, options?: ApplicationCommandOptionData[]) {
             return {
                 uri: (base: URL) => {

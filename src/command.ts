@@ -1,7 +1,7 @@
-import { DCommand, DCommandChannel, DCommandOption, MessageCreateEventData } from "./dataType";
+import { DCommand, DCommandChannel, DCommandOption, DCommandPermissionFlags, MessageCreateEventData, PermissionFlags } from "./dataType";
 import { waitDataError } from "./errors";
 import { packEvent } from "./event";
-import { createUID, getUIDs } from "./util/uid";
+import { createUID, getUIDs } from "./util";
 
 let commands: Record<string, DCommand> = {};
 let channels: Record<string, DCommandChannel> = {};
@@ -57,7 +57,8 @@ export function createCommand(name: string, run: (...args: any[]) => Promise<any
     return command;
 }
 
-export function setupHandler(prefix: string, timeout: number = 0) {
+type Seconed = number;
+export function setupHandler(prefix: string, timeout: Seconed = 0) {
     channelTimeout = timeout;
     packEvent("message_create")(async (data: MessageCreateEventData) => {
         let params = data.content.trim().split(/ +/g);
@@ -66,7 +67,20 @@ export function setupHandler(prefix: string, timeout: number = 0) {
             let name = params[0].slice(prefix.length);
             if (!commands[name]) return;   
             
-            await commands[name].run(channels[name], ...params.slice(1));
+            let permission = commands[name].permissions;
+            if (checkPermission(permission, data)) {}
         }
     });
+}
+
+function checkPermission(permission: number, data: MessageCreateEventData, send: (...params: any[]) => any): boolean {
+    if (permission & DCommandPermissionFlags.BOT_OWNER)
+        if (data.author.id === data.author.id)
+            return true;
+
+    if (permission & DCommandPermissionFlags.OWNER)
+        if (data.author.id === data.guild_id)
+            return true;
+
+    return false;
 }

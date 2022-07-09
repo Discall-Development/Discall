@@ -12,6 +12,7 @@ import {
 import { callEvent, packEvent } from "./event";
 import { createVoiceWS } from "./voice";
 import { VersionError } from "./errors";
+import { isBrowser, isBun, isDeno } from "./util";
 
 let Global: {
     heartbeatID?: any;
@@ -35,12 +36,16 @@ export function createWS(
     if (version !== 9 && version !== 10)
         throw new VersionError(version);
 
-    let ws = new WebSocket(`wss://gateway.discord.gg?v=${version}&encoding=etf`);
+    let ws: WebSocket;
+    if (isBun() || isDeno() || isBrowser())
+        ws = new WebSocket(`wss://gateway.discord.gg?v=${version}&encoding=etf`);
+    else
+        ws = new (require("ws"))(`wss://gateway.discord.gg?v=${version}&encoding=json`);
 
-    ws.onopen = (data) => onOpen(ws, data, token, intents, version, resume);
-    ws.onclose = (data) => onClose(ws, data, token, intents, version);
-    ws.onerror = (data) => onError(ws, data);
-    ws.onmessage = (data) => onMessage(ws, data);
+    ws.onopen = (data: Event) => onOpen(ws, data, token, intents, version, resume);
+    ws.onclose = (data: any) => onClose(ws, data, token, intents, version);
+    ws.onerror = (data: Event) => onError(ws, data);
+    ws.onmessage = (data: any) => onMessage(ws, data);
 
     packEvent("ready")(async (data: ReadyEventData) => {
         Global.session_id = data.session_id;
@@ -76,7 +81,7 @@ async function onOpen(
     version: Version,
     resume: boolean
 ): Promise<void> {
-    console.log("websocket connected");
+    console.log("WebSocket connected");
     if (!resume)
         await Identity(ws, token, intents);
     if (resume)
@@ -85,7 +90,7 @@ async function onOpen(
 
 async function onClose(
     ws: WebSocket,
-    event: CloseEvent,
+    event: WebSocket.CloseEvent,
     token: string,
     intents: number,
     version: Version
@@ -102,14 +107,14 @@ async function onError(
     ws: WebSocket,
     event: Event
 ): Promise<void> {
-    error("websocket failed");
+    error("WebSocket failed");
     message(`Error message: ${event}`);
     process.exit(1);
 }
 
 async function onMessage(
     ws: WebSocket,
-    event: MessageEvent
+    event: WebSocket.MessageEvent
 ): Promise<void> {
     let data: DiscordData = decode(Buffer.from(event.data));
     if (data.s) Global.sequence = data.s;

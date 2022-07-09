@@ -11,7 +11,7 @@ import {
     UserData
 } from "./dataType";
 import {packEvent} from "./event";
-import {cacheDelete, cacheGet, cacheHas, cacheSet} from "./util/cache";
+import {cacheDelete, cacheGet, cacheHas, cacheSet} from "./util";
 
 let emojiCache: Map<SnowflakeData, EmojiData[]> = new Map(); // guild_id -> emojis
 let messageReactionUserCache: Map<SnowflakeData, Map<SnowflakeData, Map<string, Set<SnowflakeData>>>> = new Map(); // channel_id -> message_id -> emoji -> user_ids

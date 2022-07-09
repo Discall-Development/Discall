@@ -1,12 +1,11 @@
-import {packEvent} from "./event";
 import {SnowflakeData} from "./dataType";
 
-export function EditChannelPermissions(channel_id: SnowflakeData, permission_id: SnowflakeData) {
+export function EditChannelPermissions(channel_id: SnowflakeData, overwrite_id: SnowflakeData) {
     return async function({ allow, deny, type }: {
         allow?: string;
         deny?: string;
         type: 0 | 1;
-    }) {
+    }, reason?: string) {
         if (allow === undefined)
             allow = "0";
 
@@ -15,14 +14,14 @@ export function EditChannelPermissions(channel_id: SnowflakeData, permission_id:
 
         return {
             uri: (base: URL) => {
-                base.pathname += `channels/${channel_id}/permissions/${permission_id}`;
+                base.pathname += `channels/${channel_id}/permissions/${overwrite_id}`;
                 return {
                     uri: base.toString(),
                     mode: "PATCH"
                 };
             },
-            data: { allow, deny, type},
-            cache: () => {}
+            data: { allow, deny, type },
+            reason
         };
     };
 }

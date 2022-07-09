@@ -15,9 +15,8 @@ import {
     SnowflakeData,
     StickerData
 } from "./dataType";
-import {isEmpty} from "./util";
 import {EmptyMessageError} from "./errors";
-import {cacheDelete, cacheGet, cacheHas, cacheSet} from "./util/cache";
+import {isEmpty, cacheDelete, cacheGet, cacheHas, cacheSet} from "./util";
 
 let messageCache: Map<SnowflakeData, Map<SnowflakeData, MessageData>> = new Map();
 packEvent("message_create")(async (data: MessageCreateEventData) => {

@@ -4,8 +4,7 @@ import {createClient} from "./https";
 import {packEvent} from "./event";
 import { setupHandler } from "./command";
 
-let anyPromise = async (...params: any) => new Promise<any>(() => {
-});
+let anyPromise = async (...params: any) => new Promise(() => {});
 let Global = {
     getMember: anyPromise,
     setPresence: anyPromise,

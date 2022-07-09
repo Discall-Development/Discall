@@ -1412,3 +1412,33 @@ export interface DCommandChannel {
     send: (message: string) => Promise<any>;
     getCommandData: (name: string) => Promise<any>;
 }
+
+export interface InviteData {
+    code: string;
+    guild?: Partial<GuildData>;
+    channel: Partial<ChannelData> | null;
+    inviter?: UserData;
+    target_type?: InviteTargetType;
+    target_user?: UserData;
+    target_application?: Partial<ApplicationData>;
+    approximate_presence_count?: number;
+    approximate_member_count?: number;
+    expires_at?: Timestamp | null;
+    stage_instance?: InviteStageInstanceData;
+    guild_scheduled_event?: GuildScheduledEventData;
+}
+
+export interface InviteStageInstanceData {
+    members: Partial<GuildMemberData>[];
+    participant_count: number;
+    speaker_count: number;
+    topic: string;
+}
+
+export interface InviteMetadata {
+    uses: number;
+    max_uses: number;
+    max_age: number;
+    temporary: boolean;
+    created_at: Timestamp;
+}
