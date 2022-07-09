@@ -58,5 +58,25 @@ if `mode` is `"NONE"`, `"GET"` or `"DELETE"`, the `data` is disable.
 if `mode` is `"POST"` or `"PATCH"`, the `data` is necessary.
 
 # To do list
----
 
+## Interactions
+- [ ] ApplicationCommand
+- [ ] MessageComponents
+- [ ] InteractionResponse
+## Resources
+- [ ] Audit Log
+- [ ] Auto Moderation
+- [ ] Channel
+- [ ] Emoji
+- [ ] Guild
+- [ ] Guild Scheduled Event
+- [ ] Guild Template
+- [ ] Invite
+- [ ] Stage Instance
+- [ ] Sticker
+- [ ] User
+- [ ] Voice
+- [ ] Webhook
+## Topics
+- [x] Gateway
+- [x] Voice Connections

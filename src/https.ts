@@ -23,7 +23,7 @@ export function createClient(token: string, version: 9 | 10 = 10) {
         if (typeof uri !== "function")
             throw new InvalidHttpRequest();
 
-        return await sendRequest(uri(getBase(version)), token, version, { data, cache, reason });
+        return await sendRequest(uri(getBase(version)), token, { data, cache, reason });
     };
 }
 
@@ -31,7 +31,7 @@ function getBase(version: number) {
     return new URL(`https://discord.com/api/v${version}`);
 }
 
-async function sendRequest({ uri, mode }: { uri: string, mode: string }, token: string, version: number, { data, cache, reason }: {
+async function sendRequest({ uri, mode }: { uri: string, mode: string }, token: string, { data, cache, reason }: {
     data?: any;
     cache?: (...param: any) => any;
     reason?: string;
@@ -96,10 +96,3 @@ async function jsonToFormData(json: any): Promise<FormData> {
 
     return body;
 }
-
-function partial(func: (...params: any) => any, ...params: any) {
-    return function(..._params: any) {
-        func(...params, ..._params);
-    };
-}
-
