@@ -1,7 +1,5 @@
 # Discall
-
 ---
-
 A async functional discord API wrapper.
 
 It let you process everything with function. (ex. message, reaction, voice, etc.)
@@ -9,51 +7,57 @@ It let you process everything with function. (ex. message, reaction, voice, etc.
 
 
 ## Why I want to make this library?
-
 ---
+because I want practice my code skill and make it for my another project.
 
-~~Because I hate **discord.js**, ok?~~
-(nothing)
+and I hope it can be more convenient for everyone.
 
-Just for my another project [DBM discord-bot-maker](https://github.com/rexwu1104/DBM-discord-bot-maker)
-(now is private)
+## Runtime
 
-## Example for make a Bot
+I make it for [bun](https://github.com/Jarred-Sumner/bun).
 
+## Example
 ---
+How to let bot online? It is a simple way to do this.
+```ts
+let send = createBot("TOKEN", {
+    intents: defaultIntents(),
+    prefix: "!"
+});
 
-this is a simple reply bot.
-
-```typescript
-import {
-    createBot,
-    createMessage,
-    allIntents,
-    onReady,
-    ReadyEventData,
-    onMessageCreate,
-    MessageCreateEventData,
-    SnowflakeData
-} from "@discall/discall";
-
-void (async () => {
-    let send = createBot("TOKEN", {
-        intents: allIntents(),
-        prefix: "!"
-    });
-
-    let userId: SnowflakeData;
-    onReady(async (data: ReadyEventData) => {
-        userId = data.user_id;
-
-        console.log("bot is online");
-    });
-
-    onMessageCreate(async (data: MessageCreateEventData) => {
-        if (data.content.startsWith("say") && data.author.id !== userId)
-            await send(await createMessage(data.channel_id)({
-                content: data.content.slice(3)
-            }));
-    });
-})();
+onReady(async (data: ReadyEventData) => {
+    Bun.write(Bun.stdout, "bot is online\n");
+});
 ```
+
+You will see this is **so different** to another package.
+
+There is no **Bot** Object. 
+
+Instead, here is a **send** function.
+
+It is for send Https Request, and it accept our format.
+
+## Request Format
+---
+```ts
+{
+    uri: (base: URL) => { uri: string, mode: string };
+    data?: any;
+    cache?: () => any | (data: any) => ant;
+    reason?: string;
+}
+```
+
+`reason` is always optional.
+
+if `mode` is `"NONE"`, cache is necessary.
+
+if `mode` is `"NONE"`, `"GET"` or `"DELETE"`, the `data` is disable.
+
+if `mode` is `"POST"` or `"PATCH"`, the `data` is necessary.
+---
+
+# To do list
+---
+

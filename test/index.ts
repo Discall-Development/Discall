@@ -18,7 +18,7 @@ import {
     updateApplicationCommand
 } from "../src";
 
-console.log("BotTest");
+Bun.write(Bun.stdout, "BotTest\n");
 async function BotTest(): Promise<void> {
     let send = createBot(process.env.discall as string, {
         intents: allIntents(),
