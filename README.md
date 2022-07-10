@@ -60,7 +60,7 @@ Please see our docs directory, [here](/docs)
 
 ## Interactions
 ---
-- [ ] ApplicationCommand
+- [x] ApplicationCommand
 - [ ] MessageComponents
 - [ ] InteractionResponse
 ## Resources

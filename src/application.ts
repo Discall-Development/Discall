@@ -142,53 +142,40 @@ function createMessageCommand(guild_id?: SnowflakeData) {
 export function getApplicationCommands(guild_id?: SnowflakeData) {
     if (guild_id) {
         return async function(application_id: SnowflakeData) {
-            return {
-                uri: (base: URL) => {
-                    base.pathname += `/applications/${application_id}/guilds/${guild_id}/commands`;
-                    base.searchParams.set("with_localizations", "true");
-                    return {
-                        uri: base.toString(),
-                        mode: "GET"
-                    };
-                },
-                cache: (data: ApplicationCommandData[]) => {
-                    for (const datum of data) {
-                        switch (datum.type) {
-                        case ApplicationCommandType.CHAT_INPUT:
-                            cacheSet(commandCache, ["guild_slash", datum.id], datum);
-                        case ApplicationCommandType.USER:
-                            cacheSet(commandCache, ["guild_user", datum.id], datum);
-                        case ApplicationCommandType.MESSAGE:
-                            cacheSet(commandCache, ["guild_message", datum.id], datum);
-                        }
-                    }
-                }
+            let uri = (_: URL) => {
+                return {
+                    uri: "",
+                    mode: "NONE"
+                };
             };
+
+            let result = [];
+            for (const [k, v] of commandCache.entries()) {
+                if (!k.startsWith("guild_")) continue;
+                for (const [_, v1] of v.entries())
+                    if (v1.guild_id === guild_id)
+                        result.push(v1);
+            }
+
+            return { uri, cache: () => result };
         };
     }
     return async function(application_id: SnowflakeData) {
-        return {
-            uri: (base: URL) => {
-                base.pathname += `/applications/${application_id}/commands`;
-                base.searchParams.set("with_localizations", "true");
-                return {
-                    uri: base.toString(),
-                    mode: "GET"
-                };
-            },
-            cache: (data: ApplicationCommandData[]) => {
-                for (const datum of data) {
-                    switch (datum.type) {
-                    case ApplicationCommandType.CHAT_INPUT:
-                        cacheSet(commandCache, ["slash", datum.id], datum);
-                    case ApplicationCommandType.USER:
-                        cacheSet(commandCache, ["user", datum.id], datum);
-                    case ApplicationCommandType.MESSAGE:
-                        cacheSet(commandCache, ["message", datum.id], datum);
-                    }
-                }
-            }
+        let uri = (_: URL) => {
+            return {
+                uri: "",
+                mode: "NONE"
+            };
         };
+
+        let result = [];
+        for (const [k, v] of commandCache.entries()) {
+            if (k.startsWith("guild_")) continue;
+            
+            result.concat(v.values());
+        }
+
+        return { uri, cache: () => result };
     };
 }
 
