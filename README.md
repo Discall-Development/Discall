@@ -1,4 +1,5 @@
 # Discall
+![](img/discall_background.png)
 A async functional discord API wrapper written in [bun](https://github.com/Jarred-Sumner/bun).
 
 It let you process everything with function. (ex. message, reaction, voice, etc.)

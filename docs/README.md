@@ -1,9 +1,10 @@
 # Docs
 - [Docs](#docs)
-  - [## INSTALLATION](#-installation)
-  - [## COMMAND](#-command)
+  - [Installation](#installation)
+  - [Command](#command)
 
-## INSTALLATION
+Installation
+---
 ---
 download package with npm or bun.
 ```ts
@@ -14,8 +15,10 @@ npm i @discall/discall
 bun add @discall/discall
 ```
 
-## COMMAND
+Command
+---
 ---
 register command with `onCommand` and get the channel.
 ```ts
 onCommand();
+```
