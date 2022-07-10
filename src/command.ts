@@ -27,7 +27,12 @@ function getNextData(name: string) {
     });
 }
 
-export function createCommand(name: string, run: (...args: any[]) => Promise<any>, option: DCommandOption, permissions: number): DCommand {
+export function createCommand({ name, run, option, permissions }: {
+    name: string;
+    run: (...args: any[]) => Promise<any>;
+    option: DCommandOption;
+    permissions: number;
+}): DCommand {
     channelQueues[name] = [];
     channelDatas[name] = {};
 
@@ -58,7 +63,7 @@ export function createCommand(name: string, run: (...args: any[]) => Promise<any
 }
 
 type Seconed = number;
-export function setupHandler(prefix: string, timeout: Seconed = 0) {
+export async function setupHandler(prefix: string, timeout: Seconed = 0, send: (...items: any) => any) {
     channelTimeout = timeout;
     packEvent("message_create")(async (data: MessageCreateEventData) => {
         let params = data.content.trim().split(/ +/g);
@@ -68,18 +73,18 @@ export function setupHandler(prefix: string, timeout: Seconed = 0) {
             if (!commands[name]) return;   
             
             let permission = commands[name].permissions;
-            if (checkPermission(permission, data)) {}
+            if (await checkPermission(permission, data, send)) {}
         }
     });
 }
 
-function checkPermission(permission: number, data: MessageCreateEventData, send: (...params: any[]) => any): boolean {
+async function checkPermission(permission: number, data: MessageCreateEventData, send: (...params: any[]) => any): boolean {
     if (permission & DCommandPermissionFlags.BOT_OWNER)
         if (data.author.id === data.author.id)
             return true;
 
     if (permission & DCommandPermissionFlags.OWNER)
-        if (data.author.id === data.guild_id)
+        if (data.author.id === await send(await getGuild(data.guild_id)))
             return true;
 
     return false;

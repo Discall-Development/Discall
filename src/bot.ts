@@ -22,10 +22,11 @@ export function createBot(
     else
         obj = createWS(token, data.intents);
 
-    setupHandler(data.prefix, options && options.commandTimeout);
+    let send = createClient(token);
+    setupHandler(data.prefix, options && options.commandTimeout, send);
 
     Global = obj.gateway_commands;
-    return createClient(token);
+    return send;
 }
 
 export function onReady(cb: (...item: any) => Promise<any>) {
