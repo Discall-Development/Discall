@@ -1155,7 +1155,7 @@ export interface ActionRowData {
     components: OtherComponentData[];
 }
 
-export type OtherComponentData = ButtonData | SnowflakeData | TextInputData;
+export type OtherComponentData = ButtonData | SelectMenuData | TextInputData;
 
 export interface ButtonData {
     type: ComponentType.Button;
@@ -1169,6 +1169,7 @@ export interface ButtonData {
     custom_id: string;
     url?: string;
     disabled?: boolean;
+    row: number;
 }
 
 export interface SelectMenuData {
@@ -1179,6 +1180,7 @@ export interface SelectMenuData {
     min_values?: number;
     max_values?: number;
     disabled?: boolean;
+    row: number;
 }
 
 export interface TextInputData {
@@ -1452,4 +1454,13 @@ export interface InviteMetadata {
     max_age: number;
     temporary: boolean;
     created_at: Timestamp;
+}
+
+export interface ModalData {
+    title: string;
+    custom_id: string;
+    components: [{
+        type: ComponentType.ActionRow;
+        components: TextInputData[];
+    }];
 }

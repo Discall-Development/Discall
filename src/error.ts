@@ -33,3 +33,9 @@ export class waitDataError extends Error {
         super(`Get data timeout from ${name} channel.`);
     }
 }
+
+export class MultiDefault extends Error {
+    constructor() {
+        super("Set default option exceed once.");
+    }
+}

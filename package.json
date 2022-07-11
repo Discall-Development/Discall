@@ -10,11 +10,9 @@
     "license": "ISC",
     "dependencies": {
         "bun-types": "0.0.83",
-        "erlpack": "^0.1.4",
         "etf.js": "^1.0.1",
         "json-bigint": "^1.0.0",
         "libsodium-wrappers": "^0.7.10",
-        "ramda": "^0.28.0",
         "ws": "^8.8.0"
     },
     "devDependencies": {
