@@ -10,7 +10,7 @@ import {
     SnowflakeData,
     VideoQualityModes
 } from "./dataType";
-import {EditWithEmptyData} from "./errors";
+import {EditWithEmptyData} from "./error";
 import {packEvent} from "./event";
 import {isEmpty} from "./util";
 import * as fs from "node:fs/promises";

@@ -11,7 +11,7 @@ import {
 } from "./dataType";
 import { callEvent, packEvent } from "./event";
 import { createVoiceWS } from "./voice";
-import { VersionError } from "./errors";
+import { VersionError } from "./error";
 import { isBrowser, isBun, isDeno } from "./util";
 
 let Global: {
@@ -42,7 +42,7 @@ export function createWS(
     else
         ws = new (require("ws"))(`wss://gateway.discord.gg?v=${version}&encoding=json`);
 
-    ws.onopen = (data: Event) => onOpen(ws, data, token, intents, version, resume);
+    ws.onopen = (_: Event) => onOpen(ws, token, intents, version, resume);
     ws.onclose = (data: any) => onClose(ws, data, token, intents, version);
     ws.onerror = (data: Event) => onError(ws, data);
     ws.onmessage = (data: any) => onMessage(ws, data);
@@ -75,7 +75,6 @@ export function createWS(
 
 async function onOpen(
     ws: WebSocket,
-    event: Event,
     token: string,
     intents: number,
     version: Version,
@@ -90,7 +89,7 @@ async function onOpen(
 
 async function onClose(
     ws: WebSocket,
-    event: WebSocket.CloseEvent,
+    event: CloseEvent,
     token: string,
     intents: number,
     version: Version
@@ -114,7 +113,7 @@ async function onError(
 
 async function onMessage(
     ws: WebSocket,
-    event: WebSocket.MessageEvent
+    event: MessageEvent
 ): Promise<void> {
     let data: DiscordData = decode(Buffer.from(event.data));
     if (data.s) Global.sequence = data.s;

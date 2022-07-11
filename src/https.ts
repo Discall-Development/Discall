@@ -1,7 +1,7 @@
 import {ApplicationCommandData} from "./dataType";
 import * as fs from "node:fs/promises";
 import * as JSON from "json-bigint";
-import {InvalidHttpRequest} from "./errors";
+import {InvalidHttpRequest} from "./error";
 
 let Global: {
     slashCommand: Record<string, ApplicationCommandData>;

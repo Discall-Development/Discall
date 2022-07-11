@@ -21,6 +21,6 @@ export function deleteUID(uid: string): boolean {
     let index = uids[name].indexOf(BigInt(uid.split("-")[0]));
     if (index === -1)
         return false;
-;
+
     return uids[name].splice(index, 1) && true;
 }

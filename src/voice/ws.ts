@@ -1,6 +1,6 @@
 import {DiscordData, SnowflakeData, VoiceOpcode} from "../dataType";
 import {debug} from "../logger";
-import {NoneValidEncryptionMode} from "../errors";
+import {NoneValidEncryptionMode} from "../error";
 import {createUDP} from "./UDP";
 import * as JSON from "json-bigint";
 

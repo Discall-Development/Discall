@@ -1,5 +1,5 @@
 import { DCommand, DCommandChannel, DCommandOption, DCommandPermissionFlags, MessageCreateEventData, PermissionFlags } from "./dataType";
-import { waitDataError } from "./errors";
+import { waitDataError } from "./error";
 import { packEvent } from "./event";
 import { createUID, getUIDs } from "./util";
 

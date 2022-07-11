@@ -1231,19 +1231,19 @@ export interface InteractionData {
     id: SnowflakeData;
     application_id: SnowflakeData;
     type: InteractionType;
-    data?: InteractionDataData;
+    data?: IApplicationCommandData | IMessageComponentData | IModalSubmitData;
     guild_id?: SnowflakeData;
     channel_id?: SnowflakeData;
     member?: GuildMemberData;
     user?: UserData;
     token: string;
     version: 1;
-    message?: MessageData;
+    message: MessageData | MessageInteractionData;
     locale?: LocaleOption;
     guild_locale?: LocaleOption;
 }
 
-export interface InteractionDataData {
+export interface IApplicationCommandData {
     id: SnowflakeData;
     name: string;
     type: InteractionType;
@@ -1251,6 +1251,17 @@ export interface InteractionDataData {
     options?: ApplicationCommandInteractionDataOptionData[];
     guild_id?: SnowflakeData;
     target_id?: SnowflakeData;
+}
+
+export interface IMessageComponentData {
+    custom_id: string;
+    component_type: ComponentType;
+    values?: SelectOption[];
+}
+
+export interface IModalSubmitData {
+    custom_id: string;
+    components: MessageComponentData[];
 }
 
 export interface ResolveDataData {

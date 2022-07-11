@@ -87,7 +87,8 @@ function packEmoji(emoji: EmojiData): string {
 function toEmojiPair(emoji: EmojiData): EmojiData {
     return {
         id: emoji.id,
-        name: emoji.name
+        name: emoji.name,
+        animated: emoji.animated
     };
 }
 

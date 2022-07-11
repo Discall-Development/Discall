@@ -15,7 +15,7 @@ import {
     SnowflakeData,
     StickerData
 } from "./dataType";
-import {EmptyMessageError} from "./errors";
+import {EmptyMessageError} from "./error";
 import {isEmpty, cacheDelete, cacheGet, cacheHas, cacheSet} from "./util";
 
 let messageCache: Map<SnowflakeData, Map<SnowflakeData, MessageData>> = new Map();
@@ -82,7 +82,7 @@ export async function fetchMessage(channel_id: SnowflakeData, message_id: Snowfl
 export async function getMessage(channel_id: SnowflakeData, message_id: SnowflakeData) {
     if (cacheHas(messageCache, [channel_id, message_id]))
         return {
-            uri: (base: URL) => {
+            uri: (_: URL) => {
                 return {
                     uri: "",
                     mode: "NONE"
@@ -193,9 +193,9 @@ export async function crosspostMessage(channel_id: SnowflakeData, message_id: Sn
 
 export function editMessage(channel_id: SnowflakeData, message_id: SnowflakeData) {
     return async function(message: {
-        content: string;
-        embeds: EmbedData[];
-        attachments: AttachmentData[];
+        content?: string;
+        embeds?: EmbedData[];
+        attachments?: AttachmentData[];
     }, option?: {
         components: MessageComponentData[];
         allow_mentions?: AllowMentionsData;

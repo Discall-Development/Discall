@@ -275,3 +275,11 @@ export async function connectChannel(
 export async function disconnectChannel(guild_id: SnowflakeData) {
     await Global.setVoiceState(guild_id, null, false, false);
 }
+
+export function onCommand(name: string, run: (...params: any[]) => any) {
+    return async function(options: {
+        param_split?: string;
+    }) {
+
+    };
+}

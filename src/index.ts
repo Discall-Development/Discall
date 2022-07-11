@@ -1,6 +1,6 @@
 export * from "./bot";
-export * from "./intents";
-export * from "./errors";
+export * from "./intent";
+export * from "./error";
 export * from "./util";
 export * from "./dataType";
 export * from "./application";
@@ -9,3 +9,4 @@ export * from "./message";
 export * from "./reaction";
 export * from "./command";
 export * from "./permission";
+export * from "./component"
