@@ -84,3 +84,8 @@ Please see our docs directory, [here](/docs)
 ---
 - [x] Gateway
 - [x] Voice Connections
+## Method
+---
+- [ ] Command
+- [x] CommandChannel
+- [ ] InteractionResponse

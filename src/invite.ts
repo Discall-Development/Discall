@@ -14,7 +14,7 @@ export function GetInvites(position: "channel" | "guild") {
 async function getChhannelInvites(channel_id: SnowflakeData) {
     if (cacheHas(invitesCache, ["channel", channel_id]))
         return {
-            uri: (base: URL) => {
+            uri: (_: URL) => {
                 return {
                     uri: "",
                     mode: "NONE"
@@ -24,6 +24,9 @@ async function getChhannelInvites(channel_id: SnowflakeData) {
                 return cacheGet(invitesCache, ["channel", channel_id]);
             }
         };
+
+    return await fetchChhannelInvites(channel_id);
+}
 
 async function fetchChhannelInvites(channel_id: SnowflakeData) {
     return {
@@ -75,4 +78,16 @@ async function createChannelInvite(channel_id: SnowflakeData, data: {
         data,
         reason
     };
+}
+
+async function createGuildInvite(channel_id: SnowflakeData, data: {
+    max_age?: number;
+    max_uses?: number;
+    temporary?: boolean;
+    unique?: boolean;
+    target_type?: InviteTargetType;
+    target_user_id?: SnowflakeData;
+    target_applicant_id?: SnowflakeData;
+}) {
+    return {};
 }

@@ -13,7 +13,7 @@ let Global = {
 
 export function createBot(
     token: string,
-    data: { intents: number; prefix: string },
+    data: { intents: number, prefix?: string },
     options?: WSOptions
 ) {
     let obj: any;

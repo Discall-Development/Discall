@@ -1407,7 +1407,7 @@ export interface DCommand {
 export interface DCommandOption {
     description?: string;
     aliases?: string[];
-    param_format?: RegExp;
+    param_split?: RegExp | string;
 }
 
 export enum DCommandPermissionFlags {
@@ -1422,8 +1422,8 @@ export enum DCommandPermissionFlags {
 }
 
 export interface DCommandChannel {
-    send: (message: string) => Promise<any>;
-    getCommandData: (name: string) => Promise<any>;
+    send: (name: string, ...args: any[]) => Promise<any>;
+    getCommandData: (name: string, check: (data: MessageCreateEventData) => any) => Promise<any>;
 }
 
 export interface InviteData {
