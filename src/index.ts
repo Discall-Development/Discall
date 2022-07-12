@@ -9,4 +9,4 @@ export * from "./message";
 export * from "./reaction";
 export * from "./command";
 export * from "./permission";
-export * from "./component"
+export * from "./component";
