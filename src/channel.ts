@@ -197,5 +197,5 @@ export function followNewsChannel(channel_id: SnowflakeData) {
             },
             data
         };
-    }
+    };
 }
