@@ -113,7 +113,7 @@ export function createOptions(options: {
             id: v.emoji.id,
             name: v.emoji.name,
             animated: v.emoji.animated
-        }
+        };
     });
 
     return options;

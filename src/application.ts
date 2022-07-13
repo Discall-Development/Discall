@@ -459,7 +459,7 @@ export function BulkOverwriteGuildApplicationCommands(guild_id: SnowflakeData, a
                 return {
                     uri: base.toString(),
                     mode: "PUT"
-                }
+                };
             },
             data: objs.map(v => v.data),
             cache: (data: ApplicationCommandData[]) => {

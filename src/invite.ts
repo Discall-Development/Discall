@@ -4,10 +4,10 @@ import { cacheGet, cacheHas, cacheSet } from "./util";
 let invitesCache: Map<string, Map<SnowflakeData, (InviteData & InviteMetadata)[]>> = new Map();
 export function GetInvites(position: "channel" | "guild") {
     switch (position) {
-        case "channel":
-            return getChhannelInvites;
-        case "guild":
-            return getGuildInivtes;
+    case "channel":
+        return getChhannelInvites;
+    case "guild":
+        return getGuildInivtes;
     }
 }
 
@@ -47,10 +47,10 @@ async function getGuildInivtes(guild_id: SnowflakeData) {
 
 export function createInvite(position: "channel" | "guild") {
     switch (position) {
-        case "channel":
-            return createChannelInvite;
-        case "guild":
-            return createGuildInvite;
+    case "channel":
+        return createChannelInvite;
+    case "guild":
+        return createGuildInvite;
     }
 }
 
