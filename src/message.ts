@@ -246,3 +246,16 @@ export function deleteBulkMessage(channel_id: SnowflakeData) {
         };
     };
 }
+
+export async function triggerTypingIndicator(channel_id: SnowflakeData) {
+    return {
+        uri: (base: URL) => {
+            base.pathname += `/channels/${channel_id}/typing`;
+            return {
+                uri: base.toString(),
+                mode: "POST"
+            };
+        },
+        data: {}
+    };
+}

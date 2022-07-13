@@ -84,8 +84,9 @@ Please see our docs directory, [here](/docs)
 ---
 - [x] Gateway
 - [x] Voice Connections
-## Method
+## Extra
 ---
 - [ ] Command
+- [ ] CommandPermission
 - [x] CommandChannel
 - [ ] InteractionResponse

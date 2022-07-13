@@ -196,10 +196,13 @@ export function fetchApplicationCommands(guild_id?: SnowflakeData) {
                         switch (datum.type) {
                         case ApplicationCommandType.CHAT_INPUT:
                             cacheSet(commandCache, ["guild_slash", datum.id], datum);
+                            break;
                         case ApplicationCommandType.USER:
                             cacheSet(commandCache, ["guild_user", datum.id], datum);
+                            break;
                         case ApplicationCommandType.MESSAGE:
                             cacheSet(commandCache, ["guild_message", datum.id], datum);
+                            break;
                         }
                     }
                 }
@@ -221,10 +224,13 @@ export function fetchApplicationCommands(guild_id?: SnowflakeData) {
                     switch (datum.type) {
                     case ApplicationCommandType.CHAT_INPUT:
                         cacheSet(commandCache, ["slash", datum.id], datum);
+                        break;
                     case ApplicationCommandType.USER:
                         cacheSet(commandCache, ["user", datum.id], datum);
+                        break;
                     case ApplicationCommandType.MESSAGE:
                         cacheSet(commandCache, ["message", datum.id], datum);
+                        break;
                     }
                 }
             }
@@ -292,10 +298,13 @@ export function fetchApplicationCommand(guild_id?: SnowflakeData) {
                     switch (data.type) {
                     case ApplicationCommandType.CHAT_INPUT:
                         cacheSet(commandCache, ["guild_slash", command_id], data);
+                        break;
                     case ApplicationCommandType.USER:
                         cacheSet(commandCache, ["guild_user", command_id], data);
+                        break;
                     case ApplicationCommandType.MESSAGE:
                         cacheSet(commandCache, ["guild_message", command_id], data);
+                        break;
                     }
                 }
             };
@@ -315,10 +324,13 @@ export function fetchApplicationCommand(guild_id?: SnowflakeData) {
                 switch (data.type) {
                 case ApplicationCommandType.CHAT_INPUT:
                     cacheSet(commandCache, ["slash", command_id], data);
+                    break;
                 case ApplicationCommandType.USER:
                     cacheSet(commandCache, ["user", command_id], data);
+                    break;
                 case ApplicationCommandType.MESSAGE:
                     cacheSet(commandCache, ["message", command_id], data);
+                    break;
                 }
             }
         };
@@ -393,10 +405,13 @@ export function updateApplicationCommand(guild_id?: SnowflakeData) {
                         switch (data.type) {
                         case ApplicationCommandType.CHAT_INPUT:
                             cacheSet(commandCache, ["slash", command_id], data);
+                            break;
                         case ApplicationCommandType.USER:
                             cacheSet(commandCache, ["user", command_id], data);
+                            break;
                         case ApplicationCommandType.MESSAGE:
                             cacheSet(commandCache, ["message", command_id], data);
+                            break;
                         }
                     }
                 };
@@ -418,10 +433,13 @@ export function updateApplicationCommand(guild_id?: SnowflakeData) {
                     switch (data.type) {
                     case ApplicationCommandType.CHAT_INPUT:
                         cacheSet(commandCache, ["slash", command_id], data);
+                        break;
                     case ApplicationCommandType.USER:
                         cacheSet(commandCache, ["user", command_id], data);
+                        break;
                     case ApplicationCommandType.MESSAGE:
                         cacheSet(commandCache, ["message", command_id], data);
+                        break;
                     }
                 }
             };
@@ -450,19 +468,25 @@ export function BulkOverwriteGuildApplicationCommands(guild_id: SnowflakeData, a
                         switch (datum.type) {
                         case ApplicationCommandType.CHAT_INPUT:
                             cacheSet(commandCache, ["guild_slash", datum.id], datum);
+                            break;
                         case ApplicationCommandType.USER:
                             cacheSet(commandCache, ["guild_user", datum.id], datum);
+                            break;
                         case ApplicationCommandType.MESSAGE:
                             cacheSet(commandCache, ["guild_message", datum.id], datum);
+                            break;
                         }
                     else
                         switch (datum.type) {
                         case ApplicationCommandType.CHAT_INPUT:
                             cacheSet(commandCache, ["slash", datum.id], datum);
+                            break;
                         case ApplicationCommandType.USER:
                             cacheSet(commandCache, ["user", datum.id], datum);
+                            break;
                         case ApplicationCommandType.MESSAGE:
                             cacheSet(commandCache, ["message", datum.id], datum);
+                            break;
                         }
                 }
             }

@@ -170,7 +170,7 @@ function editGuildThread(channel_id: SnowflakeData) {
     };
 }
 
-async function deleteChannel(channel_id: SnowflakeData) {
+export async function deleteChannel(channel_id: SnowflakeData) {
     return {
         uri: (base: URL) => {
             base.pathname += `/channels/${channel_id}`;
@@ -181,4 +181,21 @@ async function deleteChannel(channel_id: SnowflakeData) {
         },
         cache: (data: ChannelData) => channelCache.delete(data.id)
     };
+}
+
+export function followNewsChannel(channel_id: SnowflakeData) {
+    return async function (data: {
+        webhook_channel_id: SnowflakeData;
+    }) {
+        return {
+            uri: (base: URL) => {
+                base.pathname += `/channels/${channel_id}/followers`;
+                return {
+                    uri: base.toString(),
+                    mode: "POST"
+                };
+            },
+            data
+        };
+    }
 }
