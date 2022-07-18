@@ -221,7 +221,7 @@ export function onMessageReactionRemove(cb: (data: MessageReactionRemoveEventDat
     packEvent("message_reaction_remove")(cb);
 }
 
-export function onMessageReactionRemoveAll(cb: (data: All) => Promise<any>) {
+export function onMessageReactionRemoveAll(cb: (data: MessageReactionRemoveAllEventData) => Promise<any>) {
     packEvent("message_reaction_remove_all")(cb);
 }
 

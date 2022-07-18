@@ -46,13 +46,19 @@ It is for send Https Request, and it accept our format.
 }
 ```
 
-`reason` is always optional.
+| mode | uri | data | reason | cache |
+| :---: | :---: | :---: | :---: | :---: |
+| GET | ✓ | x | - | - |
+| DELETE | ✓ | x | - | - |
+| POST | ✓ | ✓ | - | - |
+| PUT | ✓ | ✓ | x | - |
+| NONE | x | x | x | ✓ |
 
-if `mode` is `"NONE"`, cache is necessary, and the param is unabled.
-
-if `mode` is `"NONE"`, `"GET"` or `"DELETE"`, the `data` is disable.
-
-if `mode` is `"POST"` or `"PATCH"`, the `data` is necessary.
+| check | meaning |
+| :---: | :---: |
+| x | unable |
+| - | according method |
+| ✓ | necessary |
 
 ## Other Docs
 ---

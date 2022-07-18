@@ -2,6 +2,7 @@ import {packEvent} from "./event";
 import {
     AllowMentionsData,
     AttachmentData,
+    ChannelPinsUpdateEventData,
     EmbedAuthorData,
     EmbedData,
     EmbedFieldData,
@@ -257,5 +258,48 @@ export async function triggerTypingIndicator(channel_id: SnowflakeData) {
             };
         },
         data: {}
+    };
+}
+
+export async function fetchPinnedMessages(channel_id: SnowflakeData) {
+    return {
+        uri: (base: URL) => {
+            base.pathname += `/channels/${channel_id}/pins`;
+            return {
+                uri: base.toString(),
+                mode: "GET"
+            };
+        }
+    };
+}
+
+export function pinMessage(channel_id: SnowflakeData, message_id: SnowflakeData) {
+    return async function(reason?: string) {
+        return {
+            uri: (base: URL) => {
+                base.pathname += `/channels/${channel_id}/pins/${message_id}`;
+                return {
+                    uri: base.toString(),
+                    mode: "PUT"
+                };
+            },
+            data: {},
+            reason
+        };
+    };
+}
+
+export function unpinMessage(channel_id: SnowflakeData, message_id: SnowflakeData) {
+    return async function(reason?: string) {
+        return {
+            uri: (base: URL) => {
+                base.pathname += `/channels/${channel_id}/pins/${message_id}`;
+                return {
+                    uri: base.toString(),
+                    mode: "DELETE"
+                };
+            },
+            reason
+        };
     };
 }
