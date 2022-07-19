@@ -48,17 +48,16 @@ It is for send Https Request, and it accept our format.
 
 | mode | uri | data | reason | cache |
 | :---: | :---: | :---: | :---: | :---: |
-| GET | ✓ | x | - | - |
-| DELETE | ✓ | x | - | - |
-| POST | ✓ | ✓ | - | - |
-| PUT | ✓ | ✓ | x | - |
+| GET \| DELETE | ✓ | x | - | ? |
+| POST \| PUT | ✓ | ✓ | - | ? |
 | NONE | x | x | x | ✓ |
 
 | check | meaning |
 | :---: | :---: |
 | x | unable |
-| - | according method |
 | ✓ | necessary |
+| ? | optional | 
+| - | according method |
 
 ## Other Docs
 ---
