@@ -2,7 +2,6 @@ import {packEvent} from "./event";
 import {
     AllowMentionsData,
     AttachmentData,
-    ChannelPinsUpdateEventData,
     EmbedAuthorData,
     EmbedData,
     EmbedFieldData,
@@ -45,7 +44,7 @@ export function createMessage(channel_id: SnowflakeData) {
         attachments?: Partial<AttachmentData>[];
     }, option?: {
         tts?: boolean;
-        allow_mentions: AllowMentionsData;
+        allow_mentions?: AllowMentionsData;
         message_reference?: MessageReferenceData;
         components?: MessageComponentData[];
         flags?: MessageFlag;

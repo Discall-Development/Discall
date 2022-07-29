@@ -50,7 +50,7 @@ export async function fetchChannel(channel_id: SnowflakeData) {
 export async function getChannel(channel_id: SnowflakeData) {
     if (channelCache.has(channel_id))
         return {
-            uri: (base: URL) => {
+            uri: (_: URL) => {
                 return {
                     uri: "",
                     mode: "NONE"
@@ -198,4 +198,8 @@ export function followNewsChannel(channel_id: SnowflakeData) {
             data
         };
     };
+}
+
+export function channelSender(channel_id: SnowflakeData) {
+    return async function() {}
 }

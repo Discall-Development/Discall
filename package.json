@@ -9,10 +9,10 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "bun-types": "0.0.83",
+        "@discall/simple-pipe": "^1.2.1",
         "etf.js": "^1.0.1",
-        "json-bigint": "^1.0.0",
         "libsodium-wrappers": "^0.7.10",
+        "node-fetch": "^3.2.9",
         "ws": "^8.8.0"
     },
     "devDependencies": {
@@ -20,6 +20,7 @@
         "@types/node": "^18.0.3",
         "@typescript-eslint/eslint-plugin": "^5.30.6",
         "@typescript-eslint/parser": "^5.30.6",
+        "bun-types": "0.0.83",
         "typescript": "^4.7.4"
     },
     "directories": {

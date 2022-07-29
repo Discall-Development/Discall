@@ -47,7 +47,7 @@ async function sendRequest({ uri, mode }: { uri: string, mode: string }, token: 
     } = {
         "Authorization": `Bot ${token}`,
         "Content-Type": "application/json",
-        "User-Agent": "DiscordBot (https://www.github.com/rexwu1104/Discall, 0.1.0)"
+        "User-Agent": "DiscordBot (https://www.github.com/Discall-Development/Discall, 0.1.0)"
     };
 
     if (reason)
