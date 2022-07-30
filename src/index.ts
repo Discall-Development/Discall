@@ -1,12 +1,1 @@
-export * from "./bot";
-export * from "./intent";
-export * from "./error";
-export * from "./util";
-export * from "./dataType";
-export * from "./application";
-export * from "./channel";
-export * from "./message";
-export * from "./reaction";
-export * from "./command";
-export * from "./permission";
-export * from "./component";
+export {};

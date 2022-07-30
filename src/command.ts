@@ -1,95 +1,97 @@
-import { DCommand, DCommandChannel, DCommandOption, DCommandPermissionFlags, MessageCreateEventData, PermissionFlags } from "./dataType";
-import { waitDataError } from "./error";
-import { packEvent } from "./event";
-import { createUID, getUIDs } from "./util";
+import { Command, CommandPermissionsFlag, DiscordData, MessageCreateEventData, Opcode, PermissionFlags, SnowflakeData } from "./typo";
+import get from "./utils/get";
+import _ws from "./ws";
 
-let commands: Record<string, DCommand> = {};
-let channels: Record<string, DCommandChannel> = {};
-let dataQueue: Record<string, any[]> = {};
-let callbackQueue: Record<string, ((data: any[]) => any)[]> = {};
+let commands: Record<string, Command<any>> = {};
 
-let channelTimeout = 0;
+let registered = false;
+export default function commander(ws: ReturnType<typeof _ws>, prefix: string): ReturnType<typeof _ws> {
+    if (registered)
+        return ws;
 
-export function createCommand({ name, run, option, permissions }: {
-    name: string;
-    run: (...args: any[]) => Promise<any>;
-    option: DCommandOption;
-    permissions: number;
-}): DCommand {
-    dataQueue[name] = [];
-    callbackQueue[name] = [];
-    let channel: DCommandChannel = {
-        async send(name: string, data: MessageCreateEventData, ...args: any[]) {
-            if (callbackQueue[name])
-                callbackQueue[name].forEach(v => {
-                    v([data, args]);
-                });
-        },
-        getCommandData(name: string, check: (data: MessageCreateEventData) => boolean) {
-            return new Promise((resolve, _) => {
-                let result;
-                for (const idx in dataQueue[name]) {
-                    if (check(dataQueue[name][idx][0])) {
-                        result = dataQueue[name][idx][1];
-                        delete dataQueue[name][idx];
-                        return resolve(result);
-                    }
-                }
+    let wsMessage = ws.onmessage;
+    ws.onmessage = async (event) => {
+        let data = await wsMessage(event) as DiscordData;
+        if (data.op !== Opcode.Dispatch, data.t === "MESSAGE_CREATE")
+            return;
+            
+        let message: MessageCreateEventData = data.d as MessageCreateEventData;
+        let content = message.content.trim();
+        if (content.split(/ +/g)[0].startsWith(prefix)) {
+            let [name, ...args] = content.split(/ +/g);
+            name = name.replace(prefix, "");
 
-                callbackQueue[name].push((_data: any[]) => {
-                    if (check(_data[0])) {
-                        result = _data[1];
-                        resolve(result);
-                    }
-                });
-
-                setTimeout(() => {
-                    if (!result)
-                        resolve(null);
-                }, channelTimeout * 1000);
-            });
+            await commands[name].run(message, ...args);
         }
-    };
 
-    channels[name] = channel;
-    let command: DCommand = {
-        name,
-        run,
-        option,
-        permissions,
-    };
+        return data;
+    }
 
-    commands[name] = command;
-    return command;
+    registered = true;
+    return ws;
 }
 
-type Seconed = number;
-export async function setupHandler(prefix: string = null, timeout: Seconed = 0, send: (...items: any) => any) {
-    channelTimeout = timeout;
-    if (prefix !== null)
-        packEvent("message_create")(async (data: MessageCreateEventData) => {
-            let nameWithPrefix = data.content.trim().split(/ +/g)[0];
+export function addCommand<T extends (v: any) => any>(command: {
+    name: string;
+    run: (context: MessageCreateEventData, ...args: ReturnType<T>[]) => Promise<void>;
+    description?: string;
+    help?: string;
+}, options: {
+    converters?: T[];
+    permissions?: CommandPermissionsFlag;
+    aliases?: string[];
+    permission_data?: {
+        roles?: SnowflakeData[];
+        member?: SnowflakeData;
+        user?: SnowflakeData;
+    }
+} = {}): Command<T> {
+    let run = command.run;
+    async function _run(data: MessageCreateEventData, ...args: ReturnType<T>[]) {
+        if (check(data, options.permissions, options.permission_data)) {
+            if (options.converters)
+                return await run(data, ...options.converters.map((v, idx) => v(args[idx])));
+            return await run(data, ...args);
+        }
+    }
 
-            if (nameWithPrefix.startsWith(prefix)) {
-                let name = nameWithPrefix.slice(prefix.length);
-                if (!commands[name]) return;   
-                
-                let permission = commands[name].permissions;
-                if (await checkPermission(permission, data, send)) {
+    commands[command.name] = { ...command, run: _run, ...options };
+    if (options.aliases)
+        options.aliases.forEach(v => commands[v] = commands[command.name]);
 
-                }
-            }
-        });
+    return commands[command.name];
 }
 
-async function checkPermission(permission: number, data: MessageCreateEventData, send: (...params: any[]) => any): boolean {
-    if (permission & DCommandPermissionFlags.BOT_OWNER)
-        if (data.author.id === data.author.id)
-            return true;
+function check(data: MessageCreateEventData, permissions: CommandPermissionsFlag, { roles, member, user }: {
+    roles?: SnowflakeData[];
+    member?: SnowflakeData;
+    user?: SnowflakeData;
+} = {}): boolean {
+    let can = permissions ? false : true;
+    if (!can && permissions & CommandPermissionsFlag.OWNER && data.guild_id)
+        can = data.author.id === get("guild", data.guild_id).id;
 
-    if (permission & DCommandPermissionFlags.OWNER)
-        if (data.author.id === await send(await getGuild(data.guild_id)))
-            return true;
+    if (!can && permissions & CommandPermissionsFlag.ADMINISTRATOR && data.member)
+        can = checkPermission(Number(data.member.permission), PermissionFlags.ADMINISTRATOR);
 
-    return false;
+    if (!can && permissions & CommandPermissionsFlag.BOT)
+        can = Boolean(data.author.bot);
+
+    if (!can && roles && permissions & CommandPermissionsFlag.ROLE && data.member)
+        can = data.member.roles.every(v => roles.findIndex(_v => _v === v) !== -1);
+
+    if (!can && member && permissions & CommandPermissionsFlag.MEMBER && data.member)
+        can = data.member.user?.id === member;
+
+    if (!can && permissions & CommandPermissionsFlag.GROUP)
+        can = !data.guild_id && !data.member;
+        
+    if (!can && user && permissions & CommandPermissionsFlag.USER)
+        can = data.author.id === user && !data.member;
+
+    return can;
+}
+
+function checkPermission(permission: PermissionFlags, check: PermissionFlags): boolean {
+    return permission & check ? true : false;
 }

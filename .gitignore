@@ -14,5 +14,6 @@ bun.*
 .*
 
 !.github/
-!.eslintrc.json
 !.gitignore
+
+*.json

@@ -1,179 +1,95 @@
+import pipe from "@discall/simple-pipe";
 import { pack, unpack } from "etf.js";
-import { error, message } from "./logger";
-import {
-    ActivityData,
-    DiscordData,
-    Opcode,
-    ReadyEventData,
-    SnowflakeData,
-    VoiceServerUpdateEventData,
-    WSObject,
-} from "./dataType";
-import { callEvent, packEvent } from "./event";
-import { createVoiceWS } from "./voice";
-import { VersionError } from "./error";
-import { isBrowser, isBun, isDeno } from "./util";
+import { WebSocket } from "./runtimeModule";
+import { DiscordData, Opcode } from "./typo";
 
-let Global: {
-    heartbeatID?: any;
-    session_id: string | null;
-    sequence: number | null;
-    user_id: SnowflakeData | null;
-} = {
-    session_id: null,
-    sequence: null,
-    user_id: null,
-};
+const GATEWAY_VERSION = 10;
+const GATEWAY_ENCODING = "etf";
+const GATEWAY_BASE = "wss://gateway.discord.gg";
 
-type Version = 9 | 10;
-export function createWS(
-    token: string,
-    intents: number,
-    version: Version = 10,
-    resume: boolean = false
-): WSObject {
-    // @ts-ignore
-    if (version !== 9 && version !== 10)
-        throw new VersionError(version);
-
-    let ws: WebSocket;
-    if (isBun() || isDeno() || isBrowser())
-        ws = new WebSocket(`wss://gateway.discord.gg?v=${version}&encoding=etf`);
-    else
-        ws = new (require("ws"))(`wss://gateway.discord.gg?v=${version}&encoding=json`);
-
-    ws.onopen = (_: Event) => onOpen(ws, token, intents, version, resume);
-    ws.onclose = (data: any) => onClose(ws, data, token, intents, version);
-    ws.onerror = (data: Event) => onError(ws, data);
-    ws.onmessage = (data: any) => onMessage(ws, data);
-
-    packEvent("ready")(async (data: ReadyEventData) => {
-        Global.session_id = data.session_id;
-        Global.user_id = data.user.id;
-    });
-
-    packEvent("voice_server_update")(async (data: VoiceServerUpdateEventData) => {
-        if (data.endpoint) {
-            createVoiceWS(
-                data.endpoint,
-                Global.user_id as SnowflakeData,
-                data.token,
-                data.guild_id,
-                Global.session_id as string
-            );
-        }
-    });
-
-    return {
-        gateway_commands: {
-            getMember: packCommand(ws, RequestGuildMembers),
-            setPresence: packCommand(ws, PresenceUpdate),
-            setVoiceState: packCommand(ws, VoiceStateUpdate),
-        },
-    };
+enum State {
+    OPEN = 1,
+    CLOSE,
+    ERROR,
+    RESUME,
+    LOGIN
 }
 
-async function onOpen(
-    ws: WebSocket,
-    token: string,
-    intents: number,
-    version: Version,
-    resume: boolean
-): Promise<void> {
-    console.log("WebSocket connected");
-    if (!resume)
-        await Identity(ws, token, intents);
-    if (resume)
-        await Resume(ws, token, intents, version, resume);
+interface WS extends WebSocket.WebSocket {
+    onopen: () => Promise<void>;
+    onclose: (event: WebSocket.CloseEvent) => Promise<WS>;
+    onerror: () => Promise<void>;
+    onmessage: (event: WebSocket.MessageEvent) => Promise<DiscordData>;
 }
 
-async function onClose(
-    ws: WebSocket,
-    event: CloseEvent,
-    token: string,
-    intents: number,
-    version: Version
-): Promise<void> {
-    if (event.code < 4000 || event.code === 4015) {
-        clearInterval(Global.heartbeatID);
-        return await Resume(ws, token, intents, version, false);
+let state: State;
+let sequence: number | null = null;
+let session_id: string;
+let heartbeatID: NodeJS.Timer;
+export default function ws(token: string, intents: number): WS {
+    let ws = new WebSocket.WebSocket(`${GATEWAY_BASE}?v=${GATEWAY_VERSION}&encoding=${GATEWAY_ENCODING}`);
+    if (!state)
+        state = State.OPEN;
+
+    ws.onopen = () => open(ws, token, intents, sequence, session_id);
+    ws.onclose = (event: WebSocket.CloseEvent) => close(event, token, intents);
+    ws.onerror = () => error();
+    ws.onmessage = (event: WebSocket.MessageEvent) => message(ws, event);
+
+    return ws as WS;
+}
+
+export async function send(ws: WebSocket.WebSocket, data: any) {
+    console.log("send data.\n", data)
+    return await pipe(data)
+        .pipe(pack)
+        .pipe(ws.send)
+        .execute();
+}
+
+async function open(ws: WebSocket.WebSocket, token: string, intents: number, sequence: number, session_id: string): Promise<void> {
+    console.log("websocket open.")
+    switch (state) {
+    case State.OPEN:
+        return await login(ws, token, intents);
+    case State.RESUME:
+        return await resume(ws, token, sequence, session_id)
     }
-
-    process.exit();
 }
 
-async function onError(
-    ws: WebSocket,
-    event: Event
-): Promise<void> {
-    error("WebSocket failed");
-    message(`Error message: ${event}`);
+async function close(event: WebSocket.CloseEvent, token: string, intents: number) {
+    console.log("websocket close.\n")
+    clearInterval(heartbeatID);
+    if (event.code < 4000 || event.code === 4015)
+        state = State.RESUME;
+    else if (event.code === 4009)
+        state = State.OPEN;
+    else
+        process.exit(0);
+
+    return ws(token, intents);
+}
+
+async function error() {
+    console.log("websocket error.\n")
     process.exit(1);
 }
 
-async function onMessage(
-    ws: WebSocket,
-    event: MessageEvent
-): Promise<void> {
-    let data: DiscordData = decode(Buffer.from(event.data));
-    if (data.s) Global.sequence = data.s;
-    console.log(data);
-
-    await processData(ws, data);
-}
-
-function decode(data: Buffer): DiscordData {
-    return unpack(data) as DiscordData;
-}
-
-function encode(data: DiscordData): Buffer {
-    return pack(data as unknown) as Buffer;
-}
-
-async function processData(ws: WebSocket, data: DiscordData): Promise<void> {
+async function message(ws: WebSocket.WebSocket, event: WebSocket.MessageEvent): Promise<DiscordData> {
+    console.log("websocket message.\n")
+    let data = unpack(event.data as Buffer) as DiscordData;
     switch (data.op) {
-    case Opcode.Dispatch:
-        return await Dispatch(data);
-    case Opcode.Heartbeat:
-        return await Heartbeat(ws, data);
-    case Opcode.Reconnect:
-        return await Reconnect(data);
     case Opcode.InvalidSession:
-        return await InvalidSession(ws, data);
+        process.exit(1);
     case Opcode.Hello:
-        return await Hello(ws, data);
-    case Opcode.HeartbeatACK:
-        return await HeartbeatACK(data);
+        await keepAlive(ws, data.d.heartbeat_interval);
     }
+
+    return data;
 }
 
-async function send(ws: WebSocket, data: DiscordData): Promise<void> {
-    ws.send(encode(data));
-}
-
-function packCommand(
-    ws: WebSocket,
-    cb: (...parma: any) => Promise<void>
-): (...params: any) => Promise<void> {
-    return async function (...params: any) {
-        return await cb(ws, ...params);
-    };
-}
-
-async function Dispatch(data: DiscordData): Promise<void> {
-    await callEvent(data.t as string, data.d);
-}
-
-async function Heartbeat(ws: WebSocket, data: DiscordData): Promise<void> {
-    await send(ws, { ...data, d: Global.sequence });
-}
-
-async function Identity(
-    ws: WebSocket,
-    token: string,
-    intents: number
-): Promise<void> {
-    await send(ws, {
+async function login(ws: WebSocket.WebSocket, token: string, intents: number) {
+    return await send(ws, {
         op: Opcode.Identity,
         d: {
             token,
@@ -183,113 +99,26 @@ async function Identity(
                 browser: "discall",
                 device: "discall",
             },
-        },
+        }
     });
 }
 
-async function PresenceUpdate(
-    ws: WebSocket,
-    since: number | null,
-    activities: ActivityData[],
-    status: string,
-    afk: boolean
-): Promise<void> {
-    await send(ws, {
-        op: Opcode.PresenceUpdate,
+async function resume(ws: WebSocket.WebSocket, token: string, sequence: number | null, session_id: string) {
+    return await send(ws, {
+        op: Opcode.Resume,
         d: {
-            since,
-            activities,
-            status,
-            afk,
-        },
+            token,
+            session_id: session_id,
+            seq: sequence,
+        }
     });
 }
 
-async function VoiceStateUpdate(
-    ws: WebSocket,
-    guild_id: SnowflakeData,
-    channel_id: SnowflakeData | null,
-    mute: boolean,
-    deaf: boolean
-): Promise<void> {
-    await send(ws, {
-        op: Opcode.VoiceStateUpdate,
-        d: {
-            guild_id,
-            channel_id,
-            self_mute: mute,
-            self_deaf: deaf,
-        },
-    });
-}
-
-async function Resume(ws: WebSocket, token: string, intents: number, version: Version, resume: boolean): Promise<void> {
-    if (!resume)
-        createWS(token, intents, version, true);
-    else
+async function keepAlive(ws: WebSocket.WebSocket, heartbeat: number): Promise<NodeJS.Timer> {
+    return heartbeatID = setInterval(async () => {
         await send(ws, {
-            op: Opcode.Resume,
-            d: {
-                token,
-                session_id: Global.session_id,
-                seq: Global.sequence,
-            },
-        });
+            op: Opcode.Heartbeat,
+            d: sequence
+        })
+    }, heartbeat);
 }
-
-async function Reconnect(data: DiscordData): Promise<void> { }
-
-async function RequestGuildMembers(
-    ws: WebSocket,
-    guild_id: SnowflakeData,
-    limit: number = 0,
-    type: "search" | "get",
-    param: any,
-    presences?: boolean,
-    nonce?: string
-): Promise<void> {
-    let data: {
-        guild_id: SnowflakeData;
-        query?: string;
-        limit: number;
-        presences?: boolean;
-        user_ids?: SnowflakeData | SnowflakeData[];
-        nonce?: string;
-    } = {
-        guild_id,
-        limit,
-    };
-
-    switch (type) {
-    case "get":
-        data.user_ids = param;
-        break;
-    case "search":
-        data.query = param;
-        break;
-    }
-
-    if (presences !== undefined) data.presences = presences;
-
-    if (nonce !== undefined) data.nonce = nonce;
-
-    await send(ws, {
-        op: Opcode.RequestGuildMember,
-        d: data,
-    });
-}
-
-async function InvalidSession(ws: WebSocket, data: DiscordData): Promise<void> {
-    if (data.d !== null && data.d !== undefined) {
-        if (data.d) ws.close(1000);
-        else process.exit(1);
-    } else process.exit(1);
-}
-
-async function Hello(ws: WebSocket, data: DiscordData): Promise<void> {
-    Global.heartbeatID = setInterval(Heartbeat, data.d.heartbeat_interval, ws, {
-        op: Opcode.Heartbeat,
-    });
-}
-
-async function HeartbeatACK(data: DiscordData): Promise<void> { }

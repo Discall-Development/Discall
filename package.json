@@ -8,6 +8,7 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
+    "type": "module",
     "dependencies": {
         "@discall/simple-pipe": "^1.2.1",
         "etf.js": "^1.0.1",
