@@ -1,8 +1,3 @@
-.cache/*
-.config/*
-.upm/*
-.vscode/*
-
 node_modules/*
 
 *.xml
@@ -17,4 +12,3 @@ bun.*
 *.json
 !package.json
 !tsconfig.json
-!.build
