@@ -1,4 +1,4 @@
-import sodium from "libsodium-wrappers";
+import * as sodium from "libsodium-wrappers";
 
 await sodium.ready;
 export function open(buffer: Buffer, nonce: Buffer, secretKey: Uint8Array) {

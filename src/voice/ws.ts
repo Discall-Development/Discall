@@ -15,7 +15,7 @@ enum VoiceStates {
 
 let registered = false;
 let clients: Map<SnowflakeData, WebSocket.WebSocket> = new Map();
-export default function voice(_ws: ReturnType<typeof __ws>) {
+export default function voice(_ws: ReturnType<typeof __ws>): typeof _ws {
     if (registered)
         return _ws;
 
@@ -32,7 +32,7 @@ export default function voice(_ws: ReturnType<typeof __ws>) {
             case "VOICE_SERVER_UPDATE":
                 let server: VoiceServerUpdateEventData = data.d;
                 clients.set(server.guild_id, ws(
-                    server.endpoint,
+                    server.endpoint as string,
                     server.token,
                     session_id,
                     server.guild_id,
@@ -58,9 +58,9 @@ function ws(endpoint: string, token: string, session_id: string, server_id: Snow
         states.set(server_id, VoiceStates.OPEN);
 
     ws.onopen = () => open(ws, user_id, server_id, session_id, token);
-    ws.onclose = (event) => close(event, endpoint, token, session_id, user_id, server_id);
+    ws.onclose = (event: WebSocket.CloseEvent) => close(event, endpoint, token, session_id, user_id, server_id);
     ws.onerror = () => error(server_id);
-    ws.onmessage = (event) => message(ws, event, server_id);
+    ws.onmessage = (event: WebSocket.MessageEvent) => message(ws, event, server_id);
 
     return ws;
 }
@@ -149,7 +149,7 @@ async function ready(ws: WebSocket.WebSocket, data: DiscordData, server_id: Snow
     let { modes, ip, port, ssrc: _ssrc } = data.d;
     let _udp = await udp(ip, port, _ssrc, server_id);
 
-    udpSends.set(server_id, _udp.send);
+    udpSends.set(server_id, _udp.send as (data: Buffer, secretKey?: Buffer) => Promise<void>);
     ssrcs.set(server_id, _ssrc);
 
     _udp.set(await selectProtocol(ws, modes, _udp.config, server_id));
@@ -184,7 +184,7 @@ async function selectProtocol(ws: WebSocket.WebSocket, modes: string[], config: 
 }
 
 async function sessionDescription(data: DiscordData, server_id: SnowflakeData) {
-    let send = udpSends.get(server_id);
+    let send = udpSends.get(server_id) as (data: Buffer, secretKey?: Buffer) => Promise<void>;
     return udpSends.set(server_id, async function(_data: Buffer) {
         return await send(_data, data.d.secret_key);
     });
@@ -215,6 +215,6 @@ async function destroy(ws: WebSocket.WebSocket) {
 }
 
 export async function sendPacket(server_id: SnowflakeData, data: Buffer) {
-    let send = udpSends.get(server_id);
+    let send = udpSends.get(server_id) as (data: Buffer) => Promise<void>;
     await send(data);
 }

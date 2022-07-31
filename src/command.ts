@@ -13,7 +13,7 @@ export default function commander(ws: ReturnType<typeof _ws>, prefix: string): R
     ws.onmessage = async (event) => {
         let data = await wsMessage(event) as DiscordData;
         if (data.op !== Opcode.Dispatch, data.t === "MESSAGE_CREATE")
-            return;
+            return data;
             
         let message: MessageCreateEventData = data.d as MessageCreateEventData;
         let content = message.content.trim();
@@ -38,14 +38,16 @@ export function addCommand<T extends (v: any) => any>(command: {
     help?: string;
 }, options: {
     converters?: T[];
-    permissions?: CommandPermissionsFlag;
+    permissions: CommandPermissionsFlag;
     aliases?: string[];
     permission_data?: {
         roles?: SnowflakeData[];
         member?: SnowflakeData;
         user?: SnowflakeData;
     }
-} = {}): Command<T> {
+} = {
+    permissions: 0
+}): Command<T> {
     let run = command.run;
     async function _run(data: MessageCreateEventData, ...args: ReturnType<T>[]) {
         if (check(data, options.permissions, options.permission_data)) {
@@ -56,7 +58,7 @@ export function addCommand<T extends (v: any) => any>(command: {
     }
 
     commands[command.name] = { ...command, run: _run, ...options };
-    if (options.aliases)
+    if (options && options.aliases)
         options.aliases.forEach(v => commands[v] = commands[command.name]);
 
     return commands[command.name];

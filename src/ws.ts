@@ -47,7 +47,7 @@ export async function send(ws: WebSocket.WebSocket, data: any) {
         .execute();
 }
 
-async function open(ws: WebSocket.WebSocket, token: string, intents: number, sequence: number, session_id: string): Promise<void> {
+async function open(ws: WebSocket.WebSocket, token: string, intents: number, sequence: number | null, session_id: string): Promise<void> {
     console.log("websocket open.")
     switch (state) {
     case State.OPEN:

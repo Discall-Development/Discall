@@ -93,7 +93,7 @@ async function keepAlive(socket: Socket, ip: string, port: number, keepAlives: K
     }
 
     let buf = Buffer.alloc(8);
-    let counter = counters.get(server_id);
+    let counter = counters.get(server_id) as number;
     buf.writeUInt32LE(counter, 0);
     await send(socket, ip, port, buf);
 

@@ -1,20 +1,18 @@
-import { EventData, Event, Opcode } from "./typo";
-import _ws from "./ws";
-
-let events: Record<string, Event<any>[]> = {}
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.register = exports.addRemoveable = void 0;
+const typo_1 = require("./typo");
+let events = {};
 let registered = false;
-export default function listener(ws: ReturnType<typeof _ws>): ReturnType<typeof _ws> {
+function listener(ws) {
     if (registered)
         return ws;
-
     let onMessage = ws.onmessage;
     ws.onmessage = async (event) => {
         let data = await onMessage(event);
-        if (data.op !== Opcode.Dispatch)
+        if (data.op !== typo_1.Opcode.Dispatch)
             return data;
-
-        let eventName = data.t?.toLowerCase() as string;
+        let eventName = data.t?.toLowerCase();
         if (events[eventName])
             for (const event of events[eventName]) {
                 if (event.check(data)) {
@@ -23,44 +21,29 @@ export default function listener(ws: ReturnType<typeof _ws>): ReturnType<typeof 
                         events[eventName] = events[eventName].filter(v => v !== event);
                 }
             }
-
         return data;
-    }
-
+    };
     registered = true;
     return ws;
 }
-
-export function addRemoveable<T extends EventData>({
-    name, listener, check
-}: {
-    name: string;
-    listener: (data: T) => Promise<void>;
-    check: (data: T) => boolean;
-}): Event<T> {
-    let event: Event<T> = {
+exports.default = listener;
+function addRemoveable({ name, listener, check }) {
+    let event = {
         remove: true,
         listen: listener,
         check: check
     };
     events[name] = events[name] ? [...events[name], event] : [event];
-
     return event;
 }
-
-export function register<T extends EventData>({
-    name, listener, check
-}: {
-    name: string;
-    listener: (data: T) => Promise<void>;
-    check?: (data: T) => boolean;
-}): Event<T> {
-    let event: Event<T> = {
+exports.addRemoveable = addRemoveable;
+function register({ name, listener, check }) {
+    let event = {
         remove: false,
         listen: listener,
         check: check || (_ => true)
     };
     events[name] = events[name] ? [...events[name], event] : [event];
-
     return event;
 }
+exports.register = register;

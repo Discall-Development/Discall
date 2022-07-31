@@ -1,12 +1,26 @@
 {
     "name": "@discall/discall",
     "version": "1.0.0",
-    "main": "index.js",
+    "description": "A",
+    "main": "./.build/index.js",
+    "types": "./build/index.d.ts",
     "scripts": {
-        "test": "bun run test/index.ts"
+        "test": "bun run test/index.ts",
+        "build": "tsc.cmd",
+        "prepare": "npm run build"
     },
-    "keywords": [],
-    "author": "",
+    "files": [
+        ".build/**/*"
+    ],
+    "keywords": [
+        "discord",
+        "FP",
+        "functional",
+        "API Wrapper",
+        "typescript",
+        "javascript"
+    ],
+    "author": "rexwu1104",
     "license": "ISC",
     "type": "module",
     "dependencies": {
@@ -17,11 +31,9 @@
         "ws": "^8.8.0"
     },
     "devDependencies": {
-        "@types/json-bigint": "^1.0.1",
-        "@types/node": "^18.0.3",
-        "@typescript-eslint/eslint-plugin": "^5.30.6",
-        "@typescript-eslint/parser": "^5.30.6",
-        "bun-types": "0.0.83",
+        "@types/libsodium-wrappers": "^0.7.9",
+        "@types/node": "^18.6.3",
+        "@types/ws": "^8.5.3",
         "typescript": "^4.7.4"
     },
     "directories": {
@@ -34,6 +46,5 @@
     "bugs": {
         "url": "https://github.com/rexwu1104/Discall/issues"
     },
-    "homepage": "https://github.com/rexwu1104/Discall#readme",
-    "description": ""
+    "homepage": "https://github.com/rexwu1104/Discall#readme"
 }

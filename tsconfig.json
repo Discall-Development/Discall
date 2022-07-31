@@ -1,15 +1,21 @@
 {
 	"compilerOptions": {
 		"lib": ["ESNext"],
-		"module": "ESNext",
+		"module": "NodeNext",
 		"target": "ESNext",
-		"types": ["bun-types", "node"],
-		"moduleResolution": "node"
+		"types": ["node"],
+		"moduleResolution": "node",
+        "declaration": true,
+        "outDir": "./.build",
+        "strict": true
 	},
 	"exclude": [
-		"node_modules"
+		"node_modules/**/*",
+		"example/**/*" 
 	],
 	"include": [
-		"src/**/*", "test/**/*"
+		"src/**/*",
+		"test/**/*",
+		"index.ts"
 	]
 }

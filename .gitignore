@@ -1,4 +1,3 @@
-.build/*
 .cache/*
 .config/*
 .upm/*
@@ -13,7 +12,9 @@ bun.*
 *.bun
 .*
 
-!.github/
 !.gitignore
 
 *.json
+!package.json
+!tsconfig.json
+!.build
