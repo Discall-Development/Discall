@@ -1,10 +1,9 @@
 import pipe from "@discall/simple-pipe";
-import { pack, unpack } from "etf.js";
 import { WebSocket } from "./runtimeModule";
-import { DiscordData, Opcode } from "./typo";
+import { DiscordData, Opcode } from "./types";
 
 const GATEWAY_VERSION = 10;
-const GATEWAY_ENCODING = "etf";
+const GATEWAY_ENCODING = "json";
 const GATEWAY_BASE = "wss://gateway.discord.gg";
 
 enum State {
@@ -40,15 +39,13 @@ export default function ws(token: string, intents: number): WS {
 }
 
 export async function send(ws: WebSocket.WebSocket, data: any) {
-    console.log("send data.\n", data)
     return await pipe(data)
-        .pipe(pack)
-        .pipe(ws.send)
+        .pipe(JSON.stringify)
+        .pipe(ws.send.bind(ws))
         .execute();
 }
 
 async function open(ws: WebSocket.WebSocket, token: string, intents: number, sequence: number | null, session_id: string): Promise<void> {
-    console.log("websocket open.")
     switch (state) {
     case State.OPEN:
         return await login(ws, token, intents);
@@ -58,7 +55,6 @@ async function open(ws: WebSocket.WebSocket, token: string, intents: number, seq
 }
 
 async function close(event: WebSocket.CloseEvent, token: string, intents: number) {
-    console.log("websocket close.\n")
     clearInterval(heartbeatID);
     if (event.code < 4000 || event.code === 4015)
         state = State.RESUME;
@@ -71,13 +67,11 @@ async function close(event: WebSocket.CloseEvent, token: string, intents: number
 }
 
 async function error() {
-    console.log("websocket error.\n")
     process.exit(1);
 }
 
 async function message(ws: WebSocket.WebSocket, event: WebSocket.MessageEvent): Promise<DiscordData> {
-    console.log("websocket message.\n")
-    let data = unpack(event.data as Buffer) as DiscordData;
+    let data = JSON.parse(event.data as string) as DiscordData;
     switch (data.op) {
     case Opcode.InvalidSession:
         process.exit(1);

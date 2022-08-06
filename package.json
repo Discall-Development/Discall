@@ -1,12 +1,13 @@
 {
     "name": "@discall/discall",
     "version": "1.0.0",
-    "description": "A",
+    "description": "A async functional discord API wrapper.",
     "main": "./.build/index.js",
     "types": "./build/index.d.ts",
     "scripts": {
-        "test": "bun run test/index.ts",
-        "build": "tsc.cmd",
+        "build": "tsc && cls",
+        "run": "node build/test/index.js",
+        "start": "npm run build && npm run run",
         "prepare": "npm run build"
     },
     "files": [
@@ -22,18 +23,19 @@
     ],
     "author": "rexwu1104",
     "license": "ISC",
-    "type": "module",
     "dependencies": {
         "@discall/simple-pipe": "^1.2.1",
-        "etf.js": "^1.0.1",
+        "form-data": "^4.0.0",
         "libsodium-wrappers": "^0.7.10",
-        "node-fetch": "^3.2.9",
+        "node-fetch": "^2.6.6",
         "ws": "^8.8.0"
     },
     "devDependencies": {
         "@types/libsodium-wrappers": "^0.7.9",
         "@types/node": "^18.6.3",
+        "@types/node-fetch": "^2.6.2",
         "@types/ws": "^8.5.3",
+        "dotenv": "^16.0.1",
         "typescript": "^4.7.4"
     },
     "directories": {

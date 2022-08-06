@@ -1,18 +1,19 @@
-import { Command, CommandPermissionsFlag, DiscordData, MessageCreateEventData, Opcode, PermissionFlags, SnowflakeData } from "./typo";
-import get from "./utils/get";
+import { CommandExisted } from "./error";
+import { Command, CommandPermissionsFlag, DiscordData, MessageCreateEventData, Opcode, PermissionFlags, SnowflakeData } from "./types";
+import { get } from "./utils";
 import _ws from "./ws";
 
 let commands: Record<string, Command<any>> = {};
-
 let registered = false;
 export default function commander(ws: ReturnType<typeof _ws>, prefix: string): ReturnType<typeof _ws> {
     if (registered)
         return ws;
 
-    let wsMessage = ws.onmessage;
+    let onMessage = ws.onmessage;
+    let onClose = ws.onclose;
     ws.onmessage = async (event) => {
-        let data = await wsMessage(event) as DiscordData;
-        if (data.op !== Opcode.Dispatch, data.t === "MESSAGE_CREATE")
+        let data = await onMessage(event) as DiscordData;
+        if (data.op !== Opcode.Dispatch || data.t !== "MESSAGE_CREATE")
             return data;
             
         let message: MessageCreateEventData = data.d as MessageCreateEventData;
@@ -27,6 +28,13 @@ export default function commander(ws: ReturnType<typeof _ws>, prefix: string): R
         return data;
     }
 
+    ws.onclose = async (event) => {
+        let ws = await onClose(event);
+        registered = false;
+
+        return commander(ws, prefix);
+    }
+
     registered = true;
     return ws;
 }
@@ -36,20 +44,33 @@ export function addCommand<T extends (v: any) => any>(command: {
     run: (context: MessageCreateEventData, ...args: ReturnType<T>[]) => Promise<void>;
     description?: string;
     help?: string;
-}, options: {
+}, options?: {
     converters?: T[];
-    permissions: CommandPermissionsFlag;
+    permissions?: CommandPermissionsFlag;
     aliases?: string[];
     permission_data?: {
         roles?: SnowflakeData[];
         member?: SnowflakeData;
         user?: SnowflakeData;
     }
-} = {
-    permissions: 0
 }): Command<T> {
+    if (command.name in commands)
+        throw new CommandExisted(command.name);
+
+    if (options && options.aliases)
+        options.aliases.forEach(v => {
+            if (v in commands)
+                throw new CommandExisted(v);
+        });
+
     let run = command.run;
     async function _run(data: MessageCreateEventData, ...args: ReturnType<T>[]) {
+        if (!options)
+            options = {};
+
+        if (!options?.permissions)
+            options.permissions = 0;
+
         if (check(data, options.permissions, options.permission_data)) {
             if (options.converters)
                 return await run(data, ...options.converters.map((v, idx) => v(args[idx])));
@@ -71,7 +92,7 @@ function check(data: MessageCreateEventData, permissions: CommandPermissionsFlag
 } = {}): boolean {
     let can = permissions ? false : true;
     if (!can && permissions & CommandPermissionsFlag.OWNER && data.guild_id)
-        can = data.author.id === get("guild", data.guild_id).id;
+        can = data.author.id === get("guild", data.guild_id).owner_id;
 
     if (!can && permissions & CommandPermissionsFlag.ADMINISTRATOR && data.member)
         can = checkPermission(Number(data.member.permission), PermissionFlags.ADMINISTRATOR);

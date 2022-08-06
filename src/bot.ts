@@ -3,6 +3,7 @@ import listener from "./event";
 import ws from "./ws";
 import { CreateBotError } from "./error";
 import voice from "./voice/ws";
+import client from "./https";
 
 export default function bot(token: string, {
     intents, prefix
@@ -21,5 +22,7 @@ export default function bot(token: string, {
         _ws = commander(_ws, prefix);
 
     _ws = listener(_ws);
-    _ws = voice(_ws)
+    _ws = voice(_ws);
+
+    return client(token);
 }

@@ -20,9 +20,9 @@ export class NoneValidEncryptionMode extends Error {
     }
 }
 
-export class EmptyMessageError extends Error {
-    constructor() {
-        super("Can't create empty message.");
+export class EmptyError extends Error {
+    constructor(type: string) {
+        super(`Can't create empty ${type}.`);
     }
 }
 
@@ -41,5 +41,17 @@ export class InvalidHttpRequest extends Error {
 export class MultiDefault extends Error {
     constructor() {
         super("Set default option exceed once.");
+    }
+}
+
+export class ErrorStatus extends Error {
+    constructor(code: number) {
+        super(`Error Code: ${code}`);
+    }
+}
+
+export class CommandExisted extends Error {
+    constructor(name: string) {
+        super(`Command "${name}" has existed.`);
     }
 }

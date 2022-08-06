@@ -1,4 +1,4 @@
-import { EventData, Event, Opcode } from "./typo";
+import { EventData, Event, Opcode, EventName } from "./types";
 import _ws from "./ws";
 
 let events: Record<string, Event<any>[]> = {}
@@ -9,16 +9,17 @@ export default function listener(ws: ReturnType<typeof _ws>): ReturnType<typeof 
         return ws;
 
     let onMessage = ws.onmessage;
+    let onClose = ws.onclose;
     ws.onmessage = async (event) => {
         let data = await onMessage(event);
         if (data.op !== Opcode.Dispatch)
             return data;
 
-        let eventName = data.t?.toLowerCase() as string;
+        let eventName = data.t as string;
         if (events[eventName])
             for (const event of events[eventName]) {
-                if (event.check(data)) {
-                    await event.listen(data);
+                if (event.check(data.d)) {
+                    await event.listen(data.d);
                     if (event.remove)
                         events[eventName] = events[eventName].filter(v => v !== event);
                 }
@@ -27,14 +28,21 @@ export default function listener(ws: ReturnType<typeof _ws>): ReturnType<typeof 
         return data;
     }
 
+    ws.onclose = async (event) => {
+        let ws = await onClose(event);
+        registered = false;
+
+        return listener(ws);
+    }
+
     registered = true;
     return ws;
 }
 
-export function addRemoveable<T extends EventData>({
+export function addRemoveable<T extends EventData, N extends keyof typeof EventName>({
     name, listener, check
 }: {
-    name: string;
+    name: N | typeof EventName[N];
     listener: (data: T) => Promise<void>;
     check: (data: T) => boolean;
 }): Event<T> {
@@ -43,24 +51,31 @@ export function addRemoveable<T extends EventData>({
         listen: listener,
         check: check
     };
+    if (EventName[name as N] !== undefined)
+        name = EventName[name as N];
+    
     events[name] = events[name] ? [...events[name], event] : [event];
-
     return event;
 }
 
-export function register<T extends EventData>({
-    name, listener, check
-}: {
-    name: string;
-    listener: (data: T) => Promise<void>;
-    check?: (data: T) => boolean;
-}): Event<T> {
-    let event: Event<T> = {
-        remove: false,
-        listen: listener,
-        check: check || (_ => true)
-    };
-    events[name] = events[name] ? [...events[name], event] : [event];
+export function register<N extends keyof typeof EventName>(...event: {
+    name: N | typeof EventName[N];
+    listener: (data: any) => Promise<void>;
+    check?: (data: any) => boolean;
+}[]): Event<EventData>[] {
+    let _events: Event<EventData>[] = [];
+    for (let { name, listener, check } of event) {
+        let event: Event<EventData> = {
+            remove: false,
+            listen: listener,
+            check: check || (_ => true)
+        };
+        if (EventName[name as N] !== undefined)
+            name = EventName[name as N];
+    
+        events[name] = events[name] ? [...events[name], event] : [event];
+        _events.push(event);
+    }
 
-    return event;
+    return _events;
 }

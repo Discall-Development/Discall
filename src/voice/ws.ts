@@ -1,7 +1,7 @@
 import pipe from "@discall/simple-pipe";
 import { NoneValidEncryptionMode } from "../error";
 import { WebSocket } from "../runtimeModule";
-import { DiscordData, Opcode, SnowflakeData, VoiceOpcode, VoiceServerUpdateEventData } from "../typo";
+import { DiscordData, Opcode, SnowflakeData, VoiceOpcode, VoiceServerUpdateEventData } from "../types";
 import __ws from "../ws";
 import udp from "./udp";
 
@@ -20,6 +20,7 @@ export default function voice(_ws: ReturnType<typeof __ws>): typeof _ws {
         return _ws;
 
     let onMessage = _ws.onmessage;
+    let onClose = _ws.onclose;
     let user_id: SnowflakeData, session_id: string;
     _ws.onmessage = async (event) => {
         let data = await onMessage(event);
@@ -42,6 +43,13 @@ export default function voice(_ws: ReturnType<typeof __ws>): typeof _ws {
         }
 
         return data;
+    }
+
+    _ws.onclose = async (event) => {
+        let ws = await onClose(event);
+        registered = false;
+
+        return voice(ws);
     }
 
     registered = true;
@@ -125,8 +133,8 @@ async function login(ws: WebSocket.WebSocket, user_id: SnowflakeData, server_id:
     return await send(ws, {
         op: VoiceOpcode.Identity,
         d: {
-            server_id: server_id.toString(),
-            user_id: user_id.toString(),
+            server_id,
+            user_id,
             session_id,
             token
         }
@@ -138,8 +146,8 @@ async function resume(ws: WebSocket.WebSocket, user_id: SnowflakeData, server_id
     return await send(ws, {
         op: VoiceOpcode.Resume,
         d: {
-            server_id: server_id.toString(),
-            user_id: user_id.toString(),
+            server_id,
+            user_id,
             token
         }
     });

@@ -1,4 +1,4 @@
-import { SnowflakeData } from "../typo";
+import { SnowflakeData } from "../types";
 import caches from "./cache";
 
 type CT = typeof caches;

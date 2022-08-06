@@ -1,10 +1,8 @@
 import * as sodium from "libsodium-wrappers";
 
-await sodium.ready;
-export function open(buffer: Buffer, nonce: Buffer, secretKey: Uint8Array) {
-    return sodium.crypto_secretbox_open_easy(buffer, nonce, secretKey);
-}
-
+(async () => {
+    await sodium.ready;
+})();
 export function close(
     opusPacket: Buffer,
     nonce: Buffer,

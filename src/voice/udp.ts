@@ -1,6 +1,6 @@
 import { createSocket, Socket } from "node:dgram";
-import { SnowflakeData } from "../typo";
-import { close, open, random } from "./secret";
+import { SnowflakeData } from "../types";
+import { close, random } from "./secret";
 
 interface KeepAlive {
     value: number;
