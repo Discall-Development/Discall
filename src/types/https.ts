@@ -1,3 +1,5 @@
+import { SnowflakeData } from "./snowflake";
+
 export enum HttpMode {
     GET,
     POST,
@@ -15,5 +17,22 @@ export interface HttpRequest {
 
 export interface HttpRequestData<T extends {} = {}> {
     type: string;
-    data: HttpRequest | T;
+    data: HttpRequestData | IdData | T;
+}
+
+export interface IdData {
+    id: SnowflakeData;
+    data: HttpRequestData;
+}
+
+export enum HttpUri {
+    "create+id+message" = "/channels/{id}/messages"
+}
+
+export enum UriMode {
+    "create+id+message" = HttpMode.POST
+}
+
+export function isHttpRequestData(obj: any): obj is HttpRequestData {
+    return "type" in obj && "data" in obj;
 }

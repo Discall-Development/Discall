@@ -1,5 +1,5 @@
 import { EmptyError } from "./error";
-import { AllowMentionsData, AttachmentData, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, HttpRequestData, MessageComponentData, MessageData, MessageFlag, MessageReferenceData, SnowflakeData } from "./types";
+import { AllowMentionsData, AttachmentData, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, HttpRequestData, isHttpRequestData, MessageComponentData, MessageData, MessageFlag, MessageReferenceData, SnowflakeData } from "./types";
 import { isEmpty } from "./utils";
 
 export function message<T extends typeof message>(id: SnowflakeData): T;
@@ -17,29 +17,32 @@ export function message(message: {
     flags?: MessageFlag;
 }): HttpRequestData;
 export function message(first: any, second?: any) {
-    if (!isEmpty(first))
+    if (isEmpty(first))
         throw new EmptyError("message");
 
     if (typeof first === "string")
-        return function(first?: any, second?: any): HttpRequestData {
-            if (!first)
+        return function(f?: any, s?: any): HttpRequestData {
+            if (isHttpRequestData(f))
                 return {
                     type: "id",
-                    data: {}
+                    data: {
+                        id: first,
+                        data: f
+                    }
                 }
 
             return {
                 type: "message+id",
                 data: {
                     id: first,
-                    message: message(first, second)
+                    data: message(f, s)
                 }
             };
         };
 
     if (typeof first.type === "string" && first.data)
         return {
-            type: `message+${first.type}`,
+            type: "message",
             data: first
         }
 
