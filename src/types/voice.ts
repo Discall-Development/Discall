@@ -12,13 +12,6 @@ export interface StageInstanceData {
     guild_scheduled_event_id: SnowflakeData | null;
 }
 
-export interface InviteStageInstanceData {
-    members: Partial<GuildMemberData>[];
-    participant_count: number;
-    speaker_count: number;
-    topic: string;
-}
-
 export interface VoiceStateData {
     guild_id?: SnowflakeData;
     channel_id: SnowflakeData | null;

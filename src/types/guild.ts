@@ -4,7 +4,6 @@ import { DefaultMessageNotificationLevel, EmojiData, StickerData } from "./messa
 import { SnowflakeData } from "./snowflake";
 import { Timestamp } from "./timestamp";
 import { UserData } from "./user";
-import { InviteStageInstanceData } from "./voice";
 
 export interface GuildData {
     id: SnowflakeData;
@@ -273,7 +272,6 @@ export interface InviteData {
     approximate_presence_count?: number;
     approximate_member_count?: number;
     expires_at?: Timestamp | null;
-    stage_instance?: InviteStageInstanceData;
     guild_scheduled_event?: GuildScheduledEventData;
 }
 

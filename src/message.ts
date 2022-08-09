@@ -2,9 +2,9 @@ import { EmptyError } from "./error";
 import { AllowMentionsData, AttachmentData, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, HttpRequestData, isHttpRequestData, MessageComponentData, MessageData, MessageFlag, MessageReferenceData, SnowflakeData } from "./types";
 import { isEmpty } from "./utils";
 
-export function message<T extends typeof message>(id: SnowflakeData): T;
-export function message(param: HttpRequestData): HttpRequestData;
-export function message(message: {
+export default function message<T extends typeof message>(id: SnowflakeData): T;
+export default function message(param: HttpRequestData): HttpRequestData;
+export default function message(message: {
     content?: string;
     embeds?: EmbedData[];
     sticker_ids?: SnowflakeData[];
@@ -16,39 +16,45 @@ export function message(message: {
     components?: MessageComponentData[];
     flags?: MessageFlag;
 }): HttpRequestData;
-export function message(first: any, second?: any) {
-    if (isEmpty(first))
+export default function message(arg_1: any, arg_2?: any) {
+    if (isEmpty(arg_1))
         throw new EmptyError("message");
 
-    if (typeof first === "string")
-        return function(f?: any, s?: any): HttpRequestData {
-            if (isHttpRequestData(f))
+    if (typeof arg_1 === "string")
+        return function(param_1?: any, param_2?: any): HttpRequestData {
+            if (isHttpRequestData(param_1))
                 return {
                     type: "id",
                     data: {
-                        id: first,
-                        data: f
+                        message_id: arg_1,
+                        data: param_1
                     }
-                }
+                };
+
+            if (!param_1)
+                return {
+                    type: "id",
+                    data: {}
+                };
 
             return {
                 type: "message+id",
                 data: {
-                    id: first,
-                    data: message(f, s)
+                    message_id: arg_1,
+                    data: message(param_1, param_2)
                 }
             };
         };
 
-    if (typeof first.type === "string" && first.data)
+    if (typeof arg_1.type === "string" && arg_1.data)
         return {
             type: "message",
-            data: first
+            data: arg_1
         }
 
     return {
         type: "message",
-        data: { ...first, ...second }
+        data: { ...arg_1, ...arg_2 }
     };
 }
 

@@ -1,6 +1,6 @@
 import { CommandExisted } from "./error";
 import { Command, CommandPermissionsFlag, DiscordData, MessageCreateEventData, Opcode, PermissionFlags, SnowflakeData } from "./types";
-import { get } from "./utils";
+import { getCache } from "./utils";
 import _ws from "./ws";
 
 let commands: Record<string, Command<any>> = {};
@@ -92,7 +92,7 @@ function check(data: MessageCreateEventData, permissions: CommandPermissionsFlag
 } = {}): boolean {
     let can = permissions ? false : true;
     if (!can && permissions & CommandPermissionsFlag.OWNER && data.guild_id)
-        can = data.author.id === get("guild", data.guild_id).owner_id;
+        can = data.author.id === getCache("guild", data.guild_id).owner_id;
 
     if (!can && permissions & CommandPermissionsFlag.ADMINISTRATOR && data.member)
         can = checkPermission(Number(data.member.permission), PermissionFlags.ADMINISTRATOR);

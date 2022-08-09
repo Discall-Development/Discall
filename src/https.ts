@@ -17,41 +17,48 @@ export default function client(_token: string) {
     }
 }
 
-// export function get(action: any): HttpRequest {
-
-// }
-export function create<T extends (...args: any[]) => any>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
-export function create(action: HttpRequestData, reason?: string): HttpRequest;
-export function create<T extends (...args: any[]) => any>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
-    let key = "create";
-    let data: HttpRequestData = action;
+function getKey(key: string, data: HttpRequestData): string {
     while(data) {
         key += `+${data.type}`;
-        if ((data.data as IdData).id) {
+        if (Object.keys(data).find(v => v.includes("id"))) {
             data = (data.data as IdData).data;
             continue;
         }
 
         if (!((data.data as HttpRequestData).type && (data.data as HttpRequestData).data))
-            break;
+            return key;
 
         data = data.data as HttpRequestData;
     }
 
-    let url: string = HttpUri[key as keyof typeof HttpUri];
-    data = action;
+    return key;
+}
+
+function formatUrl(url: string, data: HttpRequestData): string {
     while(data) {
-        if ((data as unknown as IdData).id)
-            url = format(url, {
-                id: (data as unknown as IdData).id
-            });
+        if (Object.keys(data).find(v => v.includes("id")))
+            url = format(url, data as unknown as Record<string, string>);
         
         if (data.data)
             data = data.data as HttpRequestData;
         else
-            break;
+            return url;
     }
 
+    return url;
+}
+
+function getData(data: HttpRequestData): any {
+    while(data) {
+        if (data.data)
+            data = data.data as HttpRequestData;
+        else
+            return data;
+    }
+}
+
+function createPacket<T extends (...args: any[]) => any>(key: string, data: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
+    let url: string = formatUrl(HttpUri[key as keyof typeof HttpUri], data);
     let result: HttpRequest = {
         uri(base: URL) {
             base.pathname += url;
@@ -60,7 +67,7 @@ export function create<T extends (...args: any[]) => any>(action: HttpRequestDat
                 mode: UriMode[key as keyof typeof UriMode] as unknown as HttpMode
             };
         },
-        data
+        data: getData(data)
     };
     if (typeof param === "string")
         result["reason"] = param;
@@ -74,35 +81,50 @@ export function create<T extends (...args: any[]) => any>(action: HttpRequestDat
     return result;
 }
 
-// export function edit(action: any): HttpRequest {
-    
-// }
+export function create<T extends (...args: any[]) => any>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
+export function create(action: HttpRequestData, reason?: string): HttpRequest;
+export function create<T extends (...args: any[]) => any>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
+    return createPacket(getKey("create", action), action, param, reason);
+}
 
-// export function remove(action: any): HttpRequest {
-    
-// }
+export function get<T extends (...args: any[]) => any>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
+export function get(action: HttpRequestData, reason?: string): HttpRequest;
+export function get<T extends (...args: any[]) => any>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
+    return createPacket(getKey("get", action), action, param, reason);
+}
 
-// export const list = get;
-// export const search = get;
-// export const crosspost = create;
-// export const bulkDelete = create;
-// export const follow = create;
-// export const trigger = create;
-// export const start = create;
-// export const begin = create;
-// export const execute = create;
-// export const modify = edit;
-// export const pin = edit;
-// export const add = edit;
-// export const join = edit;
-// export const sync = edit;
-// export const close = remove;
-// export const unpin = remove;
-// export const leave = remove;
+export function edit<T extends (...args: any[]) => any>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
+export function edit(action: HttpRequestData, reason?: string): HttpRequest;
+export function edit<T extends (...args: any[]) => any>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
+    return createPacket(getKey("edit", action), action, param, reason);
+}
+
+export function remove<T extends (...args: any[]) => any>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
+export function remove(action: HttpRequestData, reason?: string): HttpRequest;
+export function remove<T extends (...args: any[]) => any>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
+    return createPacket(getKey("remove", action), action, param, reason);
+}
+
+export const crosspost = create;
+export const bulkDelete = create;
+export const follow = create;
+export const trigger = create;
+export const start = create;
+export const begin = create;
+export const execute = create;
+export const list = get;
+export const search = get;
+export const modify = edit;
+export const pin = edit;
+export const add = edit;
+export const join = edit;
+export const sync = edit;
+export const close = remove;
+export const unpin = remove;
+export const leave = remove;
 
 export async function send(packet: HttpRequest) {
     let { uri, mode } = getBase(packet.uri);
-    console.log(uri, mode, packet)
     if (uri) {
         let headers = new fetch.Headers({
             "Authorization": `Bot ${token}`,
@@ -129,7 +151,7 @@ export async function send(packet: HttpRequest) {
         }
 
         if (result.status < 200 || result.status >= 300) {
-            console.log(await result.json());
+            // console.log(await result.json());
             throw new ErrorStatus(result.status);
         }
 

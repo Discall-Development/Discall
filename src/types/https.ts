@@ -21,7 +21,9 @@ export interface HttpRequestData<T extends {} = {}> {
 }
 
 export interface IdData {
-    id: SnowflakeData;
+    guild_id?: SnowflakeData;
+    channel_id?: SnowflakeData;
+    message_id?: SnowflakeData;
     data: HttpRequestData;
 }
 
@@ -31,8 +33,4 @@ export enum HttpUri {
 
 export enum UriMode {
     "create+id+message" = HttpMode.POST
-}
-
-export function isHttpRequestData(obj: any): obj is HttpRequestData {
-    return "type" in obj && "data" in obj;
 }

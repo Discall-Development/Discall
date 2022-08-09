@@ -39,7 +39,7 @@ It is for send Https Request, and it accept our format.
 ---
 ```ts
 {
-    uri: (base: URL) => { uri: string, mode: string };
+    uri: (base: URL) => { uri: string, mode: HttpMode };
     data?: any;
     cache?: () => any | (data: any) => any;
     reason?: string;
@@ -67,8 +67,8 @@ Please see our docs directory, [here](/docs)
 
 ## Interactions
 ---
-- [x] ApplicationCommand
-- [x] MessageComponents
+- [ ] ApplicationCommand
+- [ ] MessageComponents
 - [ ] InteractionResponse
 ## Resources
 ---
@@ -93,5 +93,5 @@ Please see our docs directory, [here](/docs)
 ---
 - [ ] Command
 - [ ] CommandPermission
-- [x] CommandChannel
+- [ ] CommandChannel
 - [ ] InteractionResponse
