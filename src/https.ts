@@ -19,13 +19,15 @@ export default function client(_token: string) {
 
 function getKey(key: string, data: HttpRequestData): string {
     while(data) {
-        key += `+${data.type}`;
+        if (data.type)
+            key += `+${data.type}`;
+
         if (Object.keys(data).find(v => v.includes("id"))) {
-            data = (data.data as IdData).data;
+            data = data.data as HttpRequestData;
             continue;
         }
 
-        if (!((data.data as HttpRequestData).type && (data.data as HttpRequestData).data))
+        if (!data.data)
             return key;
 
         data = data.data as HttpRequestData;
@@ -150,10 +152,8 @@ export async function send(packet: HttpRequest) {
             });
         }
 
-        if (result.status < 200 || result.status >= 300) {
-            // console.log(await result.json());
+        if (result.status < 200 || result.status >= 300)
             throw new ErrorStatus(result.status);
-        }
 
         let json = await result.json();
         if (packet.cache)

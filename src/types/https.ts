@@ -28,7 +28,7 @@ export interface IdData {
 }
 
 export enum HttpUri {
-    "create+id+message" = "/channels/{id}/messages"
+    "create+id+message" = "/channels/{channel_id}/messages"
 }
 
 export enum UriMode {
