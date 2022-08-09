@@ -22,8 +22,11 @@ let send = createBot("TOKEN", {
     prefix: "!"
 });
 
-onReady(async (data: ReadyEventData) => {
-    Bun.write(Bun.stdout, "bot is online\n");
+register({
+    name: EventName.Ready,
+    listener: async (data: ReadyEventData) => {
+        console.log("bot is online");
+    }
 });
 ```
 
