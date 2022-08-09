@@ -2,7 +2,7 @@
     "name": "@discall/discall",
     "version": "1.0.0a1",
     "description": "A async functional discord API wrapper.",
-    "main": "./.build/index.js",
+    "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "scripts": {
         "build": "tsc && cls",
@@ -11,7 +11,7 @@
         "prepare": "npm run build"
     },
     "files": [
-        ".build/**/*"
+        "build/**/*"
     ],
     "keywords": [
         "discord",
