@@ -17,7 +17,7 @@ and I hope it can be more convenient for everyone.
 ---
 How to let bot online? It is a simple way to do this.
 ```ts
-let send = createBot("TOKEN", {
+let send = bot("TOKEN", {
     intents: defaultIntents(),
     prefix: "!"
 });
