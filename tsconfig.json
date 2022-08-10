@@ -104,5 +104,8 @@
     "src/**/*",
     "test/**/*",
     "index.ts"
+  ],
+  "exclude": [
+    "example/**/*"
   ]
 }

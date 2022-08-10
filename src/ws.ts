@@ -4,7 +4,8 @@ import { DiscordData, Opcode } from "./types";
 
 const GATEWAY_VERSION = 10;
 const GATEWAY_ENCODING = "json";
-const GATEWAY_BASE = "wss://gateway.discord.gg";
+const DEFAULT_GATEWAY_BASE = "wss://gateway.discord.gg";
+let GATEWAY_BASE = DEFAULT_GATEWAY_BASE;
 
 enum State {
     OPEN = 1,
@@ -73,6 +74,10 @@ async function error() {
 async function message(ws: WebSocket.WebSocket, event: WebSocket.MessageEvent): Promise<DiscordData> {
     let data = JSON.parse(event.data as string) as DiscordData;
     switch (data.op) {
+    case Opcode.Dispatch:
+        if (data.t === "READY")
+            GATEWAY_BASE = data.d?.resume_gateway_url;
+        break;
     case Opcode.InvalidSession:
         process.exit(1);
     case Opcode.Hello:

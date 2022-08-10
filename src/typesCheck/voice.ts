@@ -1,32 +1,17 @@
 import { StageInstanceData, VoiceRegionData, VoiceStateData } from "../types/voice";
 
+
 export function isStageInstance(obj: any): obj is StageInstanceData {
-    return "id" in obj &&
-        "guild_id" in obj &&
-        "channel_id" in obj &&
-        "topic" in obj &&
-        "privacy_level" in obj &&
-        "discoverable_disabled" in obj &&
-        "guild_scheduled_event_id" in obj;
+    let keys: (keyof StageInstanceData)[] = ["id", "guild_id", "channel_id", "topic", "privacy_level", "discoverable_disabled", "guild_scheduled_event_id"];
+    return !Object.keys(obj).filter((v: any) => !keys.includes(v));
 }
 
 export function isVoiceState(obj: any): obj is VoiceStateData {
-    return "channel_id" in obj &&
-        "user_id" in obj &&
-        "session_id" in obj &&
-        "deaf" in obj &&
-        "mute" in obj &&
-        "self_deaf" in obj &&
-        "self_mute" in obj &&
-        "self_video" in obj &&
-        "suppress" in obj &&
-        "request_to_speak_timestamp" in obj;
+    let keys: (keyof VoiceStateData)[] = ["channel_id", "user_id", "session_id", "deaf", "mute", "self_deaf", "self_mute", "self_video", "suppress", "request_to_speak_timestamp"];
+    return !Object.keys(obj).filter((v: any) => !keys.includes(v));
 }
 
 export function isVoiceRegion(obj: any): obj is VoiceRegionData {
-    return "id" in obj &&
-        "name" in obj &&
-        "optimal" in obj &&
-        "deprecated" in obj &&
-        "custom" in obj;
+    let keys: (keyof VoiceRegionData)[] = ["id", "name", "optimal", "deprecated", "custom"];
+    return !Object.keys(obj).filter((v: any) => !keys.includes(v));
 }

@@ -1,13 +1,18 @@
 import { HttpRequest, HttpRequestData, IdData } from "../types/https";
 
 export function isHttpRequest(obj: any): obj is HttpRequest {
-    return Object.keys(obj).filter(v => !["uri", "data", "cache", "reason"].includes(v)).length === 0 && "uri" in obj && typeof obj.uri === "function";
+    let keys: (keyof HttpRequest)[] = ["uri", "data", "cache", "reason"];
+    return !Object.keys(obj).filter((v: any) => !keys.includes(v));
 }
 
 export function isHttpRequestData(obj: any): obj is HttpRequestData {
-    return "type" in obj && "data" in obj;
+    let keys: (keyof HttpRequestData)[] = ["type", "data"];
+    return !Object.keys(obj).filter((v: any) => !keys.includes(v));
 }
 
 export function isIdData(obj: any): obj is IdData {
-    return isHttpRequestData(obj.data) && Object.keys(obj).filter(v => v.endsWith("id")).length === 1;
+    let keys: (keyof IdData)[] = ["channel_id", "message_id", "data"];
+    return isHttpRequestData(obj.data) &&
+        Object.keys(obj).filter(v => v.endsWith("id")).length === 1 &&
+        !Object.keys(obj).filter((v: any) => !keys.includes(v));
 }

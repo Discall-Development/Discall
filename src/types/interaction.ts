@@ -28,7 +28,7 @@ export interface IApplicationCommandData {
     id: SnowflakeData;
     name: string;
     type: InteractionType;
-    resolved?: ResolveDataData;
+    resolved?: ResolveData;
     options?: ApplicationCommandInteractionDataOptionData[];
     guild_id?: SnowflakeData;
     target_id?: SnowflakeData;
@@ -45,7 +45,7 @@ export interface IModalSubmitData {
     components: MessageComponentData[];
 }
 
-export interface ResolveDataData {
+export interface ResolveData {
     users?: Record<SnowflakeData, UserData>;
     members?: Record<SnowflakeData, GuildMemberData>;
     roles?: Record<SnowflakeData, RoleData>;

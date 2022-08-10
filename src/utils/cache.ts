@@ -120,7 +120,7 @@ register({
     listener: async (data: GuildMemberUpdateEventData) => {
         caches.member.set(data.user.id, { 
             ...data, 
-            ...caches.member.get(data.user.id) 
+            join_at: caches.member.get(data.user.id)?.join_at
         } as GuildMemberData);
     }
 }, {

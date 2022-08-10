@@ -10,4 +10,7 @@ export * from "./https";
 export * from "./intents";
 export * from "./message";
 
-export { bot, channel, message, auditLogs };
+import * as types from "./types";
+import * as utils from "./utils";
+
+export { bot, channel, message, auditLogs, types, utils };

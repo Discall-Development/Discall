@@ -9,7 +9,7 @@ Installation
 download package with npm or bun.
 ```ts
 // in node
-npm i @discall/discall
+npm install @discall/discall
 
 // in bun
 bun add @discall/discall
@@ -18,7 +18,12 @@ bun add @discall/discall
 Command
 ---
 ---
-register command with `onCommand` and get the channel.
+register command with `addCommand`.
 ```ts
-onCommand();
+addCommand({
+    name: "test",
+    run: async (ctx) => {
+        // ...do something
+    }
+});
 ```

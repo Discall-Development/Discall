@@ -1,4 +1,4 @@
-import { createSocket, Socket } from "node:dgram";
+import { createSocket, Socket } from "dgram";
 import { SnowflakeData } from "../types";
 import { close, random } from "./secret";
 

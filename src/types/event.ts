@@ -184,6 +184,7 @@ export interface ReadyEventData {
     user: UserData;
     guilds: UnavailableGuildData[];
     session_id: string;
+    resume_gateway_url: string;
     shard?: [number, number];
     application: {
         flags: ApplicationFlag;
