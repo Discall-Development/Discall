@@ -1,15 +1,6 @@
 node_modules
-build
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
 
-*.xml
-*.iml
-
-bun.*
-*.bun
-.*
-
-!.gitignore
-
-*.json
-!package.json
-!tsconfig.json
+.env

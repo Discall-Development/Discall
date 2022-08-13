@@ -1,0 +1,18 @@
+import { AllowMentionsData, GuildData, GuildFeature, GuildMemberData, GuildMemberMentionData, GuildPreviewData, GuildScheduledEventData, GuildScheduledEventEntityMetadata, IntegrationAccountData, IntegrationApplicationData, IntegrationData, InviteData, InviteMetadata, RoleData, RoleTagsData, UnavailableGuildData, WelcomeScreenData } from "../guild";
+export declare function isGuild(obj: any): obj is GuildData;
+export declare function isGuildPreview(obj: any): obj is GuildPreviewData;
+export declare function isUnavailableGuild(obj: any): obj is UnavailableGuildData;
+export declare function isGuidlFeature(obj: any): obj is GuildFeature;
+export declare function isGuildMember(obj: any): obj is GuildMemberData;
+export declare function isGuildScheduledEvent(obj: any): obj is GuildScheduledEventData;
+export declare function isGuildScheduledEventEntityMetadata(obj: any): obj is GuildScheduledEventEntityMetadata;
+export declare function isGuildMemberMention(obj: any): obj is GuildMemberMentionData;
+export declare function isWelcomeScreen(obj: any): obj is WelcomeScreenData;
+export declare function isIntegration(obj: any): obj is IntegrationData;
+export declare function isIntegrationAccount(obj: any): obj is IntegrationAccountData;
+export declare function isIntegrationApplication(obj: any): obj is IntegrationApplicationData;
+export declare function isAllowMentions(obj: any): obj is AllowMentionsData;
+export declare function isInvite(obj: any): obj is InviteData;
+export declare function isInviteMetadata(obj: any): obj is InviteMetadata;
+export declare function isRole(obj: any): obj is RoleData;
+export declare function isRoleTags(obj: any): obj is RoleTagsData;

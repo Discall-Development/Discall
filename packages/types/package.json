@@ -1,0 +1,18 @@
+{
+    "name": "@discall/types",
+    "version": "1.0.0",
+    "description": "discall interfaces and checkers",
+    "main": "build/index.js",
+    "scripts": {
+        "build": "tsc",
+        "prepare": "npm run build"
+    },
+    "keywords": [
+        "types",
+        "discall",
+        "FP",
+        "API Wrapper"
+    ],
+    "author": "rexwu1104",
+    "license": "ISC"
+}

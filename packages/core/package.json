@@ -1,0 +1,56 @@
+{
+    "name": "@discall/core",
+    "version": "1.0.0a1",
+    "description": "A async functional discord API wrapper.",
+    "main": "./build/index.js",
+    "types": "./build/index.d.ts",
+    "scripts": {
+        "build": "tsc && cls",
+        "test": "node build/test/index.js",
+        "start": "npm run build && npm test",
+        "prepare": "npm run build"
+    },
+    "files": [
+        "build/**/*",
+        "docs/**/*",
+        "img/**/*",
+        "README.md"
+    ],
+    "keywords": [
+        "discord",
+        "FP",
+        "functional",
+        "API Wrapper",
+        "typescript",
+        "javascript"
+    ],
+    "author": "rexwu1104",
+    "license": "ISC",
+    "dependencies": {
+        "@discall/simple-pipe": "workspace:^",
+        "@discall/types": "workspace:^",
+        "form-data": "^4.0.0",
+        "libsodium-wrappers": "^0.7.10",
+        "node-fetch": "^2.6.7",
+        "ws": "^8.8.0"
+    },
+    "devDependencies": {
+        "@types/libsodium-wrappers": "^0.7.9",
+        "@types/node": "^18.6.3",
+        "@types/node-fetch": "^2.6.2",
+        "@types/ws": "^8.5.3",
+        "dotenv": "^16.0.1",
+        "typescript": "^4.7.4"
+    },
+    "directories": {
+        "test": "test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/rexwu1104/Discall.git"
+    },
+    "bugs": {
+        "url": "https://github.com/rexwu1104/Discall/issues"
+    },
+    "homepage": "https://github.com/rexwu1104/Discall#readme"
+}

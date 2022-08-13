@@ -1,0 +1,10 @@
+import { ApplicationCommandData, ApplicationCommandInteractionDataOptionData, ApplicationCommandOptionChoiceData, ApplicationCommandOptionData, IApplicationCommandData, IMessageComponentData, IModalSubmitData, InteractionData, ResolveData } from "../interaction";
+export declare function isInteraction(obj: any): obj is InteractionData;
+export declare function isIApplicationCommand(obj: any): obj is IApplicationCommandData;
+export declare function isIMessageComponent(obj: any): obj is IMessageComponentData;
+export declare function isIModalSubmit(obj: any): obj is IModalSubmitData;
+export declare function isResolve(obj: any): obj is ResolveData;
+export declare function isApplicationCommandInteractionDataOption(obj: any): obj is ApplicationCommandInteractionDataOptionData;
+export declare function isApplicationCommand(obj: any): obj is ApplicationCommandData;
+export declare function isApplicationCommandOption(obj: any): obj is ApplicationCommandOptionData;
+export declare function isApplicationCommandOptionChoice(obj: any): obj is ApplicationCommandOptionChoiceData;
