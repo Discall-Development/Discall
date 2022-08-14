@@ -1,6 +1,6 @@
-import * as m from "node-fetch";
-import _FormData = require("form-data");
-export declare module fetch {
+import * as m from 'node-fetch';
+import _FormData = require('form-data');
+export declare namespace fetch {
     const fetch: typeof import("node-fetch").default;
     const Blob: typeof m.Blob;
     const Headers: typeof m.Headers;

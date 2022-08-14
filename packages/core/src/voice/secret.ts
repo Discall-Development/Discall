@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import * as sodium from "libsodium-wrappers";
 
 (async () => {
@@ -12,5 +13,5 @@ export function close(
 }
 
 export function random(bytes: number, nonce: Buffer) {
-    return sodium.randombytes_buf(bytes, nonce as any);
+    return sodium.randombytes_buf(bytes, nonce as unknown as "uint8array");
 }

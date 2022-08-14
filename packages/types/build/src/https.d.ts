@@ -1,4 +1,4 @@
-import { SnowflakeData } from "./snowflake";
+import { SnowflakeData } from './snowflake';
 export declare enum HttpMode {
     GET = 0,
     POST = 1,
@@ -11,13 +11,13 @@ export interface HttpRequest {
         uri: string;
         mode: HttpMode;
     };
-    data?: any;
-    cache?: (() => any) | ((data: any) => void);
+    data?: unknown;
+    cache?: (() => unknown) | ((data: unknown) => void);
     reason?: string;
 }
-export interface HttpRequestData<T extends {} = {}> {
+export interface HttpRequestData {
     type: string;
-    data: HttpRequestData | IdData | T;
+    data: HttpRequestData | IdData | Record<string, unknown> | Record<string, never>;
 }
 export interface IdData {
     guild_id?: SnowflakeData;
@@ -26,8 +26,8 @@ export interface IdData {
     data: HttpRequestData;
 }
 export declare enum HttpUri {
-    "create+id+message" = "/channels/{channel_id}/messages"
+    'create+id+message' = "/channels/{channel_id}/messages"
 }
 export declare enum UriMode {
-    "create+id+message" = 1
+    'create+id+message' = 1
 }

@@ -1,4 +1,5 @@
-import { register } from "../event";
+/* eslint-disable prefer-const */
+import { register } from '../event';
 import { 
     ChannelCreateEventData, 
     ChannelData, 
@@ -31,7 +32,7 @@ import {
     VoiceStateData, 
     VoiceStateUpdateEventData, 
     WebhookData
-} from "@discall/types";
+} from '@discall/types';
 
 let caches = {
     guild: new Map<SnowflakeData, GuildData>(),
@@ -43,7 +44,7 @@ let caches = {
     webhook: new Map<SnowflakeData, WebhookData>(),
     presence: new Map<SnowflakeData, PresenceUpdateEventData>(),
     voicestate: new Map<SnowflakeData, VoiceStateData>()
-}
+};
 
 register({
     name: EventName.GuildCreate,

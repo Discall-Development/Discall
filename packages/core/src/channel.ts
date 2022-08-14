@@ -1,6 +1,4 @@
-import { EmptyError } from "./error";
-import { ChannelTypes, HttpRequestData, isHttpRequestData, OverwriteData, SnowflakeData, VideoQualityModes, VoiceRegionData } from "@discall/types";
-import { isEmpty } from "./utils";
+import { ChannelTypes, HttpRequestData, isAny, isHttpRequestData, OverwriteData, SnowflakeData, VideoQualityModes, VoiceRegionData } from '@discall/types';
 
 export default function channel<T extends typeof channel>(id: SnowflakeData): T;
 export default function channel(param: HttpRequestData): HttpRequestData;
@@ -12,7 +10,7 @@ export default function channel(qroupDm: {
     nicks: Record<SnowflakeData, string>;
 }): HttpRequestData;
 export default function channel(channel: {
-    name: string | null;
+    name?: string | null;
     type?: ChannelTypes | null;
     position?: number | null;
     nsfw?: boolean | null;
@@ -23,45 +21,45 @@ export default function channel(channel: {
     user_limit?: number | null;
     rate_limit_per_user?: number | null;
     permission_overwrites?: Partial<OverwriteData>[] | null;
-    rtc_region?: VoiceRegionData["id"] | null;
+    rtc_region?: VoiceRegionData['id'] | null;
     video_quality_mode?: VideoQualityModes | null;
     default_auto_archive_duration?: number | null;
 }): HttpRequestData;
-export default function channel(arg_1: any, arg_2?: any) {
-    if (typeof arg_1 === "string")
-        return function(param_1?: any, param_2?: any): HttpRequestData {
+export default function channel(arg_1: unknown, arg_2?: unknown) {
+    if (typeof arg_1 === 'string')
+        return function(param_1?: unknown, param_2?: unknown): HttpRequestData {
             if (isHttpRequestData(param_1))
                 return {
-                    type: "id",
+                    type: 'id',
                     data: {
                         channel_id: arg_1,
                         data: param_1
                     }
                 };
 
-            if (!param_1)
+            if (!isAny(param_1))
                 return {
-                    type: "channel+info",
+                    type: 'channel+info',
                     data: {}
                 };
 
             return {
-                type: "channel+id",
+                type: 'channel+id',
                 data: {
                     channel_id: arg_1,
-                    data: channel(param_1, param_2)
+                    data: channel(param_1 as Record<string, unknown>, param_2 as never)
                 }
             };
         };
 
-    if (typeof arg_1.type === "string" && arg_1.data)
+    if (isHttpRequestData(arg_1))
         return {
-            type: "channel",
+            type: 'channel',
             data: arg_1
-        }
+        } as HttpRequestData;
 
     return {
-        type: "channel",
-        data: { ...arg_1, ...arg_2 }
+        type: 'channel',
+        data: { ...arg_1 as Record<string, unknown>, ...arg_2 as Record<string, unknown> }
     };
 }

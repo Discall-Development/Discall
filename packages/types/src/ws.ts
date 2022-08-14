@@ -1,6 +1,6 @@
 export interface DiscordData {
     op: number;
-    d?: any;
+    d?: unknown;
     s?: number;
     t?: string;
 }

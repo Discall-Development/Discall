@@ -1,8 +1,8 @@
-import { ChannelData, ChannelTypes, LocaleOption } from "./channel";
-import { GuildMemberData, RoleData } from "./guild";
-import { AttachmentData, ComponentType, MessageComponentData, MessageData, MessageInteractionData, SelectOption } from "./message";
-import { SnowflakeData } from "./snowflake";
-import { UserData } from "./user";
+import { ChannelData, ChannelTypes, LocaleOption } from './channel';
+import { GuildMemberData, RoleData } from './guild';
+import { AttachmentData, ComponentType, MessageComponentData, MessageData, MessageInteractionData, SelectOption } from './message';
+import { SnowflakeData } from './snowflake';
+import { UserData } from './user';
 export declare enum InteractionType {
     PING = 1,
     APPLICATION_COMMAND = 2,

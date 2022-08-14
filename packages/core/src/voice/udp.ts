@@ -1,25 +1,25 @@
-import { createSocket, Socket } from "dgram";
-import { SnowflakeData } from "@discall/types";
-import { close, random } from "./secret";
+import { createSocket, Socket } from 'dgram';
+import { SnowflakeData } from '@discall/types';
+import { close, random } from './secret';
 
 interface KeepAlive {
     value: number;
     timestamp: number;
 }
 
-let pings: Map<SnowflakeData, number> = new Map();
-let counters: Map<SnowflakeData, number> = new Map();
-let timestamp: number = Math.floor(Math.random() * 2 ** 32);
-let sequence: number = Math.floor(Math.random() * 2 ** 16);
-let nonce: Buffer = Buffer.alloc(24);
-let keepAliveIDs: Map<SnowflakeData, NodeJS.Timer> = new Map();
-let modes: Map<SnowflakeData, string> = new Map();
+const pings: Map<SnowflakeData, number> = new Map();
+const counters: Map<SnowflakeData, number> = new Map();
+const timestamp: number = Math.floor(Math.random() * 2 ** 32);
+const sequence: number = Math.floor(Math.random() * 2 ** 16);
+const nonce: Buffer = Buffer.alloc(24);
+const keepAliveIDs: Map<SnowflakeData, NodeJS.Timer> = new Map();
+const modes: Map<SnowflakeData, string> = new Map();
 export default async function udp(ip: string, port: number, ssrc: number, server_id: SnowflakeData) {
-    let socket = createSocket("udp4");
-    let keepAlives: KeepAlive[] = [];
+    const socket = createSocket('udp4');
+    const keepAlives: KeepAlive[] = [];
 
-    socket.on("message", (msg) => message(msg, keepAlives, server_id));
-    socket.on("close", () => destroy(server_id))
+    socket.on('message', (msg) => message(msg, keepAlives, server_id));
+    socket.on('close', () => destroy(server_id));
     keepAliveIDs.set(
         server_id,
         setInterval(
@@ -41,7 +41,7 @@ export default async function udp(ip: string, port: number, ssrc: number, server
         server_id
     );
 
-    let ipPort = await performID(socket, ip, port, ssrc) as {
+    const ipPort = await performID(socket, ip, port, ssrc) as {
         ip: string;
         port: number;
     };
@@ -54,13 +54,13 @@ export default async function udp(ip: string, port: number, ssrc: number, server
             return modes.set(server_id, _mode);
         },
         config: ipPort
-    }
+    };
 }
 
 async function message(message: Buffer, keepAlives: KeepAlive[], server_id: SnowflakeData) {
     if (message.length === 8) {
-        let counter = message.readUInt32LE(0);
-        let idx = keepAlives.findIndex(v => v.value === counter);
+        const counter = message.readUInt32LE(0);
+        const idx = keepAlives.findIndex(v => v.value === counter);
         if (idx === -1)
             return;
 
@@ -78,8 +78,8 @@ async function destroy(server_id: SnowflakeData) {
 }
 
 function getIpPort(data: Buffer) {
-    let ip = data.subarray(8, data.indexOf(0, 8)).toString("utf-8");
-    let port = data.readUInt16BE(data.length - 2);
+    const ip = data.subarray(8, data.indexOf(0, 8)).toString('utf-8');
+    const port = data.readUInt16BE(data.length - 2);
 
     return {
         ip, port
@@ -92,7 +92,7 @@ async function keepAlive(socket: Socket, ip: string, port: number, keepAlives: K
         return socket.close();
     }
 
-    let buf = Buffer.alloc(8);
+    const buf = Buffer.alloc(8);
     let counter = counters.get(server_id) as number;
     buf.writeUInt32LE(counter, 0);
     await send(socket, ip, port, buf);
@@ -113,20 +113,21 @@ async function send(socket: Socket, ip: string, port: number, data: Buffer) {
 }
 
 function performID(socket: Socket, ip: string, port: number, ssrc: number) {
-    return new Promise((resolve, _) => {
-        socket.on("message", async function _(message) {
+    return new Promise((resolve) => {
+        socket.on('message', async function _(message) {
             try {
                 if (message.readUInt16BE(0) !== 2)
                     return;
                 
-                let ipPort = getIpPort(message);
-                socket.off("message", _);
+                const ipPort = getIpPort(message);
+                socket.off('message', _);
 
                 resolve(ipPort);
+            // eslint-disable-next-line no-empty
             } catch {}
         });
 
-        let buf = Buffer.alloc(74);
+        const buf = Buffer.alloc(74);
 
         buf.writeUInt16BE(1, 0);
         buf.writeUInt16BE(70, 2);
@@ -137,7 +138,7 @@ function performID(socket: Socket, ip: string, port: number, ssrc: number) {
 }
 
 function createAudioData(data: Buffer, secretKey: Uint8Array, ssrc: number, server_id: SnowflakeData) {
-    let buf = Buffer.alloc(12);
+    const buf = Buffer.alloc(12);
     buf[0] = 0x80;
     buf[1] = 0x74;
 
@@ -150,13 +151,13 @@ function createAudioData(data: Buffer, secretKey: Uint8Array, ssrc: number, serv
 }
 
 function encryptData(data: Buffer, secretKey: Uint8Array, server_id: SnowflakeData) {
-    let buf = Buffer.alloc(24);
+    const buf = Buffer.alloc(24);
     let rand: Uint8Array;
     switch (modes.get(server_id)) {
-    case "xsalsa20_poly1305_suffix":
+    case 'xsalsa20_poly1305_suffix':
         rand = random(24, buf);
         return [close(data, rand as Buffer, secretKey), rand];
-    case "xsalsa20_poly1305":
+    case 'xsalsa20_poly1305':
         return [close(data, nonce, secretKey)];
     }
     return [];

@@ -1,5 +1,5 @@
-import { SnowflakeData } from "../snowflake";
+import { SnowflakeData } from '../snowflake';
 
-export function isSnowflake(obj: any): obj is SnowflakeData {
-    return typeof obj === "string" && !Number.isNaN(Number(obj));
+export function isSnowflake(obj: unknown): obj is SnowflakeData {
+    return typeof obj === 'string' && !Number.isNaN(Number(obj));
 }

@@ -1,23 +1,23 @@
-import * as dotenv from "dotenv";
-import { pipeline } from "@discall/simple-pipe";
-import { bot, allIntents, register, addCommand, message, channel, create } from "../src";
-import { GuildCreateEventData, CommandPermissionsFlag } from "@discall/types";
+import * as dotenv from 'dotenv';
+import { pipeline } from '@discall/simple-pipe';
+import { bot, allIntents, register, addCommand, message, channel, create } from '../src';
+import { GuildCreateEventData, CommandPermissionsFlag } from '@discall/types';
 
 dotenv.config();
-let send = bot(process.env.Discall as string, {
+const send = bot(process.env.Discall as string, {
     intents: allIntents(),
-    prefix: "!"
+    prefix: '!'
 });
 
-let guildCreateEvent = register({
-    name: "guild_create",
+register({
+    name: 'guild_create',
     listener: async (guild: GuildCreateEventData) => {
-        console.log(guild.name);
+        return console.log(guild.name);
     }
 });
 
-let testCommand = addCommand({
-    name: "test",
+addCommand({
+    name: 'test',
     run: async (ctx, num1, num2) => {
         await pipeline(
             message,
@@ -30,7 +30,7 @@ let testCommand = addCommand({
     }
 }, {
     converters: [Number, Number],
-    aliases: ["t", "te"],
+    aliases: ['t', 'te'],
     permissions: CommandPermissionsFlag.OWNER
 });
 

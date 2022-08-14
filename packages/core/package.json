@@ -5,10 +5,10 @@
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "scripts": {
-        "build": "tsc && cls",
-        "test": "node build/test/index.js",
-        "start": "npm run build && npm test",
-        "prepare": "npm run build"
+        "build": "tsc",
+        "test": "yarn node build/test/index.js",
+        "start": "yarn build && yarn test",
+        "prepare": "yarn build"
     },
     "files": [
         "build/**/*",

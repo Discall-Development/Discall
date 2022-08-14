@@ -1,45 +1,46 @@
-import { CommandExisted } from "./error";
-import { Command, CommandPermissionsFlag, DiscordData, MessageCreateEventData, Opcode, PermissionFlags, SnowflakeData } from "@discall/types";
-import { getCache } from "./utils";
-import _ws from "./ws";
+import { CommandExisted } from './error';
+import { Command, CommandPermissionsFlag, DiscordData, MessageCreateEventData, Opcode, PermissionFlags, SnowflakeData } from '@discall/types';
+import { getCache } from './utils';
+import _ws from './ws';
 
-let commands: Record<string, Command<any>> = {};
+const commands: Record<string, Command<(v: unknown) => unknown>> = {};
 let registered = false;
 export default function commander(ws: ReturnType<typeof _ws>, prefix: string): ReturnType<typeof _ws> {
     if (registered)
         return ws;
 
-    let onMessage = ws.onmessage;
-    let onClose = ws.onclose;
+    const onMessage = ws.onmessage;
+    const onClose = ws.onclose;
     ws.onmessage = async (event) => {
-        let data = await onMessage(event) as DiscordData;
-        if (data.op !== Opcode.Dispatch || data.t !== "MESSAGE_CREATE")
+        const data = await onMessage(event) as DiscordData;
+        if (data.op !== Opcode.Dispatch || data.t !== 'MESSAGE_CREATE')
             return data;
             
-        let message: MessageCreateEventData = data.d as MessageCreateEventData;
-        let content = message.content.trim();
+        const message: MessageCreateEventData = data.d as MessageCreateEventData;
+        const content = message.content.trim();
         if (content.split(/ +/g)[0].startsWith(prefix)) {
+            // eslint-disable-next-line prefer-const
             let [name, ...args] = content.split(/ +/g);
-            name = name.replace(prefix, "");
+            name = name.replace(prefix, '');
 
             await commands[name].run(message, ...args);
         }
 
         return data;
-    }
+    };
 
     ws.onclose = async (event) => {
-        let ws = await onClose(event);
+        const ws = await onClose(event);
         registered = false;
 
         return commander(ws, prefix);
-    }
+    };
 
     registered = true;
     return ws;
 }
 
-export function addCommand<T extends (v: any) => any>(command: {
+export function addCommand<T extends (v: unknown) => unknown>(command: {
     name: string;
     run: (context: MessageCreateEventData, ...args: ReturnType<T>[]) => Promise<void>;
     description?: string;
@@ -63,7 +64,7 @@ export function addCommand<T extends (v: any) => any>(command: {
                 throw new CommandExisted(v);
         });
 
-    let run = command.run;
+    const run = command.run;
     async function _run(data: MessageCreateEventData, ...args: ReturnType<T>[]) {
         if (!options)
             options = {};
@@ -73,16 +74,16 @@ export function addCommand<T extends (v: any) => any>(command: {
 
         if (check(data, options.permissions, options.permission_data)) {
             if (options.converters)
-                return await run(data, ...options.converters.map((v, idx) => v(args[idx])));
+                return await run(data, ...(options.converters.map((v, idx) => v(args[idx])) as ReturnType<T>[]));
             return await run(data, ...args);
         }
     }
 
-    commands[command.name] = { ...command, run: _run, ...options };
+    commands[command.name] = { ...command, run: _run as Command<(v: unknown) => unknown>['run'], ...options };
     if (options && options.aliases)
         options.aliases.forEach(v => commands[v] = commands[command.name]);
 
-    return commands[command.name];
+    return commands[command.name] as Command<T>;
 }
 
 function check(data: MessageCreateEventData, permissions: CommandPermissionsFlag, { roles, member, user }: {
@@ -92,7 +93,7 @@ function check(data: MessageCreateEventData, permissions: CommandPermissionsFlag
 } = {}): boolean {
     let can = permissions ? false : true;
     if (!can && permissions & CommandPermissionsFlag.OWNER && data.guild_id)
-        can = data.author.id === getCache("guild", data.guild_id).owner_id;
+        can = data.author.id === getCache('guild', data.guild_id).owner_id;
 
     if (!can && permissions & CommandPermissionsFlag.ADMINISTRATOR && data.member)
         can = checkPermission(Number(data.member.permission), PermissionFlags.ADMINISTRATOR);

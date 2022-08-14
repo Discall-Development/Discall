@@ -8,8 +8,8 @@ const simple_pipe_1 = __importDefault(require("@discall/simple-pipe"));
 const runtimeModule_1 = require("./runtimeModule");
 const types_1 = require("@discall/types");
 const GATEWAY_VERSION = 10;
-const GATEWAY_ENCODING = "json";
-const DEFAULT_GATEWAY_BASE = "wss://gateway.discord.gg";
+const GATEWAY_ENCODING = 'json';
+const DEFAULT_GATEWAY_BASE = 'wss://gateway.discord.gg';
 let GATEWAY_BASE = DEFAULT_GATEWAY_BASE;
 var State;
 (function (State) {
@@ -24,10 +24,10 @@ let sequence = null;
 let session_id;
 let heartbeatID;
 function ws(token, intents) {
-    let ws = new runtimeModule_1.WebSocket.WebSocket(`${GATEWAY_BASE}?v=${GATEWAY_VERSION}&encoding=${GATEWAY_ENCODING}`);
+    const ws = new runtimeModule_1.WebSocket.WebSocket(`${GATEWAY_BASE}?v=${GATEWAY_VERSION}&encoding=${GATEWAY_ENCODING}`);
     if (!state)
         state = State.OPEN;
-    ws.onopen = () => open(ws, token, intents, sequence, session_id);
+    ws.onopen = () => open(ws, token, intents, session_id);
     ws.onclose = (event) => close(event, token, intents);
     ws.onerror = () => error();
     ws.onmessage = (event) => message(ws, event);
@@ -41,12 +41,12 @@ async function send(ws, data) {
         .execute();
 }
 exports.send = send;
-async function open(ws, token, intents, sequence, session_id) {
+async function open(ws, token, intents, session_id) {
     switch (state) {
         case State.OPEN:
             return await login(ws, token, intents);
         case State.RESUME:
-            return await resume(ws, token, sequence, session_id);
+            return await resume(ws, token, session_id);
     }
 }
 async function close(event, token, intents) {
@@ -63,14 +63,16 @@ async function error() {
     process.exit(1);
 }
 async function message(ws, event) {
-    let data = JSON.parse(event.data);
+    const data = JSON.parse(event.data);
     switch (data.op) {
         case types_1.Opcode.Dispatch:
-            if (data.t === "READY")
-                GATEWAY_BASE = data.d?.resume_gateway_url;
+            if (data.t === 'READY')
+                GATEWAY_BASE = data.d.resume_gateway_url;
+            sequence = data.s;
             break;
         case types_1.Opcode.InvalidSession:
             process.exit(1);
+            break;
         case types_1.Opcode.Hello:
             await keepAlive(ws, data.d.heartbeat_interval);
     }
@@ -83,14 +85,14 @@ async function login(ws, token, intents) {
             token,
             intents,
             properties: {
-                os: "linux",
-                browser: "discall",
-                device: "discall",
+                os: 'linux',
+                browser: 'discall',
+                device: 'discall',
             },
         }
     });
 }
-async function resume(ws, token, sequence, session_id) {
+async function resume(ws, token, session_id) {
     return await send(ws, {
         op: types_1.Opcode.Resume,
         d: {

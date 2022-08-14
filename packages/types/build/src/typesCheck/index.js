@@ -14,8 +14,13 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+__exportStar(require("./application"), exports);
+__exportStar(require("./channel"), exports);
+__exportStar(require("./guild"), exports);
 __exportStar(require("./https"), exports);
+__exportStar(require("./interaction"), exports);
 __exportStar(require("./message"), exports);
+__exportStar(require("./original"), exports);
 __exportStar(require("./snowflake"), exports);
 __exportStar(require("./timestamp"), exports);
 __exportStar(require("./user"), exports);

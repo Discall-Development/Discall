@@ -1,20 +1,22 @@
-import pipe, {pipeline} from "..";
+import pipe, {pipeline} from '..';
 
-const map = function <T>(arr: Array<T>, cb: Parameters<Array<T>["map"]>[0]): ReturnType<typeof cb> {
+const map = function <T>(arr: Array<T>, cb: Parameters<Array<T>['map']>[0]): ReturnType<typeof cb> {
     return arr.map(cb);
-}
+};
 
-function promiseTest(arr: any[]) {
-    return new Promise((resolve, _) => {
-        let iter = arr[Symbol.iterator]();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function promiseTest(arr: any[]): Promise<typeof arr> {
+    return new Promise((resolve) => {
+        const iter = arr[Symbol.iterator]();
         setInterval(function _() {
-            let obj = iter.next();
+            const obj = iter.next();
             if (obj.done)
                 resolve(arr);
         }, 100);
     });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function asyncTest(arr: any[]) {
     return arr;
 }
@@ -26,7 +28,7 @@ console.log(
         .pipe(asyncTest)
         .pipe((arr: number[]) => [...arr, 40])
         .execute()
-)
+);
 
 console.log(
     await pipeline(
@@ -35,4 +37,4 @@ console.log(
         asyncTest,
         (arr: number[]) => [...arr, 40]
     ).execute([1, 2, 3])
-)
+);

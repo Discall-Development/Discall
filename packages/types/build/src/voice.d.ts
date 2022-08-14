@@ -1,6 +1,6 @@
-import { GuildMemberData } from "./guild";
-import { SnowflakeData } from "./snowflake";
-import { Timestamp } from "./timestamp";
+import { GuildMemberData } from './guild';
+import { SnowflakeData } from './snowflake';
+import { Timestamp } from './timestamp';
 export interface StageInstanceData {
     id: SnowflakeData;
     guild_id: SnowflakeData;

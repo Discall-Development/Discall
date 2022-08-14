@@ -1,9 +1,9 @@
-import pipe from "@discall/simple-pipe";
-import { NoneValidEncryptionMode } from "../error";
-import { WebSocket } from "../runtimeModule";
-import { DiscordData, Opcode, SnowflakeData, VoiceOpcode, VoiceServerUpdateEventData } from "@discall/types";
-import __ws from "../ws";
-import udp from "./udp";
+import pipe from '@discall/simple-pipe';
+import { NoneValidEncryptionMode } from '../error';
+import { WebSocket } from '../runtimeModule';
+import { DiscordData, Opcode, ReadyEventData, SnowflakeData, VoiceOpcode, VoiceServerUpdateEventData } from '@discall/types';
+import __ws from '../ws';
+import udp from './udp';
 
 enum VoiceStates {
     OPEN = 1,
@@ -14,24 +14,25 @@ enum VoiceStates {
 }
 
 let registered = false;
-let clients: Map<SnowflakeData, WebSocket.WebSocket> = new Map();
+const clients: Map<SnowflakeData, WebSocket.WebSocket> = new Map();
 export default function voice(_ws: ReturnType<typeof __ws>): typeof _ws {
     if (registered)
         return _ws;
 
-    let onMessage = _ws.onmessage;
-    let onClose = _ws.onclose;
+    const onMessage = _ws.onmessage;
+    const onClose = _ws.onclose;
     let user_id: SnowflakeData, session_id: string;
     _ws.onmessage = async (event) => {
-        let data = await onMessage(event);
+        const data = await onMessage(event);
         if (data.op === Opcode.Dispatch) {
+            const ready = <ReadyEventData>data.d;
+            const server = <VoiceServerUpdateEventData>data.d;
             switch(data.t) {
-            case "READY":
-                user_id = data.d.user.id;
-                session_id = data.d.session_id;
+            case 'READY':
+                user_id = ready.user.id;
+                session_id = ready.session_id;
                 break;
-            case "VOICE_SERVER_UPDATE":
-                let server: VoiceServerUpdateEventData = data.d;
+            case 'VOICE_SERVER_UPDATE':
                 clients.set(server.guild_id, ws(
                     server.endpoint as string,
                     server.token,
@@ -43,25 +44,25 @@ export default function voice(_ws: ReturnType<typeof __ws>): typeof _ws {
         }
 
         return data;
-    }
+    };
 
     _ws.onclose = async (event) => {
-        let ws = await onClose(event);
+        const ws = await onClose(event);
         registered = false;
 
         return voice(ws);
-    }
+    };
 
     registered = true;
     return _ws;
 }
 
-let states: Map<SnowflakeData, VoiceStates> = new Map();
-let heartbeatIDs: Map<SnowflakeData, NodeJS.Timer> = new Map();
+const states: Map<SnowflakeData, VoiceStates> = new Map();
+const heartbeatIDs: Map<SnowflakeData, NodeJS.Timer> = new Map();
 let ssrcs: Map<SnowflakeData, number>;
-let udpSends: Map<SnowflakeData, (data: Buffer, secretKey?: Buffer) => Promise<void>> = new Map();
+const udpSends: Map<SnowflakeData, (data: Buffer, secretKey?: Buffer) => Promise<void>> = new Map();
 function ws(endpoint: string, token: string, session_id: string, server_id: SnowflakeData, user_id: SnowflakeData): WebSocket.WebSocket {
-    let ws = new WebSocket.WebSocket(`wss://${endpoint}?v=4`);
+    const ws = new WebSocket.WebSocket(`wss://${endpoint}?v=4`);
     if (!states.has(server_id))
         states.set(server_id, VoiceStates.OPEN);
 
@@ -115,14 +116,14 @@ async function error(server_id: SnowflakeData) {
 }
 
 async function message(ws: WebSocket.WebSocket, event: WebSocket.MessageEvent, server_id: SnowflakeData) {
-    let data: DiscordData = JSON.parse(event.data as string);
+    const data: DiscordData = JSON.parse(event.data as string);
     switch (data.op) {
     case VoiceOpcode.Ready:
         return await ready(ws, data, server_id);
     case VoiceOpcode.SessionDescription:
         return await sessionDescription(data, server_id);
     case VoiceOpcode.Hello:
-        return await keepAlive(ws, data.d.heart_interval, server_id);
+        return await keepAlive(ws, (data.d as { heartbeat_interval: number}).heartbeat_interval, server_id);
     case VoiceOpcode.ClientDisconnect:
         return await destroy(ws);
     }
@@ -154,33 +155,38 @@ async function resume(ws: WebSocket.WebSocket, user_id: SnowflakeData, server_id
 }
 
 async function ready(ws: WebSocket.WebSocket, data: DiscordData, server_id: SnowflakeData) {
-    let { modes, ip, port, ssrc: _ssrc } = data.d;
-    let _udp = await udp(ip, port, _ssrc, server_id);
+    const { modes, ip, port, ssrc: _ssrc } = data.d as {
+        modes: string[],
+        ip: string,
+        port: number,
+        ssrc: number
+    };
+    const _udp = await udp(ip, port, _ssrc, server_id);
 
     udpSends.set(server_id, _udp.send as (data: Buffer, secretKey?: Buffer) => Promise<void>);
     ssrcs.set(server_id, _ssrc);
 
     _udp.set(await selectProtocol(ws, modes, _udp.config, server_id));
-    states.set(server_id, VoiceStates.READY)
+    states.set(server_id, VoiceStates.READY);
 }
 
 async function selectProtocol(ws: WebSocket.WebSocket, modes: string[], config: {
     ip: string;
     port: number;
 }, server_id: SnowflakeData) {
-    let valids = [
-        "xsalsa20_poly1305",
-        "xsalsa20_poly1305_suffix"
+    const valids = [
+        'xsalsa20_poly1305',
+        'xsalsa20_poly1305_suffix'
     ];
-    let mode = modes.find(v => valids.includes(v));
+    const mode = modes.find(v => valids.includes(v));
     if (!mode)
         throw new NoneValidEncryptionMode(modes);
     
-    states.set(server_id, VoiceStates.SELECT)
+    states.set(server_id, VoiceStates.SELECT);
     await send(ws, {
         op: VoiceOpcode.SelectProtocol,
         d: {
-            protocol: "udp",
+            protocol: 'udp',
             data: {
                 address: config.ip,
                 port: config.port,
@@ -192,9 +198,9 @@ async function selectProtocol(ws: WebSocket.WebSocket, modes: string[], config: 
 }
 
 async function sessionDescription(data: DiscordData, server_id: SnowflakeData) {
-    let send = udpSends.get(server_id) as (data: Buffer, secretKey?: Buffer) => Promise<void>;
+    const send = udpSends.get(server_id) as (data: Buffer, secretKey?: Buffer) => Promise<void>;
     return udpSends.set(server_id, async function(_data: Buffer) {
-        return await send(_data, data.d.secret_key);
+        return await send(_data, (data.d as { secret_key: Buffer }).secret_key);
     });
 }
 
@@ -207,6 +213,7 @@ async function keepAlive(ws: WebSocket.WebSocket, heartbeat: number, server_id: 
     }, heartbeat));
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function setSpeaking(ws: WebSocket.WebSocket, server_id: SnowflakeData) {
     return await send(ws, {
         op: VoiceOpcode.Speaking,
@@ -223,6 +230,6 @@ async function destroy(ws: WebSocket.WebSocket) {
 }
 
 export async function sendPacket(server_id: SnowflakeData, data: Buffer) {
-    let send = udpSends.get(server_id) as (data: Buffer) => Promise<void>;
+    const send = udpSends.get(server_id) as (data: Buffer) => Promise<void>;
     await send(data);
 }

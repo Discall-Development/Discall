@@ -1,12 +1,12 @@
-import { ApplicationFlag, ApplicationCommandPermissionsData } from "./application";
-import { ChannelData, ChannelTypes, ThreadMemberData } from "./channel";
-import { GuildData, GuildMemberData, GuildMemberMentionData, GuildScheduledEventData, IntegrationData, InviteTargetType, RoleData, UnavailableGuildData } from "./guild";
-import { InteractionData } from "./interaction";
-import { EmojiData, StickerData, MessageData } from "./message";
-import { SnowflakeData } from "./snowflake";
-import { Timestamp } from "./timestamp";
-import { UserData, ActivityData, ClientStatusData, PresenceUpdateData } from "./user";
-import { StageInstanceData, VoiceStateData } from "./voice";
+import { ApplicationFlag, ApplicationCommandPermissionsData } from './application';
+import { ChannelData, ChannelTypes, ThreadMemberData } from './channel';
+import { GuildData, GuildMemberData, GuildMemberMentionData, GuildScheduledEventData, IntegrationData, InviteTargetType, RoleData, UnavailableGuildData } from './guild';
+import { InteractionData } from './interaction';
+import { EmojiData, StickerData, MessageData } from './message';
+import { SnowflakeData } from './snowflake';
+import { Timestamp } from './timestamp';
+import { UserData, ActivityData, ClientStatusData, PresenceUpdateData } from './user';
+import { StageInstanceData, VoiceStateData } from './voice';
 export declare type EventData = ReadyEventData | ResumedEventData | ApplicationCommandPermissionsUpdateEventData | ChannelCreateEventData | ChannelUpdateEventData | ChannelDeleteEventData | ThreadCreateEventData | ThreadUpdateEventData | ThreadDeleteEventData | ThreadListSyncEventData | ThreadMemberUpdateEventData | ThreadMembersUpdateEventData | ChannelPinsUpdateEventData | GuildCreateEventData | GuildUpdateEventData | GuildDeleteEventData | GuildBanAddEventData | GuildBanRemoveEventData | GuildEmojisUpdateEventData | GuildStickersUpdateEventData | GuildIntegrationsUpdateEventData | GuildMemberAddEventData | GuildMemberRemoveEventData | GuildMemberUpdateEventData | GuildMembersChunkEventData | GuildRoleCreateEventData | GuildRoleUpdateEventData | GuildRoleDeleteEventData | GuildScheduledEventCreateEventData | GuildScheduledEventUpdateEventData | GuildScheduledEventDeleteEventData | GuildScheduledEventUserAddEventData | GuildScheduledEventUserRemoveEventData | IntegrationCreateEventData | IntegrationUpdateEventData | IntegrationDeleteEventData | InviteCreateEventData | InviteDeleteEventData | MessageCreateEventData | MessageUpdateEventData | MessageDeleteEventData | MessageDeleteBulkEventData | MessageReactionAddEventData | MessageReactionRemoveEventData | MessageReactionRemoveAllEventData | MessageReactionRemoveEmojiEventData | PresenceUpdateEventData | TypingStartEventData | UserUpdateEventData | VoiceStateUpdateEventData | VoiceServerUpdateEventData | WebhookUpdateEventData | InteractionCreateEventData | StageInstanceCreateEventData | StageInstanceUpdateEventData | StageInstanceDeleteEventData;
 export declare enum EventName {
     Ready = "READY",
@@ -132,26 +132,21 @@ export interface ReadyEventData {
         id: SnowflakeData;
     };
 }
-export interface ResumedEventData {
-}
+export declare type ResumedEventData = Record<string, never>;
 export interface ApplicationCommandPermissionsUpdateEventData {
     id: SnowflakeData;
     application_id: SnowflakeData;
     guild_id: SnowflakeData;
     permissions: ApplicationCommandPermissionsData[];
 }
-export interface ChannelCreateEventData extends ChannelData {
-}
-export interface ChannelUpdateEventData extends ChannelData {
-}
-export interface ChannelDeleteEventData extends ChannelData {
-}
+export declare type ChannelCreateEventData = ChannelData;
+export declare type ChannelUpdateEventData = ChannelData;
+export declare type ChannelDeleteEventData = ChannelData;
 export interface ThreadCreateEventData extends ChannelData {
     newly_created?: boolean;
     thread_member?: ThreadMemberData;
 }
-export interface ThreadUpdateEventData extends ChannelData {
-}
+export declare type ThreadUpdateEventData = ChannelData;
 export interface ThreadDeleteEventData {
     id: SnowflakeData;
     guild_id: SnowflakeData;
@@ -197,10 +192,8 @@ export interface GuildCreateEventData extends GuildData {
     stage_instances: StageInstanceData[];
     guild_scheduled_events: GuildScheduledEventData;
 }
-export interface GuildUpdateEventData extends GuildData {
-}
-export interface GuildDeleteEventData extends UnavailableGuildData {
-}
+export declare type GuildUpdateEventData = GuildData;
+export declare type GuildDeleteEventData = UnavailableGuildData;
 export interface GuildBanAddEventData {
     guild_id: SnowflakeData;
     user: UserData;
@@ -245,7 +238,7 @@ export interface GuildMembersChunkEventData {
     members: GuildMemberData[];
     chunk_index: number;
     chunk_count: number;
-    not_found?: any[];
+    not_found?: unknown[];
     presences?: PresenceUpdateData[];
     nonce?: string;
 }
@@ -261,12 +254,9 @@ export interface GuildRoleDeleteEventData {
     guild_id: SnowflakeData;
     role_id: SnowflakeData;
 }
-export interface GuildScheduledEventCreateEventData extends GuildScheduledEventData {
-}
-export interface GuildScheduledEventUpdateEventData extends GuildScheduledEventData {
-}
-export interface GuildScheduledEventDeleteEventData extends GuildScheduledEventData {
-}
+export declare type GuildScheduledEventCreateEventData = GuildScheduledEventData;
+export declare type GuildScheduledEventUpdateEventData = GuildScheduledEventData;
+export declare type GuildScheduledEventDeleteEventData = GuildScheduledEventData;
 export interface GuildScheduledEventUserAddEventData {
     guild_scheduled_event_id: SnowflakeData;
     user_id: SnowflakeData;
@@ -315,8 +305,7 @@ export interface MessageCreateEventData extends MessageData {
     member?: GuildMemberData;
     mentions: GuildMemberMentionData[];
 }
-export interface MessageUpdateEventData extends MessageCreateEventData {
-}
+export declare type MessageUpdateEventData = MessageCreateEventData;
 export interface MessageDeleteEventData {
     id: SnowflakeData;
     channel_id: SnowflakeData;
@@ -367,10 +356,8 @@ export interface TypingStartEventData {
     timestamp: number;
     member?: GuildMemberData;
 }
-export interface UserUpdateEventData extends UserData {
-}
-export interface VoiceStateUpdateEventData extends VoiceStateData {
-}
+export declare type UserUpdateEventData = UserData;
+export declare type VoiceStateUpdateEventData = VoiceStateData;
 export interface VoiceServerUpdateEventData {
     token: string;
     guild_id: SnowflakeData;
@@ -380,24 +367,12 @@ export interface WebhookUpdateEventData {
     guild_id: SnowflakeData;
     channel_id: SnowflakeData;
 }
-export interface InteractionCreateEventData extends InteractionData {
-}
-export interface StageInstanceCreateEventData extends StageInstanceData {
-}
-export interface StageInstanceUpdateEventData extends StageInstanceData {
-}
-export interface StageInstanceDeleteEventData extends StageInstanceData {
-}
-declare type UnionToObject<T extends string> = {
-    [k in T]: UnionToObject<Exclude<T, k>>;
-};
-declare type ObjectToTuple<T extends {}> = {} extends T ? [] : {
-    [k in keyof T]: [k, ...ObjectToTuple<T[k]>];
-}[keyof T];
-export declare type UnionToArray<T extends string> = ObjectToTuple<UnionToObject<T>>;
+export declare type InteractionCreateEventData = InteractionData;
+export declare type StageInstanceCreateEventData = StageInstanceData;
+export declare type StageInstanceUpdateEventData = StageInstanceData;
+export declare type StageInstanceDeleteEventData = StageInstanceData;
 export interface Event<T extends EventData> {
     remove: boolean;
     check: (data: T) => boolean;
     listen: (data: T) => Promise<void>;
 }
-export {};

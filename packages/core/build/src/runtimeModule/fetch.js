@@ -26,6 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetch = void 0;
 const m = __importStar(require("node-fetch"));
 const _FormData = require("form-data");
+// eslint-disable-next-line @typescript-eslint/no-namespace
 var fetch;
 (function (fetch_1) {
     fetch_1.fetch = m.default;

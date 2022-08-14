@@ -1,7 +1,7 @@
-import { DiscordData } from "../ws";
-import { isAny, isNumber, isString, isTypeObject, isTypeUndefined } from "./original";
+import { DiscordData } from '../ws';
+import { isAny, isNumber, isString, isTypeObject, isTypeUndefined } from './original';
 
-export function isDiscordData(obj: any): obj is DiscordData {
+export function isDiscordData(obj: unknown): obj is DiscordData {
     return isTypeObject({
         op: isNumber,
         d: isTypeUndefined(isAny),

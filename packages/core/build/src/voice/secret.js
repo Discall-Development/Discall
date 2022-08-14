@@ -24,6 +24,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.random = exports.close = void 0;
+/* eslint-disable quotes */
 const sodium = __importStar(require("libsodium-wrappers"));
 (async () => {
     await sodium.ready;

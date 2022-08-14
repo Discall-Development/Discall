@@ -25,6 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebSocket = void 0;
 const WS = __importStar(require("ws"));
+// eslint-disable-next-line @typescript-eslint/no-namespace
 var WebSocket;
 (function (WebSocket_1) {
     WebSocket_1.WebSocket = WS.WebSocket;

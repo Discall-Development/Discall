@@ -1,4 +1,4 @@
-import { ChannelData, EmojiData, GuildData, GuildMemberData, MessageData, PresenceUpdateEventData, UserData, VoiceStateData, WebhookData } from "@discall/types";
+import { ChannelData, EmojiData, GuildData, GuildMemberData, MessageData, PresenceUpdateEventData, UserData, VoiceStateData, WebhookData } from '@discall/types';
 declare let caches: {
     guild: Map<string, GuildData>;
     channel: Map<string, ChannelData>;

@@ -1,9 +1,9 @@
-import { ActivityAssets, ActivityButtons, ActivityData, ActivityEmoji, ActivityParty, ActivitySecrets, ActivityTimestamps, ClientStatusData, PresenceUpdateData, UserData } from "../user";
-import { isLocaleOption } from "./channel";
-import { isBoolean, isNumber, isString, isTypeArray, isTypeNull, isTypeObject, isTypeTuple, isTypeUndefined } from "./original";
-import { isSnowflake } from "./snowflake";
+import { ActivityAssets, ActivityButtons, ActivityData, ActivityEmoji, ActivityParty, ActivitySecrets, ActivityTimestamps, ClientStatusData, PresenceUpdateData, UserData } from '../user';
+import { isLocaleOption } from './channel';
+import { isBoolean, isNumber, isString, isTypeArray, isTypeNull, isTypeObject, isTypeTuple, isTypeUndefined } from './original';
+import { isSnowflake } from './snowflake';
 
-export function isActivity(obj: any): obj is ActivityData {
+export function isActivity(obj: unknown): obj is ActivityData {
     return isTypeObject({
         name: isString,
         type: isNumber,
@@ -23,14 +23,14 @@ export function isActivity(obj: any): obj is ActivityData {
     })(obj);
 }
 
-export function isActivityTimestamp(obj: any): obj is ActivityTimestamps {
+export function isActivityTimestamp(obj: unknown): obj is ActivityTimestamps {
     return isTypeObject({
         start: isTypeUndefined(isNumber),
         end: isTypeUndefined(isNumber)
     })(obj);
 }
 
-export function isActivityEmoji(obj: any): obj is ActivityEmoji {
+export function isActivityEmoji(obj: unknown): obj is ActivityEmoji {
     return isTypeObject({
         name: isString,
         id: isTypeUndefined(isSnowflake),
@@ -38,14 +38,14 @@ export function isActivityEmoji(obj: any): obj is ActivityEmoji {
     })(obj);
 }
 
-export function isActivityParty(obj: any): obj is ActivityParty {
+export function isActivityParty(obj: unknown): obj is ActivityParty {
     return isTypeObject({
         id: isTypeUndefined(isString),
         size: isTypeUndefined(isTypeTuple(isNumber, isNumber))
     })(obj);
 }
 
-export function isActivityAssets(obj: any): obj is ActivityAssets {
+export function isActivityAssets(obj: unknown): obj is ActivityAssets {
     return isTypeObject({
         large_image: isTypeUndefined(isString),
         large_text: isTypeUndefined(isString),
@@ -54,7 +54,7 @@ export function isActivityAssets(obj: any): obj is ActivityAssets {
     })(obj);
 }
 
-export function isActivitySecrets(obj: any): obj is ActivitySecrets {
+export function isActivitySecrets(obj: unknown): obj is ActivitySecrets {
     return isTypeObject({
         join: isTypeUndefined(isString),
         spectate: isTypeUndefined(isString),
@@ -62,14 +62,14 @@ export function isActivitySecrets(obj: any): obj is ActivitySecrets {
     })(obj);
 }
 
-export function isActivityButtons(obj: any): obj is ActivityButtons {
+export function isActivityButtons(obj: unknown): obj is ActivityButtons {
     return isTypeObject({
         label: isString,
         url: isString
     })(obj);
 }
 
-export function isClientStatus(obj: any): obj is ClientStatusData {
+export function isClientStatus(obj: unknown): obj is ClientStatusData {
     return isTypeObject({
         desktop: isTypeUndefined(isString),
         mobile: isTypeUndefined(isString),
@@ -77,7 +77,7 @@ export function isClientStatus(obj: any): obj is ClientStatusData {
     })(obj);
 }
 
-export function isUser(obj: any): obj is UserData {
+export function isUser(obj: unknown): obj is UserData {
     return isTypeObject({
         id: isSnowflake,
         username: isString,
@@ -97,7 +97,7 @@ export function isUser(obj: any): obj is UserData {
     })(obj);
 }
 
-export function isPresenceUpdate(obj: any): obj is PresenceUpdateData {
+export function isPresenceUpdate(obj: unknown): obj is PresenceUpdateData {
     return isTypeObject({
         user: isUser,
         guild_id: isSnowflake,

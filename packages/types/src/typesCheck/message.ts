@@ -1,12 +1,12 @@
-import { ActionRowData, AttachmentData, ButtonData, ComponentType, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, EmbedImageData, EmbedProviderData, EmbedThumbnailData, EmbedVideoData, EmojiData, MessageActivityData, MessageComponentData, MessageData, MessageInteractionData, MessageReferenceData, MessageStickerItemData, ModalData, OtherComponentData, ReactionData, SelectMenuData, SelectOption, StickerData, TextInputData } from "../message";
-import { isChannel, isChannelMention } from "./channel";
-import { isRole } from "./guild";
-import { isBoolean, isLiteral, isNumber, isString, isTypeArray, isTypeNull, isTypeObject, isTypeUndefined, isUnion } from "./original";
-import { isSnowflake } from "./snowflake";
-import { isTimestamp } from "./timestamp";
-import { isUser } from "./user";
+import { ActionRowData, AttachmentData, ButtonData, ComponentType, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, EmbedImageData, EmbedProviderData, EmbedThumbnailData, EmbedVideoData, EmojiData, MessageActivityData, MessageComponentData, MessageData, MessageInteractionData, MessageReferenceData, MessageStickerItemData, ModalData, OtherComponentData, ReactionData, SelectMenuData, SelectOption, StickerData, TextInputData } from '../message';
+import { isChannel, isChannelMention } from './channel';
+import { isGuildMember, isRole } from './guild';
+import { isBoolean, isLiteral, isNumber, isString, isTypeArray, isTypeNull, isTypeObject, isTypeTuple, isTypeUndefined, isUnion } from './original';
+import { isSnowflake } from './snowflake';
+import { isTimestamp } from './timestamp';
+import { isUser } from './user';
 
-export function isMessage(obj: any): obj is MessageData {
+export function isMessage(obj: unknown): obj is MessageData {
     return isTypeObject({
         id: isSnowflake,
         channel_id: isSnowflake,
@@ -43,584 +43,254 @@ export function isMessage(obj: any): obj is MessageData {
     })(obj);
 }
 
-export function isAttachment(obj: any): obj is AttachmentData {
-    let keys: (keyof AttachmentData)[] = ["id", "filename", "description", "content_type", "size", "url", "proxy_url", "height", "width", "ephemeral"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isAttachment(obj: unknown): obj is AttachmentData {
+    return isTypeObject({
+        id: isSnowflake,
+        filename: isString,
+        description: isTypeUndefined(isString),
+        content_type: isTypeUndefined(isString),
+        size: isNumber,
+        url: isString,
+        proxy_url: isString,
+        height: isTypeUndefined(isTypeNull(isNumber)),
+        width: isTypeUndefined(isTypeNull(isNumber)),
+        ephemral: isTypeUndefined(isBoolean)
+    })(obj);
 }
 
-export function isEmbed(obj: any): obj is EmbedData {
-    let keys: (keyof EmbedData)[] = ["title", "type", "description", "url", "timestamp", "color", "footer", "image", "thumbnail", "video", "provider", "author", "fields"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isEmbed(obj: unknown): obj is EmbedData {
+    return isTypeObject({
+        title: isTypeUndefined(isString),
+        type: isTypeUndefined(isString),
+        description: isTypeUndefined(isString),
+        url: isTypeUndefined(isString),
+        timestamp: isTypeUndefined(isTimestamp),
+        color: isTypeUndefined(isNumber),
+        footer: isTypeUndefined(isEmbedFooter),
+        image: isTypeUndefined(isEmbedImage),
+        thumbnail: isTypeUndefined(isEmbedThumbnail),
+        video: isTypeUndefined(isEmbedVideo),
+        provider: isTypeUndefined(isEmbedProvider),
+        author: isTypeUndefined(isEmbedAuthor),
+        fields: isTypeUndefined(isTypeArray(isEmbedField)),
+    })(obj);
 }
 
-export function isEmbedFooter(obj: any): obj is EmbedFooterData {
-    let keys: (keyof EmbedFooterData)[] = ["text", "icon_url", "proxy_icon_url"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isEmbedFooter(obj: unknown): obj is EmbedFooterData {
+    return isTypeObject({
+        text: isString,
+        icon_url: isTypeUndefined(isString),
+        proxy_icon_url: isTypeUndefined(isString)
+    })(obj);
 }
 
-export function isEmbedImage(obj: any): obj is EmbedImageData {
-    let keys: (keyof EmbedImageData)[] = ["url", "proxy_url", "height", "width"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isEmbedImage(obj: unknown): obj is EmbedImageData {
+    return isTypeObject({
+        url: isString,
+        proxy_url: isTypeUndefined(isString),
+        height: isTypeUndefined(isNumber),
+        width: isTypeUndefined(isNumber)
+    })(obj);
 }
 
-export function isEmbedThumbnail(obj: any): obj is EmbedThumbnailData {
-    let keys: (keyof EmbedThumbnailData)[] = ["url", "proxy_url", "height", "width"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isEmbedThumbnail(obj: unknown): obj is EmbedThumbnailData {
+    return isTypeObject({
+        url: isString,
+        proxy_url: isTypeUndefined(isString),
+        height: isTypeUndefined(isNumber),
+        width: isTypeUndefined(isNumber)
+    })(obj);
 }
 
-export function isEmbedVideo(obj: any): obj is EmbedVideoData {
-    let keys: (keyof EmbedVideoData)[] = ["url", "proxy_url", "height", "width"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isEmbedVideo(obj: unknown): obj is EmbedVideoData {
+    return isTypeObject({
+        url: isTypeUndefined(isString),
+        proxy_url: isTypeUndefined(isString),
+        height: isTypeUndefined(isNumber),
+        width: isTypeUndefined(isNumber)
+    })(obj);
 }
 
-export function isEmbedProvider(obj: any): obj is EmbedProviderData {
-    let keys: (keyof EmbedProviderData)[] = ["name", "url"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isEmbedProvider(obj: unknown): obj is EmbedProviderData {
+    return isTypeObject({
+        name: isTypeUndefined(isString),
+        url: isTypeUndefined(isString)
+    })(obj);
 }
 
-export function isEmbedAuthor(obj: any): obj is EmbedAuthorData {
-    let keys: (keyof EmbedAuthorData)[] = ["name", "url", "icon_url", "proxy_icon_url"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isEmbedAuthor(obj: unknown): obj is EmbedAuthorData {
+    return isTypeObject({
+        name: isString,
+        url: isTypeUndefined(isString),
+        icon_url: isTypeUndefined(isString),
+        proxy_icon_url: isTypeUndefined(isString)
+    })(obj);
 }
 
-export function isEmbedField(obj: any): obj is EmbedFieldData {
-    let keys: (keyof EmbedFieldData)[] = ["name", "value", "inline"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isEmbedField(obj: unknown): obj is EmbedFieldData {
+    return isTypeObject({
+        name: isString,
+        value: isString,
+        inline: isTypeUndefined(isBoolean)
+    })(obj);
 }
 
-export function isReaction(obj: any): obj is ReactionData {
-    let keys: (keyof ReactionData)[] = ["count", "me", "emoji"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isReaction(obj: unknown): obj is ReactionData {
+    return isTypeObject({
+        count: isNumber,
+        me: isBoolean,
+        emoji: isEmoji
+    })(obj);
 }
 
-export function isMessageActivity(obj: any): obj is MessageActivityData {
-    let keys: (keyof MessageActivityData)[] = ["type", "party_id"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isMessageActivity(obj: unknown): obj is MessageActivityData {
+    return isTypeObject({
+        type: isNumber,
+        party_id: isTypeUndefined(isString)
+    })(obj);
 }
 
-export function isMessageReference(obj: any): obj is MessageReferenceData {
-    let keys: (keyof MessageReferenceData)[] = ["message_id", "channel_id", "guild_id", "fail_if_not_exists"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isMessageReference(obj: unknown): obj is MessageReferenceData {
+    return isTypeObject({
+        message_id: isTypeUndefined(isSnowflake),
+        channel_id: isTypeUndefined(isSnowflake),
+        guild_id: isTypeUndefined(isSnowflake),
+        fail_if_not_exists: isTypeUndefined(isBoolean)
+    })(obj);
 }
 
-export function isMessageInteraction(obj: any): obj is MessageInteractionData {
-    let keys: (keyof MessageInteractionData)[] = ["id", "type", "name", "user", "member"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isMessageInteraction(obj: unknown): obj is MessageInteractionData {
+    return isTypeObject({
+        id: isSnowflake,
+        type: isNumber,
+        name: isString,
+        user: isUser,
+        member: isTypeUndefined(isGuildMember)
+    })(obj);
 }
 
-export function isMessageComponent(obj: any): obj is MessageComponentData {
-    let keys: (keyof MessageComponentData)[] = ["content", "components"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isMessageComponent(obj: unknown): obj is MessageComponentData {
+    return isTypeObject({
+        content: isString,
+        components: isTypeArray(isActionRow)
+    })(obj);
 }
 
-export function isActionRow(obj: any): obj is ActionRowData {
-    let keys: (keyof ActionRowData)[] = ["type", "components"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isActionRow(obj: unknown): obj is ActionRowData {
+    return isTypeObject({
+        type: isLiteral(ComponentType.ActionRow),
+        components: isTypeArray(isOtherComponent)
+    })(obj);
 }
 
-export function isOtherComponent(obj: any): obj is OtherComponentData {
+export function isOtherComponent(obj: unknown): obj is OtherComponentData {
     return isButton(obj) || isSelectMenu(obj) || isTextInput(obj);
 }
 
-export function isButton(obj: any): obj is ButtonData {
-    let keys: (keyof ButtonData)[] = ["type", "style", "label", "emoji", "custom_id", "url", "disabled", "row"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isButton(obj: unknown): obj is ButtonData {
+    return isTypeObject({
+        type: isLiteral(ComponentType.Button),
+        style: isNumber,
+        label: isTypeUndefined(isString),
+        emoji: isTypeUndefined(isTypeObject({
+            id: isTypeNull(isSnowflake),
+            name: isTypeNull(isString),
+            animated: isTypeUndefined(isBoolean)
+        })),
+        custom_id: isString,
+        url: isTypeUndefined(isString),
+        disabled: isTypeUndefined(isBoolean),
+        row: isNumber
+    })(obj);
 }
 
-export function isSelectMenu(obj: any): obj is SelectMenuData {
-    let keys: (keyof SelectMenuData)[] = ["type", "custom_id", "options", "placeholder", "min_values", "max_values", "disabled", "row"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isSelectMenu(obj: unknown): obj is SelectMenuData {
+    return isTypeObject({
+        type: isLiteral(ComponentType.SelectMenu),
+        custom_id: isString,
+        options: isTypeArray(isSelectOption),
+        placeholder: isTypeUndefined(isString),
+        min_value: isTypeUndefined(isNumber),
+        max_value: isTypeUndefined(isNumber),
+        disabled: isTypeUndefined(isBoolean),
+        row: isNumber
+    })(obj);
 }
 
-export function isTextInput(obj: any): obj is TextInputData {
-    let keys: (keyof TextInputData)[] = ["type", "custom_id", "style", "label", "min_length", "max_length", "required", "value", "placeholder"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isTextInput(obj: unknown): obj is TextInputData {
+    return isTypeObject({
+        type: isLiteral(ComponentType.TextInput),
+        custom_id: isString,
+        style: isNumber,
+        label: isString,
+        min_length: isTypeUndefined(isNumber),
+        max_length: isTypeUndefined(isNumber),
+        required: isTypeUndefined(isBoolean),
+        value: isTypeUndefined(isString),
+        placeholder: isTypeUndefined(isString)
+    })(obj);
 }
 
-export function isSelectOption(obj: any): obj is SelectOption {
-    let keys: (keyof SelectOption)[] = ["label", "value", "description", "emoji", "default"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isSelectOption(obj: unknown): obj is SelectOption {
+    return isTypeObject({
+        label: isString,
+        value: isString,
+        description: isTypeUndefined(isString),
+        emoji: isTypeUndefined(isTypeObject({
+            id: isTypeNull(isSnowflake),
+            name: isTypeNull(isString),
+            animated: isTypeUndefined(isBoolean)
+        })),
+        default: isTypeUndefined(isBoolean)
+    })(obj);
 }
 
-export function isMessageStickerItem(obj: any): obj is MessageStickerItemData {
-    let keys: (keyof MessageStickerItemData)[] = ["id", "name", "format_type"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isMessageStickerItem(obj: unknown): obj is MessageStickerItemData {
+    return isTypeObject({
+        id: isSnowflake,
+        name: isString,
+        format_type: isNumber
+    })(obj);
 }
 
 
-export function isModal(obj: any): obj is ModalData {
-    let keys: (keyof ModalData)[] = ["title", "custom_id", "components"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isModal(obj: unknown): obj is ModalData {
+    return isTypeObject({
+        title: isString,
+        custom_id: isString,
+        components: isTypeTuple(isTypeObject({
+            type: isLiteral(ComponentType.ActionRow),
+            components: isTypeArray(isTextInput)
+        }))
+    })(obj);
 }
 
-export function isEmoji(obj: any): obj is EmojiData {
-    let keys: (keyof EmojiData)[] = ["id", "name", "roles", "user", "require_colons", "managed", "animated", "available"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isEmoji(obj: unknown): obj is EmojiData {
+    return isTypeObject({
+        id: isTypeNull(isSnowflake),
+        name: isTypeNull(isString),
+        roles: isTypeUndefined(isTypeArray(isRole)),
+        user: isTypeUndefined(isUser),
+        require_colons: isTypeUndefined(isBoolean),
+        managed: isTypeUndefined(isBoolean),
+        animated: isTypeUndefined(isBoolean),
+        available: isTypeUndefined(isBoolean)
+    })(obj);
 }
 
-export function isSticker(obj: any): obj is StickerData {
-    let keys: (keyof StickerData)[] = ["id", "pack_id", "name", "description", "tags", "asset", "type", "format", "available", "guild_id", "user", "sort_value"];
-    let neccessary: (keyof ActivityEmoji)[] = ["name"];
-    let optional: (keyof ActivityEmoji)[] = ["id", "animated"];
-
-    let types_1: ((v: any) => boolean)[] = [isString];
-    let types_2: ((v: any) => boolean)[] = [isSnowflake, isBoolean];
-
-    let keys: (keyof ActivityEmoji)[] = neccessary.concat(optional);
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    if (!result || !neccessary.every((v, idx) => {
-        return obj[v] && types_1[idx](obj[v]);
-    }))
-        return false;
-
-    if (!result || !optional.every((v, idx) => {
-        if (!obj[v])
-            return true;
-
-        return types_2[idx](v);
-    }))
-        return false;
-
-    return true;
+export function isSticker(obj: unknown): obj is StickerData {
+    return isTypeObject({
+        id: isSnowflake,
+        pack_id: isTypeUndefined(isSnowflake),
+        name: isString,
+        description: isTypeNull(isString),
+        tags: isString,
+        asset: isTypeUndefined(isLiteral('')),
+        type: isNumber,
+        format: isNumber,
+        available: isTypeUndefined(isBoolean),
+        guild_id: isTypeUndefined(isSnowflake),
+        user: isTypeUndefined(isUser),
+        sort_value: isTypeUndefined(isNumber)
+    })(obj);
 }

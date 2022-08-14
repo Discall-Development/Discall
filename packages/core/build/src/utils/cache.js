@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable prefer-const */
 const event_1 = require("../event");
 const types_1 = require("@discall/types");
 let caches = {

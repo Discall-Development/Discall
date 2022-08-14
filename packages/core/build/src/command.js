@@ -4,28 +4,29 @@ exports.addCommand = void 0;
 const error_1 = require("./error");
 const types_1 = require("@discall/types");
 const utils_1 = require("./utils");
-let commands = {};
+const commands = {};
 let registered = false;
 function commander(ws, prefix) {
     if (registered)
         return ws;
-    let onMessage = ws.onmessage;
-    let onClose = ws.onclose;
+    const onMessage = ws.onmessage;
+    const onClose = ws.onclose;
     ws.onmessage = async (event) => {
-        let data = await onMessage(event);
-        if (data.op !== types_1.Opcode.Dispatch || data.t !== "MESSAGE_CREATE")
+        const data = await onMessage(event);
+        if (data.op !== types_1.Opcode.Dispatch || data.t !== 'MESSAGE_CREATE')
             return data;
-        let message = data.d;
-        let content = message.content.trim();
+        const message = data.d;
+        const content = message.content.trim();
         if (content.split(/ +/g)[0].startsWith(prefix)) {
+            // eslint-disable-next-line prefer-const
             let [name, ...args] = content.split(/ +/g);
-            name = name.replace(prefix, "");
+            name = name.replace(prefix, '');
             await commands[name].run(message, ...args);
         }
         return data;
     };
     ws.onclose = async (event) => {
-        let ws = await onClose(event);
+        const ws = await onClose(event);
         registered = false;
         return commander(ws, prefix);
     };
@@ -41,7 +42,7 @@ function addCommand(command, options) {
             if (v in commands)
                 throw new error_1.CommandExisted(v);
         });
-    let run = command.run;
+    const run = command.run;
     async function _run(data, ...args) {
         if (!options)
             options = {};
@@ -62,7 +63,7 @@ exports.addCommand = addCommand;
 function check(data, permissions, { roles, member, user } = {}) {
     let can = permissions ? false : true;
     if (!can && permissions & types_1.CommandPermissionsFlag.OWNER && data.guild_id)
-        can = data.author.id === (0, utils_1.getCache)("guild", data.guild_id).owner_id;
+        can = data.author.id === (0, utils_1.getCache)('guild', data.guild_id).owner_id;
     if (!can && permissions & types_1.CommandPermissionsFlag.ADMINISTRATOR && data.member)
         can = checkPermission(Number(data.member.permission), types_1.PermissionFlags.ADMINISTRATOR);
     if (!can && permissions & types_1.CommandPermissionsFlag.BOT)

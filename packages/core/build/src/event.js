@@ -2,18 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.register = exports.addRemoveable = void 0;
 const types_1 = require("@discall/types");
-let events = {};
+const events = {};
 let registered = false;
 function listener(ws) {
     if (registered)
         return ws;
-    let onMessage = ws.onmessage;
-    let onClose = ws.onclose;
+    const onMessage = ws.onmessage;
+    const onClose = ws.onclose;
     ws.onmessage = async (event) => {
-        let data = await onMessage(event);
+        const data = await onMessage(event);
         if (data.op !== types_1.Opcode.Dispatch)
             return data;
-        let eventName = data.t;
+        const eventName = data.t;
         if (events[eventName])
             for (const event of events[eventName]) {
                 if (event.check(data.d)) {
@@ -25,7 +25,7 @@ function listener(ws) {
         return data;
     };
     ws.onclose = async (event) => {
-        let ws = await onClose(event);
+        const ws = await onClose(event);
         registered = false;
         return listener(ws);
     };
@@ -34,7 +34,7 @@ function listener(ws) {
 }
 exports.default = listener;
 function addRemoveable({ name, listener, check }) {
-    let event = {
+    const event = {
         remove: true,
         listen: listener,
         check: check
@@ -46,12 +46,14 @@ function addRemoveable({ name, listener, check }) {
 }
 exports.addRemoveable = addRemoveable;
 function register(...event) {
-    let _events = [];
-    for (let { name, listener, check } of event) {
-        let event = {
+    const _events = [];
+    for (const e of event) {
+        let { name } = e;
+        const { listener, check } = e;
+        const event = {
             remove: false,
             listen: listener,
-            check: check || (_ => true)
+            check: check || (() => true)
         };
         if (types_1.EventName[name] !== undefined)
             name = types_1.EventName[name];

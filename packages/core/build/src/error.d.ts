@@ -1,5 +1,5 @@
 export declare class CreateBotError extends Error {
-    constructor(type: "intents" | "token" | "connect");
+    constructor(type: 'intents' | 'token' | 'connect');
 }
 export declare class NoneValidEncryptionMode extends Error {
     constructor(modes: string[]);

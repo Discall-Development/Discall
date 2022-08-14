@@ -3,21 +3,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.latency = void 0;
 const dgram_1 = require("dgram");
 const secret_1 = require("./secret");
-let pings = new Map();
-let counters = new Map();
-let timestamp = Math.floor(Math.random() * 2 ** 32);
-let sequence = Math.floor(Math.random() * 2 ** 16);
-let nonce = Buffer.alloc(24);
-let keepAliveIDs = new Map();
-let modes = new Map();
+const pings = new Map();
+const counters = new Map();
+const timestamp = Math.floor(Math.random() * 2 ** 32);
+const sequence = Math.floor(Math.random() * 2 ** 16);
+const nonce = Buffer.alloc(24);
+const keepAliveIDs = new Map();
+const modes = new Map();
 async function udp(ip, port, ssrc, server_id) {
-    let socket = (0, dgram_1.createSocket)("udp4");
-    let keepAlives = [];
-    socket.on("message", (msg) => message(msg, keepAlives, server_id));
-    socket.on("close", () => destroy(server_id));
+    const socket = (0, dgram_1.createSocket)('udp4');
+    const keepAlives = [];
+    socket.on('message', (msg) => message(msg, keepAlives, server_id));
+    socket.on('close', () => destroy(server_id));
     keepAliveIDs.set(server_id, setInterval(keepAlive, 5000, socket, ip, port, keepAlives, server_id));
     setImmediate(keepAlive, socket, ip, port, keepAlives, server_id);
-    let ipPort = await performID(socket, ip, port, ssrc);
+    const ipPort = await performID(socket, ip, port, ssrc);
     return {
         send: async function (data, secretKey) {
             return await send(socket, ip, port, createAudioData(data, secretKey, ssrc, server_id));
@@ -31,8 +31,8 @@ async function udp(ip, port, ssrc, server_id) {
 exports.default = udp;
 async function message(message, keepAlives, server_id) {
     if (message.length === 8) {
-        let counter = message.readUInt32LE(0);
-        let idx = keepAlives.findIndex(v => v.value === counter);
+        const counter = message.readUInt32LE(0);
+        const idx = keepAlives.findIndex(v => v.value === counter);
         if (idx === -1)
             return;
         pings.set(server_id, Date.now() - keepAlives[idx].timestamp);
@@ -47,8 +47,8 @@ async function destroy(server_id) {
     modes.delete(server_id);
 }
 function getIpPort(data) {
-    let ip = data.subarray(8, data.indexOf(0, 8)).toString("utf-8");
-    let port = data.readUInt16BE(data.length - 2);
+    const ip = data.subarray(8, data.indexOf(0, 8)).toString('utf-8');
+    const port = data.readUInt16BE(data.length - 2);
     return {
         ip, port
     };
@@ -58,7 +58,7 @@ async function keepAlive(socket, ip, port, keepAlives, server_id) {
         clearInterval(keepAliveIDs.get(server_id));
         return socket.close();
     }
-    let buf = Buffer.alloc(8);
+    const buf = Buffer.alloc(8);
     let counter = counters.get(server_id);
     buf.writeUInt32LE(counter, 0);
     await send(socket, ip, port, buf);
@@ -74,18 +74,19 @@ async function send(socket, ip, port, data) {
     return socket.send(data, port, ip);
 }
 function performID(socket, ip, port, ssrc) {
-    return new Promise((resolve, _) => {
-        socket.on("message", async function _(message) {
+    return new Promise((resolve) => {
+        socket.on('message', async function _(message) {
             try {
                 if (message.readUInt16BE(0) !== 2)
                     return;
-                let ipPort = getIpPort(message);
-                socket.off("message", _);
+                const ipPort = getIpPort(message);
+                socket.off('message', _);
                 resolve(ipPort);
+                // eslint-disable-next-line no-empty
             }
             catch { }
         });
-        let buf = Buffer.alloc(74);
+        const buf = Buffer.alloc(74);
         buf.writeUInt16BE(1, 0);
         buf.writeUInt16BE(70, 2);
         buf.writeUInt32BE(ssrc, 4);
@@ -93,7 +94,7 @@ function performID(socket, ip, port, ssrc) {
     });
 }
 function createAudioData(data, secretKey, ssrc, server_id) {
-    let buf = Buffer.alloc(12);
+    const buf = Buffer.alloc(12);
     buf[0] = 0x80;
     buf[1] = 0x74;
     buf.writeUIntBE(sequence, 2, 2);
@@ -103,13 +104,13 @@ function createAudioData(data, secretKey, ssrc, server_id) {
     return Buffer.concat([buf, ...encryptData(data, secretKey, server_id)]);
 }
 function encryptData(data, secretKey, server_id) {
-    let buf = Buffer.alloc(24);
+    const buf = Buffer.alloc(24);
     let rand;
     switch (modes.get(server_id)) {
-        case "xsalsa20_poly1305_suffix":
+        case 'xsalsa20_poly1305_suffix':
             rand = (0, secret_1.random)(24, buf);
             return [(0, secret_1.close)(data, rand, secretKey), rand];
-        case "xsalsa20_poly1305":
+        case 'xsalsa20_poly1305':
             return [(0, secret_1.close)(data, nonce, secretKey)];
     }
     return [];

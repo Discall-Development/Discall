@@ -1,9 +1,9 @@
-import { ApplicationData } from "./application";
-import { ChannelData, SystemChannelFlags, WelcomeScreenChannelData } from "./channel";
-import { DefaultMessageNotificationLevel, EmojiData, StickerData } from "./message";
-import { SnowflakeData } from "./snowflake";
-import { Timestamp } from "./timestamp";
-import { UserData } from "./user";
+import { ApplicationData } from './application';
+import { ChannelData, SystemChannelFlags, WelcomeScreenChannelData } from './channel';
+import { DefaultMessageNotificationLevel, EmojiData, StickerData } from './message';
+import { SnowflakeData } from './snowflake';
+import { Timestamp } from './timestamp';
+import { UserData } from './user';
 
 export interface GuildData {
     id: SnowflakeData;
@@ -69,27 +69,27 @@ export interface UnavailableGuildData {
 }
 
 export type GuildFeature =
-    | "ANIMATED_BANNER"
-    | "ANIMATED_ICON"
-    | "BANNER"
-    | "COMMERCE"
-    | "COMMUNITY"
-    | "DISCOVERABLE"
-    | "FEATURABLE"
-    | "INVITE_SPLASH"
-    | "MEMBER_VERIFICATION_GATE_ENABLED"
-    | "MONETIZATION_ENABLED"
-    | "MORE_STICKERS"
-    | "NEWS"
-    | "PARTNERED"
-    | "PREVIEW_ENABLED"
-    | "PRIVATE_THREADS"
-    | "ROLE_ICONS"
-    | "TICKETED_EVENTS_ENABLED"
-    | "VANITY_URL"
-    | "VERIFIED"
-    | "VIP_REGIONS"
-    | "WELCOME_SCREEN_ENABLED";
+    | 'ANIMATED_BANNER'
+    | 'ANIMATED_ICON'
+    | 'BANNER'
+    | 'COMMERCE'
+    | 'COMMUNITY'
+    | 'DISCOVERABLE'
+    | 'FEATURABLE'
+    | 'INVITE_SPLASH'
+    | 'MEMBER_VERIFICATION_GATE_ENABLED'
+    | 'MONETIZATION_ENABLED'
+    | 'MORE_STICKERS'
+    | 'NEWS'
+    | 'PARTNERED'
+    | 'PREVIEW_ENABLED'
+    | 'PRIVATE_THREADS'
+    | 'ROLE_ICONS'
+    | 'TICKETED_EVENTS_ENABLED'
+    | 'VANITY_URL'
+    | 'VERIFIED'
+    | 'VIP_REGIONS'
+    | 'WELCOME_SCREEN_ENABLED';
 
 export interface GuildMemberData {
     user?: UserData;
@@ -116,8 +116,8 @@ export interface GuildScheduledEventData {
     creator_id?: SnowflakeData | null;
     name: string;
     description?: string | null;
-    scheduled_start_time: string;
-    scheduled_end_time: string | null;
+    scheduled_start_time: Timestamp;
+    scheduled_end_time: Timestamp | null;
     privacy_level: GuildScheduledEventPrivacyLevel;
     status: GuildScheduledEventStatus;
     entity_type: GuildScheduledEventEntityType;
@@ -150,7 +150,7 @@ export interface GuildMemberMentionData extends UserData {
 
 export interface WelcomeScreenData {
     description: string | null;
-    welcome_channels: WelcomeScreenChannelData;
+    welcome_channels: WelcomeScreenChannelData[];
 }
 
 export enum VerificationLevel {
@@ -181,7 +181,7 @@ export interface IntegrationData {
     expire_grace_period?: number;
     user?: UserData;
     account: IntegrationAccountData;
-    synced?: Timestamp;
+    synced_at?: Timestamp;
     subscriber_count?: number;
     revoked?: boolean;
     application?: IntegrationApplicationData;
@@ -212,9 +212,9 @@ export interface AllowMentionsData {
 }
 
 export enum AllowMentionType {
-    Role_Mentions = "roles",
-    User_Mentions = "users",
-    EveryoneMentions = "everyone"
+    Role_Mentions = 'roles',
+    User_Mentions = 'users',
+    EveryoneMentions = 'everyone'
 }
 
 export enum PermissionFlags {

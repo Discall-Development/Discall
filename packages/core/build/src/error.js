@@ -4,14 +4,14 @@ exports.CommandExisted = exports.ErrorStatus = exports.MultiDefault = exports.In
 class CreateBotError extends Error {
     constructor(type) {
         switch (type) {
-            case "intents":
-                super("Can't create bot without intents.");
+            case 'intents':
+                super('Can\'t create bot without intents.');
                 break;
-            case "token":
-                super("Can't create bot with wrong token.");
+            case 'token':
+                super('Can\'t create bot with wrong token.');
                 break;
-            case "connect":
-                super("Create bot failure with connect error.");
+            case 'connect':
+                super('Create bot failure with connect error.');
                 break;
         }
     }
@@ -37,13 +37,13 @@ class EditWithEmptyData extends Error {
 exports.EditWithEmptyData = EditWithEmptyData;
 class InvalidHttpRequest extends Error {
     constructor() {
-        super("Can't send http request with invalid request object.");
+        super('Can\'t send http request with invalid request object.');
     }
 }
 exports.InvalidHttpRequest = InvalidHttpRequest;
 class MultiDefault extends Error {
     constructor() {
-        super("Set default option exceed once.");
+        super('Set default option exceed once.');
     }
 }
 exports.MultiDefault = MultiDefault;

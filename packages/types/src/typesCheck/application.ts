@@ -1,11 +1,20 @@
-import { ApplicationCommandPermissionsData, ApplicationData } from "../application";
+import { ApplicationCommandPermissionsData, ApplicationData } from '../application';
+import { isBoolean, isNumber, isString, isTypeNull, isTypeObject } from './original';
+import { isSnowflake } from './snowflake';
 
-export function isApplicationCommandPermissions(obj: any): obj is ApplicationCommandPermissionsData {
-    let keys: (keyof ApplicationCommandPermissionsData)[] = ["id", "type", "permission"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isApplicationCommandPermissions(obj: unknown): obj is ApplicationCommandPermissionsData {
+    return isTypeObject({
+        id: isSnowflake,
+        type: isNumber,
+        permission: isBoolean
+    })(obj);
 }
 
-export function isApplication(obj: any): obj is ApplicationData {
-    let keys: (keyof ApplicationData)[] = ["id", "name", "icon", "flags"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isApplication(obj: unknown): obj is ApplicationData {
+    return isTypeObject({
+        id: isSnowflake,
+        name: isString,
+        icon: isTypeNull(isString),
+        flags: isNumber
+    })(obj);
 }

@@ -28,18 +28,18 @@ const simple_pipe_1 = require("@discall/simple-pipe");
 const src_1 = require("../src");
 const types_1 = require("@discall/types");
 dotenv.config();
-let send = (0, src_1.bot)(process.env.Discall, {
+const send = (0, src_1.bot)(process.env.Discall, {
     intents: (0, src_1.allIntents)(),
-    prefix: "!"
+    prefix: '!'
 });
-let guildCreateEvent = (0, src_1.register)({
-    name: "guild_create",
+(0, src_1.register)({
+    name: 'guild_create',
     listener: async (guild) => {
-        console.log(guild.name);
+        return console.log(guild.name);
     }
 });
-let testCommand = (0, src_1.addCommand)({
-    name: "test",
+(0, src_1.addCommand)({
+    name: 'test',
     run: async (ctx, num1, num2) => {
         await (0, simple_pipe_1.pipeline)(src_1.message, (0, src_1.channel)(ctx.channel_id), src_1.create, send).execute({
             content: `${num1} + ${num2} = ${num1 + num2}`
@@ -47,6 +47,6 @@ let testCommand = (0, src_1.addCommand)({
     }
 }, {
     converters: [Number, Number],
-    aliases: ["t", "te"],
+    aliases: ['t', 'te'],
     permissions: types_1.CommandPermissionsFlag.OWNER
 });

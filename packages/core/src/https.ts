@@ -1,20 +1,33 @@
-import { HttpRequest, HttpMode, AttachmentData, HttpRequestData, HttpUri, UriMode } from "@discall/types";
-import _ws from "./ws"
-import { fetch } from "./runtimeModule";
-import { ErrorStatus, InvalidHttpRequest } from "./error";
-import fs from "node:fs/promises";
-import { format } from "./utils";
+import { HttpRequest, HttpMode, HttpRequestData, HttpUri, UriMode, MessageData, SnowflakeData, Opcode, ReadyEventData } from '@discall/types';
+import { fetch } from './runtimeModule';
+import { ErrorStatus, InvalidHttpRequest } from './error';
+import _ws from './ws';
+import fs from 'node:fs/promises';
+import { format } from './utils';
 
-let baseUri = "https://discord.com/api/v10";
+const baseUri = 'https://discord.com/api/v10';
 let token: string;
-export default function client(_token: string) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+let user_id: SnowflakeData;
+export default function client(_token: string, ws: ReturnType<typeof _ws>) {
     token = _token;
+    const onMessage = ws.onmessage;
+    ws.onmessage = async (event) => {
+        const data = await onMessage(event);
+        switch (data.op) {
+        case Opcode.Dispatch:
+            if (data.t === 'READY')
+                user_id = (data.d as ReadyEventData).user.id;
+        }
+
+        return data;
+    };
     return async function(packet: HttpRequest) {
-        if (typeof packet.uri !== "function")
+        if (typeof packet.uri !== 'function')
             throw new InvalidHttpRequest();
 
         return await send(packet);
-    }
+    };
 }
 
 function getKey(key: string, data: HttpRequestData): string {
@@ -22,7 +35,7 @@ function getKey(key: string, data: HttpRequestData): string {
         if (data.type)
             key += `+${data.type}`;
 
-        if (Object.keys(data).find(v => v.includes("id"))) {
+        if (Object.keys(data).find(v => v.includes('id'))) {
             data = data.data as HttpRequestData;
             continue;
         }
@@ -38,7 +51,7 @@ function getKey(key: string, data: HttpRequestData): string {
 
 function formatUrl(url: string, data: HttpRequestData): string {
     while(data) {
-        if (Object.keys(data).find(v => v.includes("id")))
+        if (Object.keys(data).find(v => v.includes('id')))
             url = format(url, data as unknown as Record<string, string>);
         
         if (data.data)
@@ -50,7 +63,7 @@ function formatUrl(url: string, data: HttpRequestData): string {
     return url;
 }
 
-function getData(data: HttpRequestData): any {
+function getData(data: HttpRequestData): unknown {
     while(data) {
         if (data.data)
             data = data.data as HttpRequestData;
@@ -59,10 +72,10 @@ function getData(data: HttpRequestData): any {
     }
 }
 
-function createPacket<T extends (...args: any[]) => any>(key: string, data: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
-    console.log(key)
-    let url: string = formatUrl(HttpUri[key as keyof typeof HttpUri], data);
-    let result: HttpRequest = {
+function createPacket<T extends (...args: unknown[]) => unknown>(key: string, data: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
+    console.log(key);
+    const url: string = formatUrl(HttpUri[key as keyof typeof HttpUri], data);
+    const result: HttpRequest = {
         uri(base: URL) {
             base.pathname += url;
             return {
@@ -72,40 +85,40 @@ function createPacket<T extends (...args: any[]) => any>(key: string, data: Http
         },
         data: getData(data)
     };
-    if (typeof param === "string")
-        result["reason"] = param;
+    if (typeof param === 'string')
+        result['reason'] = param;
     
-    if (typeof param === "function")
-        result["cache"] = param;
+    if (typeof param === 'function')
+        result['cache'] = param;
 
     if (reason)
-        result["reason"] = reason;
+        result['reason'] = reason;
 
     return result;
 }
 
-export function create<T extends (...args: any[]) => any>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
+export function create<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
 export function create(action: HttpRequestData, reason?: string): HttpRequest;
-export function create<T extends (...args: any[]) => any>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
-    return createPacket(getKey("create", action), action, param, reason);
+export function create<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
+    return createPacket(getKey('create', action), action, param, reason);
 }
 
-export function get<T extends (...args: any[]) => any>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
+export function get<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
 export function get(action: HttpRequestData, reason?: string): HttpRequest;
-export function get<T extends (...args: any[]) => any>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
-    return createPacket(getKey("get", action), action, param, reason);
+export function get<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
+    return createPacket(getKey('get', action), action, param, reason);
 }
 
-export function edit<T extends (...args: any[]) => any>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
+export function edit<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
 export function edit(action: HttpRequestData, reason?: string): HttpRequest;
-export function edit<T extends (...args: any[]) => any>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
-    return createPacket(getKey("edit", action), action, param, reason);
+export function edit<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
+    return createPacket(getKey('edit', action), action, param, reason);
 }
 
-export function remove<T extends (...args: any[]) => any>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
+export function remove<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
 export function remove(action: HttpRequestData, reason?: string): HttpRequest;
-export function remove<T extends (...args: any[]) => any>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
-    return createPacket(getKey("remove", action), action, param, reason);
+export function remove<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
+    return createPacket(getKey('remove', action), action, param, reason);
 }
 
 export const crosspost = create;
@@ -127,25 +140,25 @@ export const unpin = remove;
 export const leave = remove;
 
 export async function send(packet: HttpRequest) {
-    let { uri, mode } = getBase(packet.uri);
+    const { uri, mode } = getBase(packet.uri);
     if (uri) {
-        let headers = new fetch.Headers({
-            "Authorization": `Bot ${token}`,
-            "User-Agent": "DiscordBot (https://github.com/rexwu1104/Discall, 0.1.0)",
-            "Content-Type": "application/json"
+        const headers = new fetch.Headers({
+            'Authorization': `Bot ${token}`,
+            'User-Agent': 'DiscordBot (https://github.com/rexwu1104/Discall, 0.1.0)',
+            'Content-Type': 'application/json'
         });
         if (packet.reason)
-            headers.append("X-Audit-Log-Reason", packet.reason);
+            headers.append('X-Audit-Log-Reason', packet.reason);
 
-        let result: fetch.Response["prototype"];
-        if (!packet.data?.attachments) {
+        let result: fetch.Response['prototype'];
+        if (!(packet.data as MessageData)?.attachments) {
             result = await fetch.fetch(uri, {
                 method: HttpMode[mode],
                 body: packet.data ? JSON.stringify(packet.data) : undefined,
                 headers
             });
         } else {
-            headers.delete("Content-Type");
+            headers.delete('Content-Type');
             result = await fetch.fetch(uri, {
                 method: HttpMode[mode],
                 body: await toFormData(packet.data),
@@ -156,24 +169,24 @@ export async function send(packet: HttpRequest) {
         if (result.status < 200 || result.status >= 300)
             throw new ErrorStatus(result.status);
 
-        let json = await result.json();
+        const json = await result.json();
         if (packet.cache)
             packet.cache(json);
 
         return json;
     } else {
-        return (packet.cache as () => any)?.();
+        return (packet.cache as () => unknown)?.();
     }
 }
 
-async function toFormData(data: any): Promise<fetch.FormData> {
-    let body = new fetch.FormData();
-    let filenames = data.attachments as AttachmentData[];
+async function toFormData(data: unknown): Promise<fetch.FormData> {
+    const body = new fetch.FormData();
+    const filenames = (data as MessageData).attachments;
 
-    body.append("payload_json", JSON.stringify(data));
+    body.append('payload_json', JSON.stringify(data));
     for (const idx in filenames) {
-        let filename = filenames[idx].filename;
-        let data = await fs.readFile(filename);
+        const filename = filenames[idx].filename;
+        const data = await fs.readFile(filename);
 
         body.append(`files[${idx}]`, new fetch.Blob([data]), filename);
     }
@@ -181,6 +194,6 @@ async function toFormData(data: any): Promise<fetch.FormData> {
     return body;
 }
 
-function getBase(uri: HttpRequest["uri"]) {
+function getBase(uri: HttpRequest['uri']) {
     return uri(new URL(baseUri));
 }

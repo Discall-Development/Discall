@@ -1,90 +1,233 @@
-import { AllowMentionsData, GuildData, GuildFeature, GuildMemberData, GuildMemberMentionData, GuildPreviewData, GuildScheduledEventData, GuildScheduledEventEntityMetadata, IntegrationAccountData, IntegrationApplicationData, IntegrationData, InviteData, InviteMetadata, RoleData, RoleTagsData, UnavailableGuildData, WelcomeScreenData } from "../guild";
-import { isUser } from "./user";
+import { AllowMentionsData, GuildData, GuildFeature, GuildMemberData, GuildMemberMentionData, GuildPreviewData, GuildScheduledEventData, GuildScheduledEventEntityMetadata, IntegrationAccountData, IntegrationApplicationData, IntegrationData, InviteData, InviteMetadata, RoleData, RoleTagsData, UnavailableGuildData, WelcomeScreenData } from '../guild';
+import { isApplication } from './application';
+import { isChannel, isWelcomeScreenChannel } from './channel';
+import { isEmoji, isSticker } from './message';
+import { isBoolean, isLiteral, isNumber, isString, isTypeArray, isTypeNull, isTypeObject, isTypeUndefined, isUnion } from './original';
+import { isSnowflake } from './snowflake';
+import { isTimestamp } from './timestamp';
+import { isUser } from './user';
 
-export function isGuild(obj: any): obj is GuildData {
-    let keys: (keyof GuildData)[] = ["id", "name", "icon", "icon_hash", "splash", "discovery_splash", "owner", "owner_id", "permissions", "region", "afk_channel_id", "afk_timeout", "widget_enabled", "widget_channel_id", "verification_level", "default_message_notifications", "explicit_content_filter", "roles", "emojis", "features", "mfa_level", "application_id", "system_channel_id", "system_channel_flags", "rules_channel_id", "max_presences", "max_members", "vanity_url_code", "description", "banner", "premium_tier", "premium_subscription_count", "preferred_locale", "public_updates_channel_id", "max_video_channel_users", "approximate_member_count", "approximate_presence_count", "welcome_screen", "nsfw_level", "stickers", "premium_progress_bar_enabled"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isGuild(obj: unknown): obj is GuildData {
+    return isTypeObject({
+        id: isSnowflake,
+        name: isString,
+        icon: isTypeNull(isString),
+        icon_hash: isTypeUndefined(isTypeNull(isString)),
+        splash: isTypeNull(isString),
+        discovery_splash: isTypeNull(isString),
+        owner: isTypeUndefined(isBoolean),
+        owner_id: isSnowflake,
+        permissions: isTypeUndefined(isString),
+        region: isTypeUndefined(isTypeNull(isString)),
+        afk_channel_id: isTypeNull(isSnowflake),
+        afk_timeout: isNumber,
+        widget_enabled: isTypeUndefined(isBoolean),
+        widget_channel_id: isTypeUndefined(isTypeNull(isSnowflake)),
+        verification_level: isNumber,
+        default_message_notifications: isNumber,
+        explicit_content_filter: isNumber,
+        roles: isTypeArray(isRole),
+        emojis: isTypeArray(isEmoji),
+        features: isTypeArray(isGuildFeature),
+        mfa_level: isNumber,
+        application_id: isTypeNull(isSnowflake),
+        system_channel_id: isTypeNull(isSnowflake),
+        system_channel_flags: isNumber,
+        rules_channel_id: isTypeNull(isSnowflake),
+        max_presences: isTypeUndefined(isTypeNull(isNumber)),
+        max_members: isTypeUndefined(isNumber),
+        vanity_url_code: isTypeNull(isString),
+        description: isTypeNull(isString),
+        banner: isTypeNull(isString),
+        premium_tier: isNumber,
+        premium_subscription_count: isTypeUndefined(isNumber),
+        preferred_locale: isString,
+        public_updates_channel_id: isTypeNull(isSnowflake),
+        max_video_channel_users: isTypeUndefined(isNumber),
+        approximate_member_count: isNumber,
+        approximate_presence_count: isNumber,
+        welcome_screen: isTypeUndefined(isWelcomeScreen),
+        nsfw_level: isNumber,
+        stickers: isTypeArray(isSticker),
+        premium_progress_bar_enabled: isBoolean,
+    })(obj);
 }
 
-export function isGuildPreview(obj: any): obj is GuildPreviewData {
-    let keys: (keyof GuildPreviewData)[] = ["id", "name", "icon", "splash", "discovery_splash", "emojis", "features", "approximate_member_count", "approximate_presence_count", "description", "stickers"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isGuildPreview(obj: unknown): obj is GuildPreviewData {
+    return isTypeObject({
+        id: isSnowflake,
+        name: isString,
+        icon: isTypeNull(isString),
+        splash: isTypeNull(isString),
+        discovery_splash: isTypeNull(isString),
+        emojis: isTypeArray(isEmoji),
+        features: isTypeArray(isGuildFeature),
+        approximate_member_count: isNumber,
+        approximate_presence_count: isNumber,
+        description: isTypeNull(isString),
+        stickers: isTypeArray(isSticker)
+    })(obj);
 }
 
-export function isUnavailableGuild(obj: any): obj is UnavailableGuildData {
-    let keys: (keyof UnavailableGuildData)[] = ["id", "unavailable"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isUnavailableGuild(obj: unknown): obj is UnavailableGuildData {
+    return isTypeObject({
+        id: isSnowflake,
+        unavailable: isTypeUndefined(isBoolean)
+    })(obj);
 }
 
-export function isGuidlFeature(obj: any): obj is GuildFeature {
-    let keys: GuildFeature[] = ["ANIMATED_BANNER", "ANIMATED_ICON", "BANNER", "COMMERCE", "COMMUNITY", "DISCOVERABLE", "FEATURABLE", "INVITE_SPLASH", "MEMBER_VERIFICATION_GATE_ENABLED", "MONETIZATION_ENABLED", "MORE_STICKERS", "NEWS", "PARTNERED", "PREVIEW_ENABLED", "PRIVATE_THREADS", "ROLE_ICONS", "TICKETED_EVENTS_ENABLED", "VANITY_URL", "VERIFIED", "VIP_REGIONS", "WELCOME_SCREEN_ENABLED"];
-    return typeof obj === "string" && keys.includes(obj as GuildFeature);
+export function isGuildFeature(obj: unknown): obj is GuildFeature {
+    return isUnion(isLiteral('ANIMATED_BANNER'), isLiteral('ANIMATED_ICON'), isLiteral('BANNER'), isLiteral('COMMERCE'), isLiteral('COMMUNITY'), isLiteral('DISCOVERABLE'), isLiteral('FEATURABLE'), isLiteral('INVITE_SPLASH'), isLiteral('MEMBER_VERIFICATION_GATE_ENABLED'), isLiteral('MONETIZATION_ENABLED'), isLiteral('MORE_STICKERS'), isLiteral('NEWS'), isLiteral('PARTNERED'), isLiteral('PREVIEW_ENABLED'), isLiteral('PRIVATE_THREADS'), isLiteral('ROLE_ICONS'), isLiteral('TICKETED_EVENTS_ENABLED'), isLiteral('VANITY_URL'), isLiteral('VERIFIED'), isLiteral('VIP_REGIONS'), isLiteral('WELCOME_SCREEN_ENABLED'))(obj);
 }
 
-export function isGuildMember(obj: any): obj is GuildMemberData {
-    let keys: (keyof GuildMemberData)[] = ["user", "nick", "avatar", "roles", "join_at", "premium_since", "deaf", "mute", "pending", "permission", "communication_disabled_until"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isGuildMember(obj: unknown): obj is GuildMemberData {
+    return isTypeObject({
+        user: isTypeUndefined(isUser),
+        nick: isTypeUndefined(isTypeNull(isString)),
+        avatar: isTypeUndefined(isTypeNull(isString)),
+        roles: isTypeArray(isSnowflake),
+        join_at: isTimestamp,
+        premium_since: isTypeUndefined(isTypeNull(isTimestamp)),
+        deaf: isBoolean,
+        mute: isBoolean,
+        pending: isTypeUndefined(isBoolean),
+        permission: isTypeUndefined(isString),
+        communication_disabled_until: isTypeUndefined(isTypeNull(isTimestamp)),
+    })(obj);
 }
 
-export function isGuildScheduledEvent(obj: any): obj is GuildScheduledEventData {
-    let keys: (keyof GuildScheduledEventData)[] = ["id", "guild_id", "channel_id", "creator_id", "name", "description", "scheduled_start_time", "scheduled_end_time", "privacy_level", "status", "entity_type", "entity_id", "entity_metadata", "creator", "user_count", "image"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isGuildScheduledEvent(obj: unknown): obj is GuildScheduledEventData {
+    return isTypeObject({
+        id: isSnowflake,
+        guild_id: isSnowflake,
+        channel_id: isTypeNull(isSnowflake),
+        creator_id: isTypeUndefined(isTypeNull(isSnowflake)),
+        name: isString,
+        description: isTypeUndefined(isTypeNull(isString)),
+        scheduled_start_time: isTimestamp,
+        scheduled_end_time: isTypeNull(isTimestamp),
+        privacy_level: isNumber,
+        status: isNumber,
+        entity_type: isNumber,
+        entity_id: isTypeNull(isSnowflake),
+        entity_metadata: isGuildScheduledEventEntityMetadata,
+        creator: isTypeUndefined(isUser),
+        user_count: isTypeUndefined(isNumber),
+        image: isTypeUndefined(isTypeNull(isString))
+    })(obj);
 }
 
-export function isGuildScheduledEventEntityMetadata(obj: any): obj is GuildScheduledEventEntityMetadata {
-    let keys: (keyof GuildScheduledEventEntityMetadata)[] = ["location"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isGuildScheduledEventEntityMetadata(obj: unknown): obj is GuildScheduledEventEntityMetadata {
+    return isTypeObject({
+        location: isTypeUndefined(isString)
+    })(obj);
 }
 
-export function isGuildMemberMention(obj: any): obj is GuildMemberMentionData {
-    let keys: (keyof GuildMemberMentionData)[] = ["member"];
-    let result = Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
-    
-    keys.forEach(v => delete obj[v]);
-    return result && isUser(obj);
+export function isGuildMemberMention(obj: unknown): obj is GuildMemberMentionData {
+    return isUser(obj) && isTypeObject({
+        member: isGuildMember
+    })(obj);
 }
 
-export function isWelcomeScreen(obj: any): obj is WelcomeScreenData {
-    let keys: (keyof WelcomeScreenData)[] = ["description", "welcome_channels"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isWelcomeScreen(obj: unknown): obj is WelcomeScreenData {
+    return isTypeObject({
+        description: isTypeNull(isString),
+        welcome_channels: isTypeArray(isWelcomeScreenChannel)
+    })(obj);
 }
 
-export function isIntegration(obj: any): obj is IntegrationData {
-    let keys: (keyof IntegrationData)[] = ["id", "name", "type", "enabled", "syncing", "role_id", "enable_emoticons", "expire_behavior", "expire_grace_period", "user", "account", "synced", "subscriber_count", "revoked", "application"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isIntegration(obj: unknown): obj is IntegrationData {
+    return isTypeObject({
+        id: isSnowflake,
+        name: isString,
+        type: isString,
+        enabled: isTypeUndefined(isBoolean),
+        syncing: isTypeUndefined(isBoolean),
+        role_id: isTypeUndefined(isSnowflake),
+        enable_emoticons: isTypeUndefined(isBoolean),
+        expire_behavior: isTypeUndefined(isNumber),
+        expire_grace_period: isTypeUndefined(isNumber),
+        user: isTypeUndefined(isUser),
+        account: isIntegrationAccount,
+        synced_at: isTypeUndefined(isTimestamp),
+        subscriber_count: isTypeUndefined(isNumber),
+        revoked: isTypeUndefined(isBoolean),
+        application: isTypeUndefined(isIntegrationApplication),
+    })(obj);
 }
 
-export function isIntegrationAccount(obj: any): obj is IntegrationAccountData {
-    let keys: (keyof IntegrationAccountData)[] = ["id", "name"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isIntegrationAccount(obj: unknown): obj is IntegrationAccountData {
+    return isTypeObject({
+        id: isString,
+        name: isString
+    })(obj);
 }
 
-export function isIntegrationApplication(obj: any): obj is IntegrationApplicationData {
-    let keys: (keyof IntegrationApplicationData)[] = ["id", "name", "icon", "description", "bot"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isIntegrationApplication(obj: unknown): obj is IntegrationApplicationData {
+    return isTypeObject({
+        id: isSnowflake,
+        name: isString,
+        icon: isTypeNull(isString),
+        description: isString,
+        bot: isTypeUndefined(isUser)
+    })(obj);
 }
 
-export function isAllowMentions(obj: any): obj is AllowMentionsData {
-    let keys: (keyof AllowMentionsData)[] = ["parse", "roles", "users", "replied_user"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isAllowMentions(obj: unknown): obj is AllowMentionsData {
+    return isTypeObject({
+        parse: isTypeArray(isString),
+        roles: isTypeArray(isSnowflake),
+        users: isTypeArray(isSnowflake),
+        replied_user: isBoolean
+    })(obj);
 }
 
-export function isInvite(obj: any): obj is InviteData {
-    let keys: (keyof InviteData)[] = ["code", "guild", "channel", "inviter", "target_type", "target_user", "target_application", "approximate_presence_count", "approximate_member_count", "expires_at", "guild_scheduled_event"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isInvite(obj: unknown): obj is InviteData {
+    return isTypeObject({
+        code: isString,
+        guild: isTypeUndefined(isGuild),
+        channel: isTypeNull(isChannel),
+        inviter: isTypeUndefined(isUser),
+        target_type: isNumber,
+        target_user: isTypeUndefined(isUser),
+        target_application: isTypeUndefined(isApplication),
+        approximate_presence_count: isTypeUndefined(isNumber),
+        approximate_member_count: isTypeUndefined(isNumber),
+        expires_at: isTypeUndefined(isTypeNull(isTimestamp)),
+        guild_scheduled_event: isTypeUndefined(isGuildScheduledEvent)
+    })(obj);
 }
 
-export function isInviteMetadata(obj: any): obj is InviteMetadata {
-    let keys: (keyof InviteMetadata)[] = ["uses", "max_uses", "max_age", "temporary", "created_at"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isInviteMetadata(obj: unknown): obj is InviteMetadata {
+    return isTypeObject({
+        uses: isNumber,
+        max_uses: isNumber,
+        max_age: isNumber,
+        temporary: isBoolean,
+        created_at: isTimestamp
+    })(obj);
 }
 
-export function isRole(obj: any): obj is RoleData {
-    let keys: (keyof RoleData)[] = ["id", "name", "color", "hoist", "icon", "unicode_emoji", "position", "permissions", "managed", "mentionable", "tags"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isRole(obj: unknown): obj is RoleData {
+    return isTypeObject({
+        id: isSnowflake,
+        name: isString,
+        color: isNumber,
+        hoist: isBoolean,
+        icon: isTypeUndefined(isTypeNull(isString)),
+        unicode_emoji: isTypeUndefined(isTypeNull(isString)),
+        position: isNumber,
+        permissions: isString,
+        managed: isBoolean,
+        mentionable: isBoolean,
+        tags: isTypeUndefined(isRoleTags)
+    })(obj);
 }
 
-export function isRoleTags(obj: any): obj is RoleTagsData {
-    let keys: (keyof RoleTagsData)[] = ["bot_id", "integration_id", "premium_subscriber"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isRoleTags(obj: unknown): obj is RoleTagsData {
+    return isTypeObject({
+        bot_id: isTypeUndefined(isSnowflake),
+        integration_id: isTypeUndefined(isSnowflake),
+        premium_subsciber: isTypeUndefined(isLiteral(null))
+    })(obj);
 }

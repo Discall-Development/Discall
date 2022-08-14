@@ -1,4 +1,4 @@
-import { SnowflakeData } from "./snowflake";
+import { SnowflakeData } from './snowflake';
 
 export enum ApplicationFlag {
     GATEWAY_PRESENCE = 1 << 12,

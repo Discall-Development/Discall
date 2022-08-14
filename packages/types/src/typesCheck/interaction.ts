@@ -1,46 +1,116 @@
-import { ApplicationCommandData, ApplicationCommandInteractionDataOptionData, ApplicationCommandOptionChoiceData, ApplicationCommandOptionData, IApplicationCommandData, IMessageComponentData, IModalSubmitData, InteractionData, ResolveData } from "../interaction";
+import { ApplicationCommandData, ApplicationCommandInteractionDataOptionData, ApplicationCommandOptionChoiceData, ApplicationCommandOptionData, IApplicationCommandData, IMessageComponentData, IModalSubmitData, InteractionData, ResolveData } from '../interaction';
+import { isChannel, isLocaleOption } from './channel';
+import { isGuildMember, isRole } from './guild';
+import { isAttachment, isMessage, isMessageComponent, isMessageInteraction, isSelectOption } from './message';
+import { isBoolean, isLiteral, isNumber, isString, isTypeArray, isTypeNull, isTypeObject, isTypeRecord, isTypeUndefined, isUnion } from './original';
+import { isSnowflake } from './snowflake';
+import { isUser } from './user';
 
-export function isInteraction(obj: any): obj is InteractionData {
-    let keys: (keyof InteractionData)[] = ["id", "application_id", "type", "data", "guild_id", "channel_id", "member", "user", "token", "version", "message", "locale", "guild_locale"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isInteraction(obj: unknown): obj is InteractionData {
+    return isTypeObject({
+        id: isSnowflake,
+        application_id: isSnowflake,
+        type: isNumber,
+        data: isTypeUndefined(isUnion(isIApplicationCommand, isIMessageComponent, isIModalSubmit)),
+        guild_id: isTypeUndefined(isSnowflake),
+        channel_id: isTypeUndefined(isSnowflake),
+        member: isTypeUndefined(isGuildMember),
+        user: isTypeUndefined(isUser),
+        token: isString,
+        version: isLiteral(1),
+        message: isUnion(isMessage, isMessageInteraction),
+        locale: isTypeUndefined(isLocaleOption),
+        guild_locale: isTypeUndefined(isLocaleOption)
+    })(obj);
 }
 
-export function isIApplicationCommand(obj: any): obj is IApplicationCommandData {
-    let keys: (keyof IApplicationCommandData)[] = ["id", "name", "type", "resolved", "options", "guild_id", "target_id"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isIApplicationCommand(obj: unknown): obj is IApplicationCommandData {
+    return isTypeObject({
+        id: isSnowflake,
+        name: isString,
+        type: isNumber,
+        resolved: isTypeUndefined(isResolve),
+        options: isTypeUndefined(isTypeArray(isApplicationCommandInteractionDataOption)),
+        guild_id: isTypeUndefined(isSnowflake),
+        target_id: isTypeUndefined(isSnowflake)
+    })(obj);
 }
 
-export function isIMessageComponent(obj: any): obj is IMessageComponentData {
-    let keys: (keyof IMessageComponentData)[] = ["custom_id", "component_type", "values"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isIMessageComponent(obj: unknown): obj is IMessageComponentData {
+    return isTypeObject({
+        custom_id: isString,
+        component_type: isNumber,
+        values: isTypeUndefined(isTypeArray(isSelectOption))
+    })(obj);
 }
 
-export function isIModalSubmit(obj: any): obj is IModalSubmitData {
-    let keys: (keyof IModalSubmitData)[] = ["custom_id", "components"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isIModalSubmit(obj: unknown): obj is IModalSubmitData {
+    return isTypeObject({
+        custom_id: isString,
+        components: isTypeArray(isMessageComponent)
+    })(obj);
 }
 
-export function isResolve(obj: any): obj is ResolveData {
-    let keys: (keyof ResolveData)[] = ["users", "members", "roles", "channels", "messages", "attachments"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isResolve(obj: unknown): obj is ResolveData {
+    return isTypeObject({
+        user: isTypeUndefined(isTypeRecord(isSnowflake, isUser)),
+        members: isTypeUndefined(isTypeRecord(isSnowflake, isGuildMember)),
+        roles: isTypeUndefined(isTypeRecord(isSnowflake, isRole)),
+        channels: isTypeUndefined(isTypeRecord(isSnowflake, isChannel)),
+        messages: isTypeUndefined(isTypeRecord(isSnowflake, isMessage)),
+        attachments: isTypeUndefined(isTypeRecord(isSnowflake, isAttachment))
+    })(obj);
 }
 
-export function isApplicationCommandInteractionDataOption(obj: any): obj is ApplicationCommandInteractionDataOptionData {
-    let keys: (keyof ApplicationCommandInteractionDataOptionData)[] = ["name", "type", "value", "options", "focused"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isApplicationCommandInteractionDataOption(obj: unknown): obj is ApplicationCommandInteractionDataOptionData {
+    return isTypeObject({
+        name: isString,
+        type: isNumber,
+        value: isTypeUndefined(isUnion(isNumber, isString)),
+        options: isTypeUndefined(isApplicationCommandInteractionDataOption),
+        focused: isTypeUndefined(isBoolean)
+    })(obj);
 }
 
-export function isApplicationCommand(obj: any): obj is ApplicationCommandData {
-    let keys: (keyof ApplicationCommandData)[] = ["id", "type", "application_id", "guild_id", "name", "name_localizations", "description", "description_localizations", "options", "default_member_permissions", "dm_permission", "default_permission", "version"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isApplicationCommand(obj: unknown): obj is ApplicationCommandData {
+    return isTypeObject({
+        id: isSnowflake,
+        type: isTypeUndefined(isNumber),
+        application_id: isSnowflake,
+        guild_id: isTypeUndefined(isSnowflake),
+        name: isString,
+        name_localizations: isTypeUndefined(isTypeNull(isTypeRecord(isString, isString))),
+        description: isString,
+        description_localizations: isTypeUndefined(isTypeNull(isTypeRecord(isString, isString))),
+        options: isTypeUndefined(isApplicationCommandInteractionDataOption),
+        default_member_permissions: isTypeNull(isString),
+        dm_permission: isTypeUndefined(isBoolean),
+        default_permission: isTypeUndefined(isTypeNull(isBoolean)),
+        version: isSnowflake
+    })(obj);
 }
 
-export function isApplicationCommandOption(obj: any): obj is ApplicationCommandOptionData {
-    let keys: (keyof ApplicationCommandOptionData)[] = ["type", "name", "name_localizations", "description", "description_localizations", "required", "choices", "options", "channel_types", "min_value", "max_value", "autocomplete"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isApplicationCommandOption(obj: unknown): obj is ApplicationCommandOptionData {
+    return isTypeObject({
+        type: isNumber,
+        name: isString,
+        name_localizations: isTypeUndefined(isTypeNull(isTypeRecord(isString, isString))),
+        description: isString,
+        description_localizations: isTypeUndefined(isTypeNull(isTypeRecord(isString, isString))),
+        required: isTypeUndefined(isBoolean),
+        choices: isTypeUndefined(isTypeArray(isApplicationCommandOptionChoice)),
+        options: isTypeUndefined(isTypeArray(isApplicationCommandOption)),
+        channel_types: isTypeArray(isNumber),
+        min_values: isTypeUndefined(isNumber),
+        max_value: isTypeUndefined(isNumber),
+        autocomplete: isTypeUndefined(isBoolean)
+    })(obj);
 }
 
-export function isApplicationCommandOptionChoice(obj: any): obj is ApplicationCommandOptionChoiceData {
-    let keys: (keyof ApplicationCommandOptionChoiceData)[] = ["name", "name_localizations", "value"];
-    return Object.keys(obj).filter((v: any) => !keys.includes(v)).length === 0;
+export function isApplicationCommandOptionChoice(obj: unknown): obj is ApplicationCommandOptionChoiceData {
+    return isTypeObject({
+        name: isString,
+        name_localizations: isTypeUndefined(isTypeRecord(isString, isString)),
+        value: isUnion(isString, isNumber)
+    })(obj);
 }

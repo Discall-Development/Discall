@@ -1,8 +1,8 @@
-import { GuildData } from "./guild";
-import { SnowflakeData } from "./snowflake";
-import { Timestamp } from "./timestamp";
-import { UserData } from "./user";
-import { VideoQualityModes } from "./voice";
+import { GuildData } from './guild';
+import { SnowflakeData } from './snowflake';
+import { Timestamp } from './timestamp';
+import { UserData } from './user';
+import { VideoQualityModes } from './voice';
 export interface ChannelData {
     id: SnowflakeData;
     type: ChannelTypes;
@@ -83,11 +83,15 @@ export interface ThreadMemberData {
 }
 export interface OverwriteData {
     id: SnowflakeData;
-    type: number;
+    type: OverwriteType;
     allow: string;
     deny: string;
 }
-export declare type LocaleOption = "da" | "de" | "en-GB" | "en-US" | "es-ES" | "fr" | "hr" | "it" | "lt" | "hu" | "nl" | "no" | "pl" | "pt-BR" | "ro" | "fi" | "sv-SE" | "vi" | "tr" | "cs" | "el" | "bg" | "ru" | "uk" | "hi" | "th" | "zh-CN" | "ja" | "zh-TW" | "ko";
+export declare enum OverwriteType {
+    Role = 0,
+    Member = 1
+}
+export declare type LocaleOption = 'da' | 'de' | 'en-GB' | 'en-US' | 'es-ES' | 'fr' | 'hr' | 'it' | 'lt' | 'hu' | 'nl' | 'no' | 'pl' | 'pt-BR' | 'ro' | 'fi' | 'sv-SE' | 'vi' | 'tr' | 'cs' | 'el' | 'bg' | 'ru' | 'uk' | 'hi' | 'th' | 'zh-CN' | 'ja' | 'zh-TW' | 'ko';
 export interface WebhookData {
     id: SnowflakeData;
     type: WebhookType;

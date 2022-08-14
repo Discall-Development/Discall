@@ -1,6 +1,7 @@
-import * as m from "node-fetch";
-import _FormData = require("form-data");
-export module fetch {
+import * as m from 'node-fetch';
+import _FormData = require('form-data');
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace fetch {
     export const fetch = m.default;
     export const Blob = m.Blob;
     export const Headers = m.Headers;

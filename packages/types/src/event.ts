@@ -1,12 +1,12 @@
-import { ApplicationFlag, ApplicationCommandPermissionsData } from "./application";
-import { ChannelData, ChannelTypes, ThreadMemberData } from "./channel";
-import { GuildData, GuildMemberData, GuildMemberMentionData, GuildScheduledEventData, IntegrationData, InviteTargetType, RoleData, UnavailableGuildData } from "./guild";
-import { InteractionData } from "./interaction";
-import { EmojiData, StickerData, MessageData } from "./message";
-import { SnowflakeData } from "./snowflake";
-import { Timestamp } from "./timestamp";
-import { UserData, ActivityData, ClientStatusData, PresenceUpdateData } from "./user";
-import { StageInstanceData, VoiceStateData } from "./voice";
+import { ApplicationFlag, ApplicationCommandPermissionsData } from './application';
+import { ChannelData, ChannelTypes, ThreadMemberData } from './channel';
+import { GuildData, GuildMemberData, GuildMemberMentionData, GuildScheduledEventData, IntegrationData, InviteTargetType, RoleData, UnavailableGuildData } from './guild';
+import { InteractionData } from './interaction';
+import { EmojiData, StickerData, MessageData } from './message';
+import { SnowflakeData } from './snowflake';
+import { Timestamp } from './timestamp';
+import { UserData, ActivityData, ClientStatusData, PresenceUpdateData } from './user';
+import { StageInstanceData, VoiceStateData } from './voice';
 
 export type EventData = 
     ReadyEventData |
@@ -67,61 +67,61 @@ export type EventData =
     StageInstanceDeleteEventData;
 
 export enum EventName {
-    Ready = "READY",
-    ApplicationCommandPermissionsUpdate = "APPLICATION_COMMAND_PERMISSIONS_UPDATE",
-    ChannelCreate = "CHANNEL_CREATE",
-    ChannelUpdate = "CHANNEL_UPDATE",
-    ChannelDelete = "CHANNEL_DELETE",
-    ThreadCreate = "THREAD_CREATE",
-    ThreadUpdate = "THREAD_UPDATE",
-    ThreadDelete = "THREAD_DELETE",
-    ThreadListSync = "THREAD_LIST_SYNC",
-    ThreadMemberUpdate = "THREAD_MEMBER_UPDATE",
-    ThreadMembersUpdate = "THREAD_MEMBERS_UPDATE",
-    ChannelPinsUpdate = "CHANNEL_PINS_UPDATE",
-    GuildCreate = "GUILD_CREATE",
-    GuildUpdate = "GUILD_UPDATE",
-    GuildDelete = "GUILD_DELETE",
-    GuildBanAdd = "GUILD_BAN_ADD",
-    GuildBanRemove = "GUILD_BAN_REMOVE",
-    GuildEmojisUpdate = "GUILD_EMOJIS_UPDATE",
-    GuildStickersUpdate = "GUILD_STICKERS_UPDATE",
-    GuildIntegrationsUpdate = "GUILD_INTEGRATIONS_UPDATE",
-    GuildMemberAdd = "GUILD_MEMBER_ADD",
-    GuildMemberRemove = "GUILD_MEMBER_REMOVE",
-    GuildMemberUpdate = "GUILD_MEMBER_UPDATE",
-    GuildMembersChunk = "GUILDMEMBERSCHUNK",
-    GuildRoleCreate = "GUILD_ROLE_CREATE",
-    GuildRoleUpdate = "GUILD_ROLE_UPDATE",
-    GuildRoleDelete = "GUILD_ROLE_DELETE",
-    GuildScheduledEventCreate = "GUILD_SCHEDULED_EVENT_CREATE",
-    GuildScheduledEventUpdate = "GUILD_SCHEDULED_EVENT_UPDATE",
-    GuildScheduledEventDelete = "GUILD_SCHEDULED_EVENT_DELETE",
-    GuildScheduledEventUserAdd = "GUILD_SCHEDULED_EVENT_USER_ADD",
-    GuildScheduledEventUserRemove = "GUILD_SCHEDULED_EVENT_USER_REMOVE",
-    IntegrationCreate = "INTEGRATION_CREATE",
-    IntegrationUpdate = "INTEGRATION_UPDATE",
-    IntegrationDelete = "INTEGRATION_DELETE",
-    InviteCreate = "INVITE_CREATE",
-    InviteDelete = "INVITE_DELETE",
-    MessageCreate = "MESSAGE_CREATE",
-    MessageUpdate = "MESSAGE_UPDATE",
-    MessageDelete = "MESSAGE_DELETE",
-    MessageDeleteBulk = "MESSAGE_DELETE_BULK",
-    MessageReactionAdd = "MESSAGE_REACTION_ADD",
-    MessageReactionRemove = "MESSAGE_REACTION_REMOVE",
-    MessageReactionRemoveAll = "MESSAGE_REACTION_REMOVE_ALL",
-    MessageReactionRemoveEmoji = "MESSAGE_REACTION_REMOVE_EMOJI",
-    PresenceUpdate = "PRESENCE_UPDATE",
-    TypingStart = "TYPING_START",
-    UserUpdate = "USER_UPDATE",
-    VoiceStateUpdate = "VOICE_STATE_UPDATE",
-    VoiceServerUpdate = "VOICE_SERVER_UPDATE",
-    WebhookUpdate = "WEBHOOK_UPDATE",
-    InteractionCreate = "INTERACTION_CREATE",
-    StageInstanceCreate = "STAGE_INSTANCE_CREATE",
-    StageInstanceUpdate = "STAGE_INSTANCE_UPDATE",
-    StageInstanceDelete = "STAGE_INSTANCE_DELETE",
+    Ready = 'READY',
+    ApplicationCommandPermissionsUpdate = 'APPLICATION_COMMAND_PERMISSIONS_UPDATE',
+    ChannelCreate = 'CHANNEL_CREATE',
+    ChannelUpdate = 'CHANNEL_UPDATE',
+    ChannelDelete = 'CHANNEL_DELETE',
+    ThreadCreate = 'THREAD_CREATE',
+    ThreadUpdate = 'THREAD_UPDATE',
+    ThreadDelete = 'THREAD_DELETE',
+    ThreadListSync = 'THREAD_LIST_SYNC',
+    ThreadMemberUpdate = 'THREAD_MEMBER_UPDATE',
+    ThreadMembersUpdate = 'THREAD_MEMBERS_UPDATE',
+    ChannelPinsUpdate = 'CHANNEL_PINS_UPDATE',
+    GuildCreate = 'GUILD_CREATE',
+    GuildUpdate = 'GUILD_UPDATE',
+    GuildDelete = 'GUILD_DELETE',
+    GuildBanAdd = 'GUILD_BAN_ADD',
+    GuildBanRemove = 'GUILD_BAN_REMOVE',
+    GuildEmojisUpdate = 'GUILD_EMOJIS_UPDATE',
+    GuildStickersUpdate = 'GUILD_STICKERS_UPDATE',
+    GuildIntegrationsUpdate = 'GUILD_INTEGRATIONS_UPDATE',
+    GuildMemberAdd = 'GUILD_MEMBER_ADD',
+    GuildMemberRemove = 'GUILD_MEMBER_REMOVE',
+    GuildMemberUpdate = 'GUILD_MEMBER_UPDATE',
+    GuildMembersChunk = 'GUILDMEMBERSCHUNK',
+    GuildRoleCreate = 'GUILD_ROLE_CREATE',
+    GuildRoleUpdate = 'GUILD_ROLE_UPDATE',
+    GuildRoleDelete = 'GUILD_ROLE_DELETE',
+    GuildScheduledEventCreate = 'GUILD_SCHEDULED_EVENT_CREATE',
+    GuildScheduledEventUpdate = 'GUILD_SCHEDULED_EVENT_UPDATE',
+    GuildScheduledEventDelete = 'GUILD_SCHEDULED_EVENT_DELETE',
+    GuildScheduledEventUserAdd = 'GUILD_SCHEDULED_EVENT_USER_ADD',
+    GuildScheduledEventUserRemove = 'GUILD_SCHEDULED_EVENT_USER_REMOVE',
+    IntegrationCreate = 'INTEGRATION_CREATE',
+    IntegrationUpdate = 'INTEGRATION_UPDATE',
+    IntegrationDelete = 'INTEGRATION_DELETE',
+    InviteCreate = 'INVITE_CREATE',
+    InviteDelete = 'INVITE_DELETE',
+    MessageCreate = 'MESSAGE_CREATE',
+    MessageUpdate = 'MESSAGE_UPDATE',
+    MessageDelete = 'MESSAGE_DELETE',
+    MessageDeleteBulk = 'MESSAGE_DELETE_BULK',
+    MessageReactionAdd = 'MESSAGE_REACTION_ADD',
+    MessageReactionRemove = 'MESSAGE_REACTION_REMOVE',
+    MessageReactionRemoveAll = 'MESSAGE_REACTION_REMOVE_ALL',
+    MessageReactionRemoveEmoji = 'MESSAGE_REACTION_REMOVE_EMOJI',
+    PresenceUpdate = 'PRESENCE_UPDATE',
+    TypingStart = 'TYPING_START',
+    UserUpdate = 'USER_UPDATE',
+    VoiceStateUpdate = 'VOICE_STATE_UPDATE',
+    VoiceServerUpdate = 'VOICE_SERVER_UPDATE',
+    WebhookUpdate = 'WEBHOOK_UPDATE',
+    InteractionCreate = 'INTERACTION_CREATE',
+    StageInstanceCreate = 'STAGE_INSTANCE_CREATE',
+    StageInstanceUpdate = 'STAGE_INSTANCE_UPDATE',
+    StageInstanceDelete = 'STAGE_INSTANCE_DELETE',
     ready = Ready,
     application_command_permissions_update = ApplicationCommandPermissionsUpdate,
     channel_create = ChannelCreate,
@@ -192,7 +192,7 @@ export interface ReadyEventData {
     };
 }
 
-export interface ResumedEventData {}
+export type ResumedEventData = Record<string, never>
 
 export interface ApplicationCommandPermissionsUpdateEventData {
     id: SnowflakeData;
@@ -201,22 +201,18 @@ export interface ApplicationCommandPermissionsUpdateEventData {
     permissions: ApplicationCommandPermissionsData[];
 }
 
-export interface ChannelCreateEventData extends ChannelData {
-}
+export type ChannelCreateEventData = ChannelData
 
-export interface ChannelUpdateEventData extends ChannelData {
-}
+export type ChannelUpdateEventData = ChannelData
 
-export interface ChannelDeleteEventData extends ChannelData {
-}
+export type ChannelDeleteEventData = ChannelData
 
 export interface ThreadCreateEventData extends ChannelData {
     newly_created?: boolean;
     thread_member?: ThreadMemberData;
 }
 
-export interface ThreadUpdateEventData extends ChannelData {
-}
+export type ThreadUpdateEventData = ChannelData
 
 export interface ThreadDeleteEventData {
     id: SnowflakeData;
@@ -269,11 +265,9 @@ export interface GuildCreateEventData extends GuildData {
     guild_scheduled_events: GuildScheduledEventData;
 }
 
-export interface GuildUpdateEventData extends GuildData {
-}
+export type GuildUpdateEventData = GuildData
 
-export interface GuildDeleteEventData extends UnavailableGuildData {
-}
+export type GuildDeleteEventData = UnavailableGuildData
 
 export interface GuildBanAddEventData {
     guild_id: SnowflakeData;
@@ -327,7 +321,7 @@ export interface GuildMembersChunkEventData {
     members: GuildMemberData[];
     chunk_index: number;
     chunk_count: number;
-    not_found?: any[];
+    not_found?: unknown[];
     presences?: PresenceUpdateData[];
     nonce?: string;
 }
@@ -347,14 +341,11 @@ export interface GuildRoleDeleteEventData {
     role_id: SnowflakeData;
 }
 
-export interface GuildScheduledEventCreateEventData extends GuildScheduledEventData {
-}
+export type GuildScheduledEventCreateEventData = GuildScheduledEventData
 
-export interface GuildScheduledEventUpdateEventData extends GuildScheduledEventData {
-}
+export type GuildScheduledEventUpdateEventData = GuildScheduledEventData
 
-export interface GuildScheduledEventDeleteEventData extends GuildScheduledEventData {
-}
+export type GuildScheduledEventDeleteEventData = GuildScheduledEventData
 
 export interface GuildScheduledEventUserAddEventData {
     guild_scheduled_event_id: SnowflakeData;
@@ -412,8 +403,7 @@ export interface MessageCreateEventData extends MessageData {
     mentions: GuildMemberMentionData[];
 }
 
-export interface MessageUpdateEventData extends MessageCreateEventData {
-}
+export type MessageUpdateEventData = MessageCreateEventData
 
 export interface MessageDeleteEventData {
     id: SnowflakeData;
@@ -473,11 +463,9 @@ export interface TypingStartEventData {
     member?: GuildMemberData;
 }
 
-export interface UserUpdateEventData extends UserData {
-}
+export type UserUpdateEventData = UserData
 
-export interface VoiceStateUpdateEventData extends VoiceStateData {
-}
+export type VoiceStateUpdateEventData = VoiceStateData
 
 export interface VoiceServerUpdateEventData {
     token: string;
@@ -490,21 +478,13 @@ export interface WebhookUpdateEventData {
     channel_id: SnowflakeData;
 }
 
-export interface InteractionCreateEventData extends InteractionData {
-}
+export type InteractionCreateEventData = InteractionData
 
-export interface StageInstanceCreateEventData extends StageInstanceData {
-}
+export type StageInstanceCreateEventData = StageInstanceData
 
-export interface StageInstanceUpdateEventData extends StageInstanceData {
-}
+export type StageInstanceUpdateEventData = StageInstanceData
 
-export interface StageInstanceDeleteEventData extends StageInstanceData {
-}
-
-type UnionToObject<T extends string> = { [k in T]: UnionToObject<Exclude<T, k>> };
-type ObjectToTuple<T extends {}> = {} extends T ? [] : { [k in keyof T]: [k, ...ObjectToTuple<T[k]>]; }[keyof T];
-export type UnionToArray<T extends string> = ObjectToTuple<UnionToObject<T>>;
+export type StageInstanceDeleteEventData = StageInstanceData
 
 export interface Event<T extends EventData> {
     remove: boolean;

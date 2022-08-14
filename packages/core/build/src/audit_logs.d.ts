@@ -1,1 +1,2 @@
-export default function auditLogs(arg_1: any): void;
+declare const _default: {};
+export default _default;

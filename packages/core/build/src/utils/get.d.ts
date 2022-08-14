@@ -1,5 +1,5 @@
-import { SnowflakeData } from "@discall/types";
-import caches from "./cache";
+import { SnowflakeData } from '@discall/types';
+import caches from './cache';
 declare type CT = typeof caches;
 declare type ValueOfRecord<T, K extends keyof T> = {
     [K in keyof T]-?: K extends string ? T[K] extends Map<SnowflakeData, infer V> ? V : never : never;

@@ -1,5 +1,5 @@
-import * as WS from "ws";
-export declare module WebSocket {
+import * as WS from 'ws';
+export declare namespace WebSocket {
     type OpenEvent = WS.Event;
     type CloseEvent = WS.CloseEvent;
     type ErrorEvent = WS.ErrorEvent;

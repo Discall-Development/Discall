@@ -1,10 +1,10 @@
-import pipe from "@discall/simple-pipe";
-import { WebSocket } from "./runtimeModule";
-import { DiscordData, Opcode } from "@discall/types";
+import pipe from '@discall/simple-pipe';
+import { WebSocket } from './runtimeModule';
+import { DiscordData, Opcode } from '@discall/types';
 
 const GATEWAY_VERSION = 10;
-const GATEWAY_ENCODING = "json";
-const DEFAULT_GATEWAY_BASE = "wss://gateway.discord.gg";
+const GATEWAY_ENCODING = 'json';
+const DEFAULT_GATEWAY_BASE = 'wss://gateway.discord.gg';
 let GATEWAY_BASE = DEFAULT_GATEWAY_BASE;
 
 enum State {
@@ -27,11 +27,11 @@ let sequence: number | null = null;
 let session_id: string;
 let heartbeatID: NodeJS.Timer;
 export default function ws(token: string, intents: number): WS {
-    let ws = new WebSocket.WebSocket(`${GATEWAY_BASE}?v=${GATEWAY_VERSION}&encoding=${GATEWAY_ENCODING}`);
+    const ws = new WebSocket.WebSocket(`${GATEWAY_BASE}?v=${GATEWAY_VERSION}&encoding=${GATEWAY_ENCODING}`);
     if (!state)
         state = State.OPEN;
 
-    ws.onopen = () => open(ws, token, intents, sequence, session_id);
+    ws.onopen = () => open(ws, token, intents, session_id);
     ws.onclose = (event: WebSocket.CloseEvent) => close(event, token, intents);
     ws.onerror = () => error();
     ws.onmessage = (event: WebSocket.MessageEvent) => message(ws, event);
@@ -39,19 +39,19 @@ export default function ws(token: string, intents: number): WS {
     return ws as WS;
 }
 
-export async function send(ws: WebSocket.WebSocket, data: any) {
+export async function send(ws: WebSocket.WebSocket, data: unknown) {
     return await pipe(data)
         .pipe(JSON.stringify)
         .pipe(ws.send.bind(ws))
         .execute();
 }
 
-async function open(ws: WebSocket.WebSocket, token: string, intents: number, sequence: number | null, session_id: string): Promise<void> {
+async function open(ws: WebSocket.WebSocket, token: string, intents: number, session_id: string): Promise<void> {
     switch (state) {
     case State.OPEN:
         return await login(ws, token, intents);
     case State.RESUME:
-        return await resume(ws, token, sequence, session_id)
+        return await resume(ws, token, session_id);
     }
 }
 
@@ -72,16 +72,19 @@ async function error() {
 }
 
 async function message(ws: WebSocket.WebSocket, event: WebSocket.MessageEvent): Promise<DiscordData> {
-    let data = JSON.parse(event.data as string) as DiscordData;
+    const data = JSON.parse(event.data as string) as DiscordData;
     switch (data.op) {
     case Opcode.Dispatch:
-        if (data.t === "READY")
-            GATEWAY_BASE = data.d?.resume_gateway_url;
+        if (data.t === 'READY')
+            GATEWAY_BASE = (data.d as { resume_gateway_url: string }).resume_gateway_url;
+
+        sequence = data.s as number;
         break;
     case Opcode.InvalidSession:
         process.exit(1);
+        break;
     case Opcode.Hello:
-        await keepAlive(ws, data.d.heartbeat_interval);
+        await keepAlive(ws, (data.d as { heartbeat_interval: number }).heartbeat_interval);
     }
 
     return data;
@@ -94,15 +97,15 @@ async function login(ws: WebSocket.WebSocket, token: string, intents: number) {
             token,
             intents,
             properties: {
-                os: "linux",
-                browser: "discall",
-                device: "discall",
+                os: 'linux',
+                browser: 'discall',
+                device: 'discall',
             },
         }
     });
 }
 
-async function resume(ws: WebSocket.WebSocket, token: string, sequence: number | null, session_id: string) {
+async function resume(ws: WebSocket.WebSocket, token: string, session_id: string) {
     return await send(ws, {
         op: Opcode.Resume,
         d: {
@@ -118,6 +121,6 @@ async function keepAlive(ws: WebSocket.WebSocket, heartbeat: number): Promise<No
         await send(ws, {
             op: Opcode.Heartbeat,
             d: sequence
-        })
+        });
     }, heartbeat);
 }

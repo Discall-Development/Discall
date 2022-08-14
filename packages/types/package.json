@@ -5,7 +5,9 @@
     "main": "build/index.js",
     "scripts": {
         "build": "tsc",
-        "prepare": "npm run build"
+        "test": "yarn node build/test/index.js",
+        "start": "yarn build && yarn test",
+        "prepare": "yarn build"
     },
     "keywords": [
         "types",
@@ -13,6 +15,10 @@
         "FP",
         "API Wrapper"
     ],
+    "bugs": {
+        "url": "https://github.com/rexwu1104/Discall/issues"
+    },
+    "homepage": "https://github.com/rexwu1104/Discall/packages/types#readme",
     "author": "rexwu1104",
     "license": "ISC"
 }

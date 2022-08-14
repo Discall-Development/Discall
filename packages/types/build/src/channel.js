@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WebhookType = exports.SystemChannelFlags = exports.ChannelFlags = exports.ChannelTypes = void 0;
+exports.WebhookType = exports.OverwriteType = exports.SystemChannelFlags = exports.ChannelFlags = exports.ChannelTypes = void 0;
 var ChannelTypes;
 (function (ChannelTypes) {
     ChannelTypes[ChannelTypes["GUILD_TEXT"] = 0] = "GUILD_TEXT";
@@ -27,6 +27,11 @@ var SystemChannelFlags;
     SystemChannelFlags[SystemChannelFlags["SUPPRESS_GUILD_REMINDER_NOTIFICATIONS"] = 4] = "SUPPRESS_GUILD_REMINDER_NOTIFICATIONS";
     SystemChannelFlags[SystemChannelFlags["SUPPRESS_JOIN_NOTIFICATION_REPLIES"] = 8] = "SUPPRESS_JOIN_NOTIFICATION_REPLIES";
 })(SystemChannelFlags = exports.SystemChannelFlags || (exports.SystemChannelFlags = {}));
+var OverwriteType;
+(function (OverwriteType) {
+    OverwriteType[OverwriteType["Role"] = 0] = "Role";
+    OverwriteType[OverwriteType["Member"] = 1] = "Member";
+})(OverwriteType = exports.OverwriteType || (exports.OverwriteType = {}));
 var WebhookType;
 (function (WebhookType) {
     WebhookType[WebhookType["Incoming"] = 1] = "Incoming";

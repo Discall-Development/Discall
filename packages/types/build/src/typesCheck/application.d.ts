@@ -1,3 +1,3 @@
-import { ApplicationCommandPermissionsData, ApplicationData } from "../application";
-export declare function isApplicationCommandPermissions(obj: any): obj is ApplicationCommandPermissionsData;
-export declare function isApplication(obj: any): obj is ApplicationData;
+import { ApplicationCommandPermissionsData, ApplicationData } from '../application';
+export declare function isApplicationCommandPermissions(obj: unknown): obj is ApplicationCommandPermissionsData;
+export declare function isApplication(obj: unknown): obj is ApplicationData;

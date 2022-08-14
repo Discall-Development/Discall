@@ -1,6 +1,6 @@
-import { EmptyError } from "./error";
-import { AllowMentionsData, AttachmentData, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, HttpRequestData, isHttpRequestData, MessageComponentData, MessageFlag, MessageReferenceData, SnowflakeData } from "@discall/types";
-import { isEmpty } from "./utils";
+import { EmptyError } from './error';
+import { AllowMentionsData, AttachmentData, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, HttpRequestData, isAny, isHttpRequestData, isSnowflake, MessageComponentData, MessageFlag, MessageReferenceData, SnowflakeData } from '@discall/types';
+import { isEmpty } from './utils';
 
 export default function message<T extends typeof message>(id: SnowflakeData): T;
 export default function message(param: HttpRequestData): HttpRequestData;
@@ -11,50 +11,50 @@ export default function message(message: {
     attachments?: Partial<AttachmentData>[];
 }, options?: {
     tts?: boolean;
-    allow_mentions: AllowMentionsData;
+    allow_mentions?: AllowMentionsData;
     message_reference?: MessageReferenceData;
     components?: MessageComponentData[];
     flags?: MessageFlag;
 }): HttpRequestData;
-export default function message(arg_1: any, arg_2?: any) {
+export default function message(arg_1: unknown, arg_2?: unknown) {
     if (isEmpty(arg_1))
-        throw new EmptyError("message");
+        throw new EmptyError('message');
 
-    if (typeof arg_1 === "string")
-        return function(param_1?: any, param_2?: any): HttpRequestData {
+    if (isSnowflake(arg_1))
+        return function(param_1?: unknown, param_2?: unknown): HttpRequestData {
             if (isHttpRequestData(param_1))
                 return {
-                    type: "id",
+                    type: 'id',
                     data: {
                         message_id: arg_1,
                         data: param_1
                     }
                 };
 
-            if (!param_1)
+            if (!isAny(param_1))
                 return {
-                    type: "message+info",
+                    type: 'message+info',
                     data: {}
                 };
 
             return {
-                type: "message+id",
+                type: 'message+id',
                 data: {
                     message_id: arg_1,
-                    data: message(param_1, param_2)
+                    data: message(param_1 as Record<string, unknown>, param_2 as never)
                 }
             };
         };
 
-    if (typeof arg_1.type === "string" && arg_1.data)
+    if (isHttpRequestData(arg_1))
         return {
-            type: "message",
+            type: 'message',
             data: arg_1
-        };
+        } as HttpRequestData;
 
     return {
-        type: "message",
-        data: { ...arg_1, ...arg_2 }
+        type: 'message',
+        data: { ...arg_1 as Record<string, unknown>, ...arg_2 as Record<string, unknown> }
     };
 }
 
@@ -62,7 +62,7 @@ export function attachments(files: Record<string, string>): Partial<AttachmentDa
     if (isEmpty(files))
         return [];
 
-    let results: Partial<AttachmentData>[] = [];
+    const results: Partial<AttachmentData>[] = [];
     let idx = 0;
     for (const file in files) {
         results.push({
@@ -87,11 +87,11 @@ export function embeds(embeds: {
     author?: EmbedAuthorData;
     fields?: EmbedFieldData[];
 }[]) {
-    let result: EmbedData[] = [];
-    let files: Record<string, string> = {};
+    const result: EmbedData[] = [];
+    const files: Record<string, string> = {};
 
     for (const data of embeds.values()) {
-        let obj: EmbedData = {
+        const obj: EmbedData = {
             title: data.title,
             description: data.description,
             url: data.url,
@@ -103,23 +103,23 @@ export function embeds(embeds: {
         };
 
         if (data.image !== undefined && !isEmpty(data.image)) {
-            let { url, file } = pathToUrlWithFile(data.image);
+            const { url, file } = pathToUrlWithFile(data.image);
             obj.image = { url };
 
             if (file)
-                files[file] = "";
+                files[file] = '';
         }
 
         if (data.thumbnail !== undefined && !isEmpty(data.thumbnail)) {
-            let { url, file } = pathToUrlWithFile(data.thumbnail);
+            const { url, file } = pathToUrlWithFile(data.thumbnail);
             obj.thumbnail = { url };
 
             if (file)
-                files[file] = "";
+                files[file] = '';
         }
 
         if (!isEmpty(obj))
-            result.push({ ...obj, type: "rich" });
+            result.push({ ...obj, type: 'rich' });
     }
 
     return { embeds: result, attachments: attachments(files) };
@@ -129,11 +129,11 @@ function pathToUrlWithFile(path: string): {
     url: string,
     file: string | null
 } {
-    if (path.startsWith("https://"))
+    if (path.startsWith('https://'))
         return { url: path, file: null };
 
-    if (path.startsWith("attachment://"))
-        return { url: path, file: path.split("attachment://")[1] };
+    if (path.startsWith('attachment://'))
+        return { url: path, file: path.split('attachment://')[1] };
 
-    return { url: "attachment://" + path.split("/").slice(-1), file: path };
+    return { url: 'attachment://' + path.split('/').slice(-1), file: path };
 }

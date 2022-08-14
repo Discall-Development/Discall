@@ -1,5 +1,5 @@
-import { LocaleOption } from "./channel";
-import { SnowflakeData } from "./snowflake";
+import { LocaleOption } from './channel';
+import { SnowflakeData } from './snowflake';
 
 export interface ActivityData {
     name: string;

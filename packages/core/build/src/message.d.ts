@@ -1,4 +1,4 @@
-import { AllowMentionsData, AttachmentData, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, HttpRequestData, MessageComponentData, MessageFlag, MessageReferenceData, SnowflakeData } from "@discall/types";
+import { AllowMentionsData, AttachmentData, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, HttpRequestData, MessageComponentData, MessageFlag, MessageReferenceData, SnowflakeData } from '@discall/types';
 export default function message<T extends typeof message>(id: SnowflakeData): T;
 export default function message(param: HttpRequestData): HttpRequestData;
 export default function message(message: {
@@ -8,7 +8,7 @@ export default function message(message: {
     attachments?: Partial<AttachmentData>[];
 }, options?: {
     tts?: boolean;
-    allow_mentions: AllowMentionsData;
+    allow_mentions?: AllowMentionsData;
     message_reference?: MessageReferenceData;
     components?: MessageComponentData[];
     flags?: MessageFlag;

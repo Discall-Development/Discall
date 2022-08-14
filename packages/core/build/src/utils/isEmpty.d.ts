@@ -1,1 +1,1 @@
-export default function isEmpty(obj: any, seenObjects?: Map<any, any>): boolean;
+export default function isEmpty(obj: unknown, seenObjects?: Map<unknown, unknown>): boolean;

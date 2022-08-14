@@ -1,5 +1,5 @@
-import { MessageCreateEventData } from "./event";
-export interface Command<T extends (v: any) => any> {
+import { MessageCreateEventData } from './event';
+export interface Command<T extends (v: unknown) => unknown> {
     name: string;
     run: (data: MessageCreateEventData, ...args: ReturnType<T>[]) => Promise<void>;
     convertors?: T[];

@@ -1,4 +1,4 @@
-import {Intents} from "@discall/types";
+import {Intents} from '@discall/types';
 
 export function allIntents(): number {
     return (
@@ -46,7 +46,7 @@ export function noneIntents(): number {
 }
 
 export function customIntents(options: number[]) {
-    let value: number = 0;
+    let value = 0;
     for (const option of options)
         value |= option;
 

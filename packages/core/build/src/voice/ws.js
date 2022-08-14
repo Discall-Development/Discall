@@ -18,30 +18,31 @@ var VoiceStates;
     VoiceStates[VoiceStates["READY"] = 5] = "READY";
 })(VoiceStates || (VoiceStates = {}));
 let registered = false;
-let clients = new Map();
+const clients = new Map();
 function voice(_ws) {
     if (registered)
         return _ws;
-    let onMessage = _ws.onmessage;
-    let onClose = _ws.onclose;
+    const onMessage = _ws.onmessage;
+    const onClose = _ws.onclose;
     let user_id, session_id;
     _ws.onmessage = async (event) => {
-        let data = await onMessage(event);
+        const data = await onMessage(event);
         if (data.op === types_1.Opcode.Dispatch) {
+            const ready = data.d;
+            const server = data.d;
             switch (data.t) {
-                case "READY":
-                    user_id = data.d.user.id;
-                    session_id = data.d.session_id;
+                case 'READY':
+                    user_id = ready.user.id;
+                    session_id = ready.session_id;
                     break;
-                case "VOICE_SERVER_UPDATE":
-                    let server = data.d;
+                case 'VOICE_SERVER_UPDATE':
                     clients.set(server.guild_id, ws(server.endpoint, server.token, session_id, server.guild_id, user_id));
             }
         }
         return data;
     };
     _ws.onclose = async (event) => {
-        let ws = await onClose(event);
+        const ws = await onClose(event);
         registered = false;
         return voice(ws);
     };
@@ -49,12 +50,12 @@ function voice(_ws) {
     return _ws;
 }
 exports.default = voice;
-let states = new Map();
-let heartbeatIDs = new Map();
+const states = new Map();
+const heartbeatIDs = new Map();
 let ssrcs;
-let udpSends = new Map();
+const udpSends = new Map();
 function ws(endpoint, token, session_id, server_id, user_id) {
-    let ws = new runtimeModule_1.WebSocket.WebSocket(`wss://${endpoint}?v=4`);
+    const ws = new runtimeModule_1.WebSocket.WebSocket(`wss://${endpoint}?v=4`);
     if (!states.has(server_id))
         states.set(server_id, VoiceStates.OPEN);
     ws.onopen = () => open(ws, user_id, server_id, session_id, token);
@@ -104,14 +105,14 @@ async function error(server_id) {
     udpSends.delete(server_id);
 }
 async function message(ws, event, server_id) {
-    let data = JSON.parse(event.data);
+    const data = JSON.parse(event.data);
     switch (data.op) {
         case types_1.VoiceOpcode.Ready:
             return await ready(ws, data, server_id);
         case types_1.VoiceOpcode.SessionDescription:
             return await sessionDescription(data, server_id);
         case types_1.VoiceOpcode.Hello:
-            return await keepAlive(ws, data.d.heart_interval, server_id);
+            return await keepAlive(ws, data.d.heartbeat_interval, server_id);
         case types_1.VoiceOpcode.ClientDisconnect:
             return await destroy(ws);
     }
@@ -140,26 +141,26 @@ async function resume(ws, user_id, server_id, token) {
     });
 }
 async function ready(ws, data, server_id) {
-    let { modes, ip, port, ssrc: _ssrc } = data.d;
-    let _udp = await (0, udp_1.default)(ip, port, _ssrc, server_id);
+    const { modes, ip, port, ssrc: _ssrc } = data.d;
+    const _udp = await (0, udp_1.default)(ip, port, _ssrc, server_id);
     udpSends.set(server_id, _udp.send);
     ssrcs.set(server_id, _ssrc);
     _udp.set(await selectProtocol(ws, modes, _udp.config, server_id));
     states.set(server_id, VoiceStates.READY);
 }
 async function selectProtocol(ws, modes, config, server_id) {
-    let valids = [
-        "xsalsa20_poly1305",
-        "xsalsa20_poly1305_suffix"
+    const valids = [
+        'xsalsa20_poly1305',
+        'xsalsa20_poly1305_suffix'
     ];
-    let mode = modes.find(v => valids.includes(v));
+    const mode = modes.find(v => valids.includes(v));
     if (!mode)
         throw new error_1.NoneValidEncryptionMode(modes);
     states.set(server_id, VoiceStates.SELECT);
     await send(ws, {
         op: types_1.VoiceOpcode.SelectProtocol,
         d: {
-            protocol: "udp",
+            protocol: 'udp',
             data: {
                 address: config.ip,
                 port: config.port,
@@ -170,7 +171,7 @@ async function selectProtocol(ws, modes, config, server_id) {
     return mode;
 }
 async function sessionDescription(data, server_id) {
-    let send = udpSends.get(server_id);
+    const send = udpSends.get(server_id);
     return udpSends.set(server_id, async function (_data) {
         return await send(_data, data.d.secret_key);
     });
@@ -183,6 +184,7 @@ async function keepAlive(ws, heartbeat, server_id) {
         });
     }, heartbeat));
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function setSpeaking(ws, server_id) {
     return await send(ws, {
         op: types_1.VoiceOpcode.Speaking,
@@ -197,7 +199,7 @@ async function destroy(ws) {
     ws.close(4000);
 }
 async function sendPacket(server_id, data) {
-    let send = udpSends.get(server_id);
+    const send = udpSends.get(server_id);
     await send(data);
 }
 exports.sendPacket = sendPacket;

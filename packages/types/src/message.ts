@@ -1,10 +1,10 @@
-import { ApplicationFlag } from "./application";
-import { ChannelMentionData, ChannelData } from "./channel";
-import { RoleData, GuildMemberData } from "./guild";
-import { InteractionType } from "./interaction";
-import { SnowflakeData } from "./snowflake";
-import { Timestamp } from "./timestamp";
-import { UserData } from "./user";
+import { ApplicationFlag } from './application';
+import { ChannelMentionData, ChannelData } from './channel';
+import { RoleData, GuildMemberData } from './guild';
+import { InteractionType } from './interaction';
+import { SnowflakeData } from './snowflake';
+import { Timestamp } from './timestamp';
+import { UserData } from './user';
 
 export enum DefaultMessageNotificationLevel {
     ALL_MESSAGES, ONLY_MENTIONS,
@@ -292,7 +292,7 @@ export interface StickerData {
     name: string;
     description: string | null;
     tags: string;
-    asset?: "";
+    asset?: '';
     type: StickerTypes;
     format: StickerFormatTypes;
     available?: boolean;

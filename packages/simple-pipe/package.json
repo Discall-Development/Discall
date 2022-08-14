@@ -2,11 +2,13 @@
     "name": "@discall/simple-pipe",
     "version": "1.3.1",
     "description": "a simple pipe function",
-    "main": ".build/index.js",
-    "types": ".build/index.d.ts",
+    "main": "build/index.js",
+    "types": "build/index.d.ts",
     "scripts": {
         "build": "tsc",
-        "prepare": "npm run build"
+        "test": "yarn node build/test/index.js",
+        "start": "yarn build && yarn test",
+        "prepare": "yarn build"
     },
     "repository": {
         "type": "git",
@@ -24,9 +26,9 @@
     "author": "rexwu1104",
     "license": "Apache-2.0",
     "bugs": {
-        "url": "https://github.com/rexwu1104/simple-pipe/issues"
+        "url": "https://github.com/rexwu1104/Discall/issues"
     },
-    "homepage": "https://github.com/rexwu1104/simple-pipe#readme",
+    "homepage": "https://github.com/rexwu1104/Discall/packages/simple-pipe#readme",
     "devDependencies": {
         "typescript": "^4.7.4"
     }

@@ -1,10 +1,10 @@
-import { StageInstanceData, VoiceRegionData, VoiceStateData } from "../voice";
-import { isGuildMember } from "./guild";
-import { isBoolean, isNumber, isString, isTypeNull, isTypeObject, isTypeUndefined } from "./original";
-import { isSnowflake } from "./snowflake";
-import { isTimestamp } from "./timestamp";
+import { StageInstanceData, VoiceRegionData, VoiceStateData } from '../voice';
+import { isGuildMember } from './guild';
+import { isBoolean, isNumber, isString, isTypeNull, isTypeObject, isTypeUndefined } from './original';
+import { isSnowflake } from './snowflake';
+import { isTimestamp } from './timestamp';
 
-export function isStageInstance(obj: any): obj is StageInstanceData {
+export function isStageInstance(obj: unknown): obj is StageInstanceData {
     return isTypeObject({
         id: isSnowflake,
         guild_id: isSnowflake,
@@ -16,7 +16,7 @@ export function isStageInstance(obj: any): obj is StageInstanceData {
     })(obj);
 }
 
-export function isVoiceState(obj: any): obj is VoiceStateData {
+export function isVoiceState(obj: unknown): obj is VoiceStateData {
     return isTypeObject({
         guild_id: isTypeUndefined(isSnowflake),
         channel_id: isTypeNull(isSnowflake),
@@ -34,7 +34,7 @@ export function isVoiceState(obj: any): obj is VoiceStateData {
     })(obj);
 }
 
-export function isVoiceRegion(obj: any): obj is VoiceRegionData {
+export function isVoiceRegion(obj: unknown): obj is VoiceRegionData {
     return isTypeObject({
         id: isString,
         name: isString,
