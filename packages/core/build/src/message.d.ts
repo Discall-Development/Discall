@@ -1,11 +1,12 @@
 import { AllowMentionsData, AttachmentData, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, HttpRequestData, MessageComponentData, MessageFlag, MessageReferenceData, SnowflakeData } from '@discall/types';
 export default function message<T extends typeof message>(id: SnowflakeData): T;
-export default function message(param: HttpRequestData): HttpRequestData;
-export default function message(message: {
+export default function message(data_1: any, data_2: any, data_3: SnowflakeData): HttpRequestData;
+export default function message(data: HttpRequestData): HttpRequestData;
+export default function message(content: {
     content?: string;
     embeds?: EmbedData[];
+    attachments?: AttachmentData[];
     sticker_ids?: SnowflakeData[];
-    attachments?: Partial<AttachmentData>[];
 }, options?: {
     tts?: boolean;
     allow_mentions?: AllowMentionsData;

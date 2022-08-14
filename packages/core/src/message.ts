@@ -1,14 +1,16 @@
 import { EmptyError } from './error';
-import { AllowMentionsData, AttachmentData, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, HttpRequestData, isAny, isHttpRequestData, isSnowflake, MessageComponentData, MessageFlag, MessageReferenceData, SnowflakeData } from '@discall/types';
+import { AllowMentionsData, AttachmentData, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, HttpRequestData, isHttpRequestData, isSnowflake, MessageComponentData, MessageFlag, MessageReferenceData, SnowflakeData } from '@discall/types';
 import { isEmpty } from './utils';
 
 export default function message<T extends typeof message>(id: SnowflakeData): T;
-export default function message(param: HttpRequestData): HttpRequestData;
-export default function message(message: {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function message(data_1: any, data_2: any, data_3: SnowflakeData): HttpRequestData;
+export default function message(data: HttpRequestData): HttpRequestData;
+export default function message(content: {
     content?: string;
     embeds?: EmbedData[];
+    attachments?: AttachmentData[];
     sticker_ids?: SnowflakeData[];
-    attachments?: Partial<AttachmentData>[];
 }, options?: {
     tts?: boolean;
     allow_mentions?: AllowMentionsData;
@@ -16,45 +18,39 @@ export default function message(message: {
     components?: MessageComponentData[];
     flags?: MessageFlag;
 }): HttpRequestData;
-export default function message(arg_1: unknown, arg_2?: unknown) {
-    if (isEmpty(arg_1))
-        throw new EmptyError('message');
+export default function message<T extends typeof message = typeof message>(arg_1: {
+    content?: string;
+    embeds?: EmbedData[];
+    attachments?: AttachmentData[];
+    sticker_ids?: SnowflakeData[];
+} | SnowflakeData | HttpRequestData, arg_2?: {
+    tts?: boolean;
+    allow_mentions?: AllowMentionsData;
+    message_reference?: MessageReferenceData;
+    components?: MessageComponentData[];
+    flags?: MessageFlag;
+}, arg_3?: SnowflakeData): HttpRequestData | T {
+    if (arg_3 && isSnowflake(arg_3))
+        return {
+            type: 'id',
+            data: message(arg_1 as never, arg_2 as never)
+        };
 
     if (isSnowflake(arg_1))
-        return function(param_1?: unknown, param_2?: unknown): HttpRequestData {
-            if (isHttpRequestData(param_1))
-                return {
-                    type: 'id',
-                    data: {
-                        message_id: arg_1,
-                        data: param_1
-                    }
-                };
-
-            if (!isAny(param_1))
-                return {
-                    type: 'message+info',
-                    data: {}
-                };
-
-            return {
-                type: 'message+id',
-                data: {
-                    message_id: arg_1,
-                    data: message(param_1 as Record<string, unknown>, param_2 as never)
-                }
-            };
-        };
+        return ((param_1: unknown, param_2?: unknown) => message(param_1, param_2, arg_1)) as T;
 
     if (isHttpRequestData(arg_1))
         return {
             type: 'message',
             data: arg_1
-        } as HttpRequestData;
+        };
+
+    if (isEmpty(arg_1))
+        throw new EmptyError('message');
 
     return {
         type: 'message',
-        data: { ...arg_1 as Record<string, unknown>, ...arg_2 as Record<string, unknown> }
+        data: { ...arg_1, ...arg_2 }
     };
 }
 

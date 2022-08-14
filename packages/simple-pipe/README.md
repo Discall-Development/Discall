@@ -1,4 +1,4 @@
-# simple-pipe
+# @discall/simple-pipe
 a simple pipe function
 
 ## Why should I use simple-pipe

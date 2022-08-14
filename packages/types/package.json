@@ -12,13 +12,17 @@
     "keywords": [
         "types",
         "discall",
+        "discord",
         "FP",
-        "API Wrapper"
+        "functional",
+        "API Wrapper",
+        "typescript",
+        "javascript"
     ],
     "bugs": {
         "url": "https://github.com/rexwu1104/Discall/issues"
     },
     "homepage": "https://github.com/rexwu1104/Discall/packages/types#readme",
     "author": "rexwu1104",
-    "license": "ISC"
+    "license": "Apache-2.0"
 }

@@ -46,7 +46,7 @@ export function isTypeRecord<T extends [(obj: unknown) => obj is string | number
 
 export function isTypeObject<T extends Record<string, (obj: unknown) => boolean>>(pairs: T): (obj: unknown) => obj is { [P in keyof typeof pairs]: CheckerValue<typeof pairs[P]> } {
     return function(obj: unknown): obj is { [P in keyof typeof pairs]: CheckerValue<typeof pairs[P]> } {
-        return Object.keys(pairs).every(v => pairs[v]((obj as Record<string, unknown>)[v]));
+        return !!obj && Object.keys(pairs).every(v => pairs[v]((obj as Record<string, unknown>)[v]));
     };
 }
 

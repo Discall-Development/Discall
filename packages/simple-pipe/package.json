@@ -17,7 +17,11 @@
     "keywords": [
         "pipe",
         "functional",
-        "simple"
+        "simple",
+        "discall",
+        "FP",
+        "typescript",
+        "javascript"
     ],
     "files": [
         "build/**/*",

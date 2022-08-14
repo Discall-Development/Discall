@@ -1,7 +1,9 @@
 import { ChannelTypes, HttpRequestData, isAny, isHttpRequestData, OverwriteData, SnowflakeData, VideoQualityModes, VoiceRegionData } from '@discall/types';
 
 export default function channel<T extends typeof channel>(id: SnowflakeData): T;
-export default function channel(param: HttpRequestData): HttpRequestData;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function channel(data_1: any, data_2: any, data_3: SnowflakeData): HttpRequestData;
+export default function channel(data: HttpRequestData): HttpRequestData;
 export default function channel(dm: {
     recipient_id: SnowflakeData;
 }): HttpRequestData;

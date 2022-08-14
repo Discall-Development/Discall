@@ -73,7 +73,6 @@ function getData(data: HttpRequestData): unknown {
 }
 
 function createPacket<T extends (...args: unknown[]) => unknown>(key: string, data: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
-    console.log(key);
     const url: string = formatUrl(HttpUri[key as keyof typeof HttpUri], data);
     const result: HttpRequest = {
         uri(base: URL) {

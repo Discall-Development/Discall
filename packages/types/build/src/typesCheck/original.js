@@ -45,7 +45,7 @@ function isTypeRecord(...pair) {
 exports.isTypeRecord = isTypeRecord;
 function isTypeObject(pairs) {
     return function (obj) {
-        return Object.keys(pairs).every(v => pairs[v](obj[v]));
+        return !!obj && Object.keys(pairs).every(v => pairs[v](obj[v]));
     };
 }
 exports.isTypeObject = isTypeObject;

@@ -4,37 +4,21 @@ exports.embeds = exports.attachments = void 0;
 const error_1 = require("./error");
 const types_1 = require("@discall/types");
 const utils_1 = require("./utils");
-function message(arg_1, arg_2) {
-    if ((0, utils_1.isEmpty)(arg_1))
-        throw new error_1.EmptyError('message');
-    if ((0, types_1.isSnowflake)(arg_1))
-        return function (param_1, param_2) {
-            if ((0, types_1.isHttpRequestData)(param_1))
-                return {
-                    type: 'id',
-                    data: {
-                        message_id: arg_1,
-                        data: param_1
-                    }
-                };
-            if (!(0, types_1.isAny)(param_1))
-                return {
-                    type: 'message+info',
-                    data: {}
-                };
-            return {
-                type: 'message+id',
-                data: {
-                    message_id: arg_1,
-                    data: message(param_1, param_2)
-                }
-            };
+function message(arg_1, arg_2, arg_3) {
+    if (arg_3 && (0, types_1.isSnowflake)(arg_3))
+        return {
+            type: 'id',
+            data: message(arg_1, arg_2)
         };
+    if ((0, types_1.isSnowflake)(arg_1))
+        return ((param_1, param_2) => message(param_1, param_2, arg_1));
     if ((0, types_1.isHttpRequestData)(arg_1))
         return {
             type: 'message',
             data: arg_1
         };
+    if ((0, utils_1.isEmpty)(arg_1))
+        throw new error_1.EmptyError('message');
     return {
         type: 'message',
         data: { ...arg_1, ...arg_2 }
