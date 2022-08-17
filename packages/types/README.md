@@ -15,7 +15,7 @@ isTypeTuple(isNumber, isNumber)(item) // item is [number, number]
 
 isTypeArray(isBoolean)(item) // item is boolean[]
 
-// more thins:
+// more things:
 /*
     isFunction,
     isTypeNull,
