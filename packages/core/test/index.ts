@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 import { pipeline } from '@discall/simple-pipe';
-import { bot, allIntents, register, addCommand, message, channel, create } from '../src';
+import { bot, allIntents, register, addCommand, guild, autoModeration, list } from '../src';
 import { GuildCreateEventData, CommandPermissionsFlag } from '@discall/types';
 
 dotenv.config();
@@ -18,18 +18,16 @@ register({
 
 addCommand({
     name: 'test',
-    run: async (ctx, num1, num2) => {
-        await pipeline(
-            message,
-            channel(ctx.channel_id),
-            create,
-            send
-        ).execute({
-            content: `${num1} + ${num2} = ${num1 + num2}`
-        });
+    run: async (ctx) => {
+        if (ctx.guild_id)
+            await pipeline(
+                autoModeration('991978238622584862'),
+                guild(ctx.guild_id),
+                list,
+                send
+            ).execute({}).then(console.log);
     }
 }, {
-    converters: [Number, Number],
     aliases: ['t', 'te'],
     permissions: CommandPermissionsFlag.OWNER
 });

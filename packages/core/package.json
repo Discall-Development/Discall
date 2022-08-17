@@ -12,8 +12,8 @@
     },
     "files": [
         "build/**/*",
-        "docs/**/*",
-        "img/**/*",
+        "../../docs/**/*",
+        "../../img/**/*",
         "README.md"
     ],
     "keywords": [

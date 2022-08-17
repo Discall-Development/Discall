@@ -1,12 +1,23 @@
 "use strict";
-// import { AuditLogEvent, HttpRequestData, SnowflakeData } from "@discall/types";
 Object.defineProperty(exports, "__esModule", { value: true });
-// // export default function auditLogs(filter: {
-// //     user_id?: SnowflakeData;
-// //     action_type?: AuditLogEvent;
-// //     before?: SnowflakeData;
-// //     limit?: number;
-// // }): HttpRequestData;
-// export default function auditLogs(arg_1: any) {
-// }
-exports.default = {};
+const utils_1 = require("./utils");
+function auditLogs(filters) {
+    if ((0, utils_1.isEmpty)(filters))
+        return {
+            type: 'audit',
+            data: {
+                query: '',
+                data: {}
+            }
+        };
+    return {
+        type: 'audit',
+        data: {
+            query: `?${Object.entries(filters).map(([key, value]) => {
+                return `${key}=${value}`;
+            }).join('&')}`,
+            data: {}
+        }
+    };
+}
+exports.default = auditLogs;

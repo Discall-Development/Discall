@@ -1,53 +1,22 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pipeline = void 0;
-function pipechain(value) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const functions = [];
-    const params = [];
-    let promise = false;
-    function execute() {
-        if (promise)
-            return functions.reduce((p, c, idx) => {
-                if (p instanceof Promise)
-                    return p.then((v) => c(v, ...params[idx]));
-                return c(p, ...params[idx]);
-            }, value);
-        return functions.reduce((p, c, idx) => c(p, ...params[idx]), value);
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function pipe(func, ...param) {
-        if (!promise && isPromise(func))
-            promise = true;
-        functions.push(func);
-        params.push(param);
-        return {
-            execute,
-            pipe
-        };
-    }
-    return { execute, pipe: pipe };
-}
-exports.default = pipechain;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function pipeline(...funcs) {
-    return {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        execute: (value) => funcs.reduce((p, c) => {
-            let f, ps;
-            if (Array.isArray(c))
-                f = c[0], ps = c.slice(1);
-            else
-                f = c, ps = [];
-            if (p instanceof Promise)
-                return p.then((v) => f(v, ...ps));
-            return f(p, ...ps);
-        }, value)
-    };
-}
-exports.pipeline = pipeline;
-function isPromise(func) {
-    if (func.constructor.name === 'AsyncFunction' && func().catch((_) => _) instanceof Promise)
-        return true;
-    return false;
-}
+const src_1 = __importDefault(require("./src"));
+exports.default = src_1.default;
+__exportStar(require("./src"), exports);

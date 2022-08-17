@@ -306,3 +306,5 @@ export interface RoleTagsData {
     integration_id?: SnowflakeData;
     premium_subscriber?: null;
 }
+
+export type ImageScheme = string;

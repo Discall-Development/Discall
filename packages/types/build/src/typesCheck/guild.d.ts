@@ -1,4 +1,4 @@
-import { AllowMentionsData, GuildData, GuildFeature, GuildMemberData, GuildMemberMentionData, GuildPreviewData, GuildScheduledEventData, GuildScheduledEventEntityMetadata, IntegrationAccountData, IntegrationApplicationData, IntegrationData, InviteData, InviteMetadata, RoleData, RoleTagsData, UnavailableGuildData, WelcomeScreenData } from '../guild';
+import { AllowMentionsData, GuildData, GuildFeature, GuildMemberData, GuildMemberMentionData, GuildPreviewData, GuildScheduledEventData, GuildScheduledEventEntityMetadata, ImageScheme, IntegrationAccountData, IntegrationApplicationData, IntegrationData, InviteData, InviteMetadata, RoleData, RoleTagsData, UnavailableGuildData, WelcomeScreenData } from '../guild';
 export declare function isGuild(obj: unknown): obj is GuildData;
 export declare function isGuildPreview(obj: unknown): obj is GuildPreviewData;
 export declare function isUnavailableGuild(obj: unknown): obj is UnavailableGuildData;
@@ -16,3 +16,4 @@ export declare function isInvite(obj: unknown): obj is InviteData;
 export declare function isInviteMetadata(obj: unknown): obj is InviteMetadata;
 export declare function isRole(obj: unknown): obj is RoleData;
 export declare function isRoleTags(obj: unknown): obj is RoleTagsData;
+export declare function isImageScheme(obj: unknown): obj is ImageScheme;

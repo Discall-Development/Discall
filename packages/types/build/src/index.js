@@ -15,6 +15,8 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./application"), exports);
+__exportStar(require("./audit_logs"), exports);
+__exportStar(require("./auto_moderation"), exports);
 __exportStar(require("./channel"), exports);
 __exportStar(require("./command"), exports);
 __exportStar(require("./event"), exports);
@@ -27,5 +29,4 @@ __exportStar(require("./timestamp"), exports);
 __exportStar(require("./user"), exports);
 __exportStar(require("./voice"), exports);
 __exportStar(require("./ws"), exports);
-__exportStar(require("./audit_logs"), exports);
 __exportStar(require("./typesCheck"), exports);

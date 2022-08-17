@@ -1,6 +1,7 @@
 import { ChannelTypes, HttpRequestData, OverwriteData, SnowflakeData, VideoQualityModes, VoiceRegionData } from '@discall/types';
 export default function channel<T extends typeof channel>(id: SnowflakeData): T;
-export default function channel(param: HttpRequestData): HttpRequestData;
+export default function channel(data_1: any, data_2: any, data_3: SnowflakeData): HttpRequestData;
+export default function channel(data: HttpRequestData): HttpRequestData;
 export default function channel(dm: {
     recipient_id: SnowflakeData;
 }): HttpRequestData;
@@ -8,8 +9,8 @@ export default function channel(qroupDm: {
     access_tokens: string[];
     nicks: Record<SnowflakeData, string>;
 }): HttpRequestData;
-export default function channel(channel: {
-    name?: string | null;
+export default function channel(settings: {
+    name: string;
     type?: ChannelTypes | null;
     position?: number | null;
     nsfw?: boolean | null;

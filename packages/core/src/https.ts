@@ -51,7 +51,7 @@ function getKey(key: string, data: HttpRequestData): string {
 
 function formatUrl(url: string, data: HttpRequestData): string {
     while(data) {
-        if (Object.keys(data).find(v => v.includes('id')))
+        if (data['type'] === undefined)
             url = format(url, data as unknown as Record<string, string>);
         
         if (data.data)
@@ -73,6 +73,7 @@ function getData(data: HttpRequestData): unknown {
 }
 
 function createPacket<T extends (...args: unknown[]) => unknown>(key: string, data: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
+    console.log(key);
     const url: string = formatUrl(HttpUri[key as keyof typeof HttpUri], data);
     const result: HttpRequest = {
         uri(base: URL) {
@@ -81,9 +82,11 @@ function createPacket<T extends (...args: unknown[]) => unknown>(key: string, da
                 uri: base.toString(),
                 mode: UriMode[key as keyof typeof UriMode] as unknown as HttpMode
             };
-        },
-        data: getData(data)
+        }
     };
+    if (UriMode[key as keyof typeof UriMode] >= HttpMode.POST)
+        result['data'] = getData(data);
+        
     if (typeof param === 'string')
         result['reason'] = param;
     

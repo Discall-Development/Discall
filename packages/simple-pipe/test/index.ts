@@ -1,4 +1,4 @@
-import pipe, {pipeline} from '..';
+import pipe, {pipeline} from '../src';
 
 const map = function <T>(arr: Array<T>, cb: Parameters<Array<T>['map']>[0]): ReturnType<typeof cb> {
     return arr.map(cb);
@@ -21,20 +21,18 @@ async function asyncTest(arr: any[]) {
     return arr;
 }
 
-console.log(
-    await pipe([1, 2, 3])
-        .pipe(map, (v: number) => v * 2)
-        .pipe(promiseTest)
-        .pipe(asyncTest)
-        .pipe((arr: number[]) => [...arr, 40])
-        .execute()
-);
+pipe([1, 2, 3])
+    .pipe(map, (v: number) => v * 2)
+    .pipe(promiseTest)
+    .pipe(asyncTest)
+    .pipe((arr: number[]) => [...arr, 40])
+    .execute()
+    .then(console.log);
 
-console.log(
-    await pipeline(
-        [map, (v: number) => v * 2],
-        promiseTest,
-        asyncTest,
-        (arr: number[]) => [...arr, 40]
-    ).execute([1, 2, 3])
-);
+pipeline(
+    [map, (v: number) => v * 2],
+    promiseTest,
+    asyncTest,
+    (arr: number[]) => [...arr, 40]
+).execute([1, 2, 3])
+    .then(console.log);

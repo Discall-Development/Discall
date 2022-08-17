@@ -20,7 +20,7 @@ export function isFunction(obj: unknown): obj is (...arg: unknown[]) => unknown 
 
 export function isTypeNull<T extends (obj: unknown) => boolean>(cb: T): (obj: unknown) => obj is CheckerValue<T> | null {
     return function(obj: unknown): obj is CheckerValue<T> | null {
-        return obj === null || cb(obj);
+        return isUnion(isLiteral(null), cb)(obj);
     };
 } 
 
@@ -52,7 +52,7 @@ export function isTypeObject<T extends Record<string, (obj: unknown) => boolean>
 
 export function isTypeUndefined<T extends (obj: unknown) => boolean>(cb: T): (obj: unknown) => obj is CheckerValue<T> | undefined {
     return function(obj: unknown): obj is CheckerValue<T> | undefined {
-        return obj === undefined || cb(obj);
+        return isUnion(isLiteral(undefined), cb)(obj);
     };
 }
 
@@ -62,7 +62,7 @@ export function isUnion<T extends ((obj: unknown) => boolean)[]>(...cbs: T): (ob
     };
 }
 
-export function isLiteral<T extends string | number | boolean | null | Record<string, unknown> | Array<unknown>>(value: T): (obj: unknown) => obj is typeof value {
+export function isLiteral<T extends string | number | boolean | null | undefined | Record<string, unknown> | Array<unknown>>(value: T): (obj: unknown) => obj is typeof value {
     return function(obj: unknown): obj is typeof value {
         return obj === value;
     };
@@ -70,5 +70,5 @@ export function isLiteral<T extends string | number | boolean | null | Record<st
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isAny(obj: unknown): obj is any {
-    return obj !== undefined;
+    return obj ? !!obj : !obj;
 }

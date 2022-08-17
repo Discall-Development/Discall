@@ -1,8 +1,12 @@
 {
     "name": "@discall/types",
-    "version": "1.0.0",
+    "version": "1.0.0a2",
     "description": "discall interfaces and checkers",
     "main": "build/index.js",
+    "files": [
+        "build/**/*",
+        "README.md"
+    ],
     "scripts": {
         "build": "tsc",
         "test": "yarn node build/test/index.js",
@@ -22,7 +26,7 @@
     "bugs": {
         "url": "https://github.com/rexwu1104/Discall/issues"
     },
-    "homepage": "https://github.com/rexwu1104/Discall/packages/types#readme",
+    "homepage": "https://github.com/rexwu1104/Discall/tree/main/packages/types#readme",
     "author": "rexwu1104",
     "license": "Apache-2.0"
 }

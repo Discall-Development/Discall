@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const __1 = __importStar(require(".."));
+const src_1 = __importStar(require("../src"));
 const map = function (arr, cb) {
     return arr.map(cb);
 };
@@ -42,10 +42,12 @@ function promiseTest(arr) {
 async function asyncTest(arr) {
     return arr;
 }
-console.log(await (0, __1.default)([1, 2, 3])
+(0, src_1.default)([1, 2, 3])
     .pipe(map, (v) => v * 2)
     .pipe(promiseTest)
     .pipe(asyncTest)
     .pipe((arr) => [...arr, 40])
-    .execute());
-console.log(await (0, __1.pipeline)([map, (v) => v * 2], promiseTest, asyncTest, (arr) => [...arr, 40]).execute([1, 2, 3]));
+    .execute()
+    .then(console.log);
+(0, src_1.pipeline)([map, (v) => v * 2], promiseTest, asyncTest, (arr) => [...arr, 40]).execute([1, 2, 3])
+    .then(console.log);

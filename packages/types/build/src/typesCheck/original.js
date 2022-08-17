@@ -19,7 +19,7 @@ function isFunction(obj) {
 exports.isFunction = isFunction;
 function isTypeNull(cb) {
     return function (obj) {
-        return obj === null || cb(obj);
+        return isUnion(isLiteral(null), cb)(obj);
     };
 }
 exports.isTypeNull = isTypeNull;
@@ -51,7 +51,7 @@ function isTypeObject(pairs) {
 exports.isTypeObject = isTypeObject;
 function isTypeUndefined(cb) {
     return function (obj) {
-        return obj === undefined || cb(obj);
+        return isUnion(isLiteral(undefined), cb)(obj);
     };
 }
 exports.isTypeUndefined = isTypeUndefined;
@@ -69,6 +69,6 @@ function isLiteral(value) {
 exports.isLiteral = isLiteral;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isAny(obj) {
-    return obj !== undefined;
+    return obj ? !!obj : !obj;
 }
 exports.isAny = isAny;

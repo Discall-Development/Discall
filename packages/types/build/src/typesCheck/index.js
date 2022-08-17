@@ -15,6 +15,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./application"), exports);
+__exportStar(require("./auto_moderation"), exports);
 __exportStar(require("./channel"), exports);
 __exportStar(require("./guild"), exports);
 __exportStar(require("./https"), exports);

@@ -1,4 +1,4 @@
-import { AllowMentionsData, GuildData, GuildFeature, GuildMemberData, GuildMemberMentionData, GuildPreviewData, GuildScheduledEventData, GuildScheduledEventEntityMetadata, IntegrationAccountData, IntegrationApplicationData, IntegrationData, InviteData, InviteMetadata, RoleData, RoleTagsData, UnavailableGuildData, WelcomeScreenData } from '../guild';
+import { AllowMentionsData, GuildData, GuildFeature, GuildMemberData, GuildMemberMentionData, GuildPreviewData, GuildScheduledEventData, GuildScheduledEventEntityMetadata, ImageScheme, IntegrationAccountData, IntegrationApplicationData, IntegrationData, InviteData, InviteMetadata, RoleData, RoleTagsData, UnavailableGuildData, WelcomeScreenData } from '../guild';
 import { isApplication } from './application';
 import { isChannel, isWelcomeScreenChannel } from './channel';
 import { isEmoji, isSticker } from './message';
@@ -230,4 +230,18 @@ export function isRoleTags(obj: unknown): obj is RoleTagsData {
         integration_id: isTypeUndefined(isSnowflake),
         premium_subsciber: isTypeUndefined(isLiteral(null))
     })(obj);
+}
+
+export function isImageScheme(obj: unknown): obj is ImageScheme {
+    return typeof obj === 'string' &&
+        obj.startsWith('data:') &&
+        obj.replace('data:', '').split(';')
+            .every((v, idx) => {
+                switch(idx) {
+                case 0:
+                    return ['image/jpeg', 'image/png', 'image/gif'].includes(v);
+                case 1:
+                    return v.startsWith('base64');
+                }
+            });
 }

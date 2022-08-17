@@ -13,6 +13,6 @@ export declare function isTypeObject<T extends Record<string, (obj: unknown) => 
 };
 export declare function isTypeUndefined<T extends (obj: unknown) => boolean>(cb: T): (obj: unknown) => obj is CheckerValue<T> | undefined;
 export declare function isUnion<T extends ((obj: unknown) => boolean)[]>(...cbs: T): (obj: unknown) => obj is CheckerValue<T>[number];
-export declare function isLiteral<T extends string | number | boolean | null | Record<string, unknown> | Array<unknown>>(value: T): (obj: unknown) => obj is typeof value;
+export declare function isLiteral<T extends string | number | boolean | null | undefined | Record<string, unknown> | Array<unknown>>(value: T): (obj: unknown) => obj is typeof value;
 export declare function isAny(obj: unknown): obj is any;
 export {};

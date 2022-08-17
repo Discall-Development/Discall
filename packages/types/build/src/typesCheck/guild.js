@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isRoleTags = exports.isRole = exports.isInviteMetadata = exports.isInvite = exports.isAllowMentions = exports.isIntegrationApplication = exports.isIntegrationAccount = exports.isIntegration = exports.isWelcomeScreen = exports.isGuildMemberMention = exports.isGuildScheduledEventEntityMetadata = exports.isGuildScheduledEvent = exports.isGuildMember = exports.isGuildFeature = exports.isUnavailableGuild = exports.isGuildPreview = exports.isGuild = void 0;
+exports.isImageScheme = exports.isRoleTags = exports.isRole = exports.isInviteMetadata = exports.isInvite = exports.isAllowMentions = exports.isIntegrationApplication = exports.isIntegrationAccount = exports.isIntegration = exports.isWelcomeScreen = exports.isGuildMemberMention = exports.isGuildScheduledEventEntityMetadata = exports.isGuildScheduledEvent = exports.isGuildMember = exports.isGuildFeature = exports.isUnavailableGuild = exports.isGuildPreview = exports.isGuild = void 0;
 const application_1 = require("./application");
 const channel_1 = require("./channel");
 const message_1 = require("./message");
@@ -233,3 +233,17 @@ function isRoleTags(obj) {
     })(obj);
 }
 exports.isRoleTags = isRoleTags;
+function isImageScheme(obj) {
+    return typeof obj === 'string' &&
+        obj.startsWith('data:') &&
+        obj.replace('data:', '').split(';')
+            .every((v, idx) => {
+            switch (idx) {
+                case 0:
+                    return ['image/jpeg', 'image/png', 'image/gif'].includes(v);
+                case 1:
+                    return v.startsWith('base64');
+            }
+        });
+}
+exports.isImageScheme = isImageScheme;

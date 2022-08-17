@@ -48,7 +48,7 @@ function getKey(key, data) {
 }
 function formatUrl(url, data) {
     while (data) {
-        if (Object.keys(data).find(v => v.includes('id')))
+        if (data['type'] === undefined)
             url = (0, utils_1.format)(url, data);
         if (data.data)
             data = data.data;
@@ -75,9 +75,10 @@ function createPacket(key, data, param, reason) {
                 uri: base.toString(),
                 mode: types_1.UriMode[key]
             };
-        },
-        data: getData(data)
+        }
     };
+    if (types_1.UriMode[key] >= types_1.HttpMode.POST)
+        result['data'] = getData(data);
     if (typeof param === 'string')
         result['reason'] = param;
     if (typeof param === 'function')

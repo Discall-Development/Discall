@@ -40,13 +40,11 @@ const send = (0, src_1.bot)(process.env.Discall, {
 });
 (0, src_1.addCommand)({
     name: 'test',
-    run: async (ctx, num1, num2) => {
-        await (0, simple_pipe_1.pipeline)(src_1.message, (0, src_1.channel)(ctx.channel_id), src_1.create, send).execute({
-            content: `${num1} + ${num2} = ${num1 + num2}`
-        });
+    run: async (ctx) => {
+        if (ctx.guild_id)
+            await (0, simple_pipe_1.pipeline)((0, src_1.autoModeration)('991978238622584862'), (0, src_1.guild)(ctx.guild_id), src_1.list, send).execute({}).then(console.log);
     }
 }, {
-    converters: [Number, Number],
     aliases: ['t', 'te'],
     permissions: types_1.CommandPermissionsFlag.OWNER
 });

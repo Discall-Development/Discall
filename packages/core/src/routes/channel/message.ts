@@ -1,39 +1,51 @@
-import { EmptyError } from './error';
 import { AllowMentionsData, AttachmentData, EmbedAuthorData, EmbedData, EmbedFieldData, EmbedFooterData, HttpRequestData, isHttpRequestData, isSnowflake, MessageComponentData, MessageFlag, MessageReferenceData, SnowflakeData } from '@discall/types';
-import { isEmpty } from './utils';
+import { isEmpty } from '../../utils';
+
+interface CreateMessageSettings {
+    content?: string;
+    embeds?: EmbedData[];
+    attachments?: AttachmentData[];
+    sticker_ids?: SnowflakeData[];
+}
+
+interface CreateMessageOptions {
+    tts?: boolean;
+    allowed_mentions?: AllowMentionsData;
+    message_reference?: MessageReferenceData;
+    components?: MessageComponentData[];
+    flags?: MessageFlag;
+}
+
+interface EditMessageSettings {
+    content?: string | null;
+    embeds?: EmbedData[] | null;
+    attachments?: AttachmentData[] | null;
+}
+
+interface EditMessageOptions {
+    allowed_mentions?: AllowMentionsData | null;
+    components?: MessageComponentData[] | null;
+    flags?: MessageFlag | null;
+}
 
 export default function message<T extends typeof message>(id: SnowflakeData): T;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function message(data_1: any, data_2: any, data_3: SnowflakeData): HttpRequestData;
 export default function message(data: HttpRequestData): HttpRequestData;
-export default function message(content: {
-    content?: string;
-    embeds?: EmbedData[];
-    attachments?: AttachmentData[];
-    sticker_ids?: SnowflakeData[];
-}, options?: {
-    tts?: boolean;
-    allow_mentions?: AllowMentionsData;
-    message_reference?: MessageReferenceData;
-    components?: MessageComponentData[];
-    flags?: MessageFlag;
-}): HttpRequestData;
-export default function message<T extends typeof message = typeof message>(arg_1: {
-    content?: string;
-    embeds?: EmbedData[];
-    attachments?: AttachmentData[];
-    sticker_ids?: SnowflakeData[];
-} | SnowflakeData | HttpRequestData, arg_2?: {
-    tts?: boolean;
-    allow_mentions?: AllowMentionsData;
-    message_reference?: MessageReferenceData;
-    components?: MessageComponentData[];
-    flags?: MessageFlag;
-}, arg_3?: SnowflakeData): HttpRequestData | T {
+export default function message(settings: CreateMessageSettings, options?: CreateMessageOptions): HttpRequestData;
+export default function message(settings: EditMessageSettings, options?: EditMessageOptions): HttpRequestData;
+export default function message<T extends typeof message = typeof message>(
+    arg_1: CreateMessageSettings | EditMessageSettings | SnowflakeData | HttpRequestData,
+    arg_2: CreateMessageOptions | EditMessageOptions = {},
+    arg_3?: SnowflakeData
+): HttpRequestData | T {
     if (arg_3 && isSnowflake(arg_3))
         return {
             type: 'id',
-            data: message(arg_1 as never, arg_2 as never)
+            data: {
+                message_id: arg_3,
+                data: message(arg_1 as never, arg_2)
+            }
         };
 
     if (isSnowflake(arg_1))
@@ -44,9 +56,6 @@ export default function message<T extends typeof message = typeof message>(arg_1
             type: 'message',
             data: arg_1
         };
-
-    if (isEmpty(arg_1))
-        throw new EmptyError('message');
 
     return {
         type: 'message',

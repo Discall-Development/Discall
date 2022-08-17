@@ -1,4 +1,5 @@
 export * from './application';
+export * from './auto_moderation';
 export * from './channel';
 export * from './guild';
 export * from './https';
