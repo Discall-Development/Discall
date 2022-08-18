@@ -17,10 +17,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.message = exports.channel = void 0;
+exports.reaction = exports.message = exports.channel = void 0;
 const guild_channel_1 = __importDefault(require("./guild_channel"));
 exports.channel = guild_channel_1.default;
 const message_1 = __importDefault(require("./message"));
 exports.message = message_1.default;
+const reaction_1 = __importDefault(require("./reaction"));
+exports.reaction = reaction_1.default;
 __exportStar(require("./guild_channel"), exports);
 __exportStar(require("./message"), exports);
+__exportStar(require("./reaction"), exports);

@@ -28,14 +28,22 @@ interface EditMessageOptions {
     flags?: MessageFlag | null;
 }
 
+interface GetMessagesFilters {
+    around?: SnowflakeData;
+    before?: SnowflakeData;
+    after?: SnowflakeData;
+    limit?: number;
+}
+
 export default function message<T extends typeof message>(id: SnowflakeData): T;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function message(data_1: any, data_2: any, data_3: SnowflakeData): HttpRequestData;
 export default function message(data: HttpRequestData): HttpRequestData;
+export default function message(filters: GetMessagesFilters): HttpRequestData;
 export default function message(settings: CreateMessageSettings, options?: CreateMessageOptions): HttpRequestData;
 export default function message(settings: EditMessageSettings, options?: EditMessageOptions): HttpRequestData;
 export default function message<T extends typeof message = typeof message>(
-    arg_1: CreateMessageSettings | EditMessageSettings | SnowflakeData | HttpRequestData,
+    arg_1: CreateMessageSettings | EditMessageSettings | GetMessagesFilters | SnowflakeData | HttpRequestData,
     arg_2: CreateMessageOptions | EditMessageOptions = {},
     arg_3?: SnowflakeData
 ): HttpRequestData | T {

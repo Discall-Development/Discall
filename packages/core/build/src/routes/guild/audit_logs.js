@@ -1,13 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("../../utils");
-function auditLogs(filters) {
+function auditLog(filters) {
     if ((0, utils_1.isEmpty)(filters))
         return {
             type: 'audit',
             data: {
-                query: '',
-                data: {}
+                query: ''
             }
         };
     return {
@@ -15,9 +14,8 @@ function auditLogs(filters) {
         data: {
             query: `?${Object.entries(filters).map(([key, value]) => {
                 return `${key}=${value}`;
-            }).join('&')}`,
-            data: {}
+            }).join('&')}`
         }
     };
 }
-exports.default = auditLogs;
+exports.default = auditLog;

@@ -1,7 +1,9 @@
 import { AuditLogEvent, HttpRequestData, SnowflakeData } from '@discall/types';
-export default function auditLogs(filters: {
+interface GetAuditLogFilters {
     user_id?: SnowflakeData;
     action_type?: AuditLogEvent;
     before?: SnowflakeData;
     limit?: number;
-}): HttpRequestData;
+}
+export default function auditLog(filters: GetAuditLogFilters): HttpRequestData;
+export {};

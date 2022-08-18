@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import { pipeline } from '@discall/simple-pipe';
-import { bot, allIntents, register, addCommand, guild, autoModeration, list } from '../src';
-import { GuildCreateEventData, CommandPermissionsFlag } from '@discall/types';
+import { bot, allIntents, register, addCommand, guild, list, auditLog } from '../src';
+import { GuildCreateEventData, CommandPermissionsFlag, EventName, MessageReactionAddEventData } from '@discall/types';
 
 dotenv.config();
 const send = bot(process.env.Discall as string, {
@@ -10,9 +10,14 @@ const send = bot(process.env.Discall as string, {
 });
 
 register({
-    name: 'guild_create',
+    name: EventName.GuildCreate,
     listener: async (guild: GuildCreateEventData) => {
         return console.log(guild.name);
+    }
+}, {
+    name: EventName.MessageReactionAdd,
+    listener: async (reaction: MessageReactionAddEventData) => {
+        console.log(reaction.emoji);
     }
 });
 
@@ -21,11 +26,13 @@ addCommand({
     run: async (ctx) => {
         if (ctx.guild_id)
             await pipeline(
-                autoModeration('991978238622584862'),
+                auditLog,
                 guild(ctx.guild_id),
                 list,
                 send
-            ).execute({}).then(console.log);
+            ).execute({
+                user_id: ctx.author.id
+            }).then(console.log);
     }
 }, {
     aliases: ['t', 'te'],

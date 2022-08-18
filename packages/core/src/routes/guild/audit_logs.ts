@@ -1,18 +1,19 @@
 import { AuditLogEvent, HttpRequestData, SnowflakeData } from '@discall/types';
 import { isEmpty } from '../../utils';
 
-export default function auditLogs(filters: {
+interface GetAuditLogFilters {
     user_id?: SnowflakeData;
     action_type?: AuditLogEvent,
     before?: SnowflakeData;
     limit?: number;
-}): HttpRequestData {
+}
+
+export default function auditLog(filters: GetAuditLogFilters): HttpRequestData {
     if (isEmpty(filters))
         return {
             type: 'audit',
             data: {
-                query: '',
-                data: {}
+                query: ''
             }
         };
 
@@ -23,8 +24,7 @@ export default function auditLogs(filters: {
                 Object.entries(filters).map(([key, value]) => {
                     return `${key}=${value}`;
                 }).join('&')
-            }`,
-            data: {}
+            }`
         }
     };
 }

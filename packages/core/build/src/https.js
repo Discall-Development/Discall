@@ -70,7 +70,9 @@ function createPacket(key, data, param, reason) {
     const url = formatUrl(types_1.HttpUri[key], data);
     const result = {
         uri(base) {
-            base.pathname += url;
+            const [pathname, query] = url.split('?');
+            query.split('&').forEach((v) => base.searchParams.append(...v.split('=')));
+            base.pathname += pathname;
             return {
                 uri: base.toString(),
                 mode: types_1.UriMode[key]
@@ -148,6 +150,8 @@ async function send(packet) {
         }
         if (result.status < 200 || result.status >= 300)
             throw new error_1.ErrorStatus(result.status);
+        if (result.status === 204)
+            return {};
         const json = await result.json();
         if (packet.cache)
             packet.cache(json);

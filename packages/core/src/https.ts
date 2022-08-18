@@ -77,7 +77,10 @@ function createPacket<T extends (...args: unknown[]) => unknown>(key: string, da
     const url: string = formatUrl(HttpUri[key as keyof typeof HttpUri], data);
     const result: HttpRequest = {
         uri(base: URL) {
-            base.pathname += url;
+            const [pathname, query] = url.split('?');
+            query.split('&').forEach((v) => base.searchParams.append(...(v.split('=') as [string, string])));
+            base.pathname += pathname;
+
             return {
                 uri: base.toString(),
                 mode: UriMode[key as keyof typeof UriMode] as unknown as HttpMode
@@ -170,6 +173,9 @@ export async function send(packet: HttpRequest) {
 
         if (result.status < 200 || result.status >= 300)
             throw new ErrorStatus(result.status);
+
+        if (result.status === 204)
+            return {};
 
         const json = await result.json();
         if (packet.cache)

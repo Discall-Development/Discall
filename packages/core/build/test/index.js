@@ -33,16 +33,23 @@ const send = (0, src_1.bot)(process.env.Discall, {
     prefix: '!'
 });
 (0, src_1.register)({
-    name: 'guild_create',
+    name: types_1.EventName.GuildCreate,
     listener: async (guild) => {
         return console.log(guild.name);
+    }
+}, {
+    name: types_1.EventName.MessageReactionAdd,
+    listener: async (reaction) => {
+        console.log(reaction.emoji);
     }
 });
 (0, src_1.addCommand)({
     name: 'test',
     run: async (ctx) => {
         if (ctx.guild_id)
-            await (0, simple_pipe_1.pipeline)((0, src_1.autoModeration)('991978238622584862'), (0, src_1.guild)(ctx.guild_id), src_1.list, send).execute({}).then(console.log);
+            await (0, simple_pipe_1.pipeline)(src_1.auditLog, (0, src_1.guild)(ctx.guild_id), src_1.list, send).execute({
+                user_id: ctx.author.id
+            }).then(console.log);
     }
 }, {
     aliases: ['t', 'te'],
