@@ -23,7 +23,8 @@
     },
     "homepage": "https://github.com/rexwu1104/Discall#readme",
     "workspaces": [
-        "packages/*"
+        "packages/*",
+        "app"
     ],
     "packageManager": "yarn@3.2.2",
     "devDependencies": {

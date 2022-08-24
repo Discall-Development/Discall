@@ -34,13 +34,43 @@ const send = (0, src_1.bot)(process.env.Discall, {
 });
 (0, src_1.register)({
     name: types_1.EventName.GuildCreate,
-    listener: async (guild) => {
-        return console.log(guild.name);
+    listener: async (g) => {
+        console.log(g.name);
     }
 }, {
     name: types_1.EventName.MessageReactionAdd,
-    listener: async (reaction) => {
-        console.log(reaction.emoji);
+    listener: async (r) => {
+        console.log(r.emoji);
+    }
+}, {
+    name: types_1.EventName.MessageCreate,
+    listener: async (m) => {
+        (0, src_1.create)((0, src_1.channel)(m.channel_id)((0, src_1.message)(m.id)((0, src_1.reaction)('bot')('🤣'))));
+        (0, src_1.get)((0, src_1.channel)(m.channel_id)((0, src_1.message)(m.id)((0, src_1.reaction)('all')('🤣'))));
+        (0, src_1.remove)((0, src_1.channel)(m.channel_id)((0, src_1.message)(m.id)((0, src_1.reaction)('bot')('🤣'))));
+        // await pipeline(
+        //     reaction('bot'),
+        //     message(m.id),
+        //     channel(m.channel_id),
+        //     create,
+        //     send
+        // ).execute('🤣').then(console.log);
+        // await pipeline(
+        //     reaction('all'),
+        //     message(m.id),
+        //     channel(m.channel_id),
+        //     get,
+        //     send
+        // ).execute('🤣').then(console.log);
+        // setTimeout(async () => {
+        //     await pipeline(
+        //         reaction('bot'),
+        //         message(m.id),
+        //         channel(m.channel_id),
+        //         remove,
+        //         send
+        //     ).execute('🤣').then(console.log);
+        // }, 1000);
     }
 });
 (0, src_1.addCommand)({

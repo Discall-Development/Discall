@@ -21,7 +21,8 @@ function commander(ws, prefix) {
             // eslint-disable-next-line prefer-const
             let [name, ...args] = content.split(/ +/g);
             name = name.replace(prefix, '');
-            await commands[name].run(message, ...args);
+            if (commands[name])
+                await commands[name].run(message, ...args);
         }
         return data;
     };

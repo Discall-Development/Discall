@@ -55,3 +55,9 @@ export class CommandExisted extends Error {
         super(`Command "${name}" has existed.`);
     }
 }
+
+export class EmptyModeError extends Error {
+    constructor(mode: string) {
+        super(`please choose a ${mode} mode`);
+    }
+}

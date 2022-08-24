@@ -40,10 +40,12 @@ export declare enum HttpUri {
     'get+id+channel+id+message' = "/channels/{channel_id}/messages/{message_id}",
     'create+id+channel+message' = "/channels/{channel_id}/messages",
     'create+id+channel+id+message' = "/channels/{channel_id}/messages/{message_id}/crosspost",
-    'create+id+channel+id+message+bot+reaction' = "/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me",
-    'remove+id+channel+id+message+bot+reaction' = "/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me",
-    'remove+id+channel+id+message+id+reaction' = "/channels/{channel_id}/messages/{message_id}/reaction/{emoji}/{user_id}",
-    'get+id+channel+id+message+reaction' = "/channels/{channel_id}/messages/{message_id}/reaction/{emoji}{query}"
+    'create+id+channel+id+message+client+emoji+reaction' = "/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me",
+    'remove+id+channel+id+message+client+emoji+reaction' = "/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me",
+    'remove+id+channel+id+message+id+emoji+reaction' = "/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/{user_id}",
+    'get+id+channel+id+message+all+emoji+reaction' = "/channels/{channel_id}/messages/{message_id}/reactions/{emoji}{query}",
+    'remove+id+channel+id+message+all+reaction' = "/channels/{channel_id}/messages/{message_id}/reactions",
+    'remove+id+channel+id+message+all+emoji+reaction' = "/channels/{channel_id}/messages/{message_id}/reactions/{emoji}"
 }
 export declare enum UriMode {
     'get+id+guild+audit' = 0,
@@ -59,8 +61,10 @@ export declare enum UriMode {
     'get+id+channel+id+message' = 0,
     'create+id+channel+message' = 2,
     'create+id+channel+id+message' = 2,
-    'create+id+channel+id+message+bot+reaction' = 3,
-    'remove+id+channel+id+message+bot+reaction' = 1,
-    'remove+id+channel+id+message+id+reaction' = 1,
-    'get+id+channel+id+message+reaction' = 0
+    'reate+id+channel+id+message+client+emoji+reaction' = 3,
+    'remove+id+channel+id+message+client+emoji+reaction' = 1,
+    'remove+id+channel+id+message+id+emoji+reaction' = 1,
+    'get+id+channel+id+message+all+emoji+reaction' = 0,
+    'remove+id+channel+id+message+all+reaction' = 1,
+    'remove+id+channel+id+message+all+emoji+reaction' = 1
 }

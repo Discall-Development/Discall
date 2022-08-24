@@ -72,29 +72,26 @@ function getData(data: HttpRequestData): unknown {
     }
 }
 
-function createPacket<T extends (...args: unknown[]) => unknown>(key: string, data: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
+function createPacket(key: string, data: HttpRequestData, reason?: string): HttpRequest {
     console.log(key);
     const url: string = formatUrl(HttpUri[key as keyof typeof HttpUri], data);
+    // console.log(url);
     const result: HttpRequest = {
         uri(base: URL) {
             const [pathname, query] = url.split('?');
-            query.split('&').forEach((v) => base.searchParams.append(...(v.split('=') as [string, string])));
-            base.pathname += pathname;
+            if (query)
+                query.split('&').forEach((v) => base.searchParams.append(...(v.split('=') as [string, string])));
 
+            base.pathname += pathname;
             return {
                 uri: base.toString(),
                 mode: UriMode[key as keyof typeof UriMode] as unknown as HttpMode
             };
         }
     };
+    
     if (UriMode[key as keyof typeof UriMode] >= HttpMode.POST)
         result['data'] = getData(data);
-        
-    if (typeof param === 'string')
-        result['reason'] = param;
-    
-    if (typeof param === 'function')
-        result['cache'] = param;
 
     if (reason)
         result['reason'] = reason;
@@ -102,28 +99,20 @@ function createPacket<T extends (...args: unknown[]) => unknown>(key: string, da
     return result;
 }
 
-export function create<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
-export function create(action: HttpRequestData, reason?: string): HttpRequest;
-export function create<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
-    return createPacket(getKey('create', action), action, param, reason);
+export function create(action: HttpRequestData, reason?: string): HttpRequest {
+    return createPacket(getKey('create', action), action, reason);
 }
 
-export function get<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
-export function get(action: HttpRequestData, reason?: string): HttpRequest;
-export function get<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
-    return createPacket(getKey('get', action), action, param, reason);
+export function get(action: HttpRequestData, reason?: string): HttpRequest {
+    return createPacket(getKey('get', action), action, reason);
 }
 
-export function edit<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
-export function edit(action: HttpRequestData, reason?: string): HttpRequest;
-export function edit<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
-    return createPacket(getKey('edit', action), action, param, reason);
+export function edit(action: HttpRequestData, reason?: string): HttpRequest {
+    return createPacket(getKey('edit', action), action, reason);
 }
 
-export function remove<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, cache?: T, reason?: string): HttpRequest;
-export function remove(action: HttpRequestData, reason?: string): HttpRequest;
-export function remove<T extends (...args: unknown[]) => unknown>(action: HttpRequestData, param?: string | T, reason?: string): HttpRequest {
-    return createPacket(getKey('remove', action), action, param, reason);
+export function remove(action: HttpRequestData, reason?: string): HttpRequest {
+    return createPacket(getKey('remove', action), action, reason);
 }
 
 export const crosspost = create;

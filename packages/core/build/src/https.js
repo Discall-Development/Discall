@@ -68,11 +68,13 @@ function getData(data) {
 function createPacket(key, data, param, reason) {
     console.log(key);
     const url = formatUrl(types_1.HttpUri[key], data);
+    console.log(url);
     const result = {
         uri(base) {
             const [pathname, query] = url.split('?');
-            query.split('&').forEach((v) => base.searchParams.append(...v.split('=')));
             base.pathname += pathname;
+            if (query)
+                query.split('&').forEach((v) => base.searchParams.append(...v.split('=')));
             return {
                 uri: base.toString(),
                 mode: types_1.UriMode[key]

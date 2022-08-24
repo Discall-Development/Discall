@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CommandExisted = exports.ErrorStatus = exports.MultiDefault = exports.InvalidHttpRequest = exports.EditWithEmptyData = exports.EmptyError = exports.NoneValidEncryptionMode = exports.CreateBotError = void 0;
+exports.EmptyModeError = exports.CommandExisted = exports.ErrorStatus = exports.MultiDefault = exports.InvalidHttpRequest = exports.EditWithEmptyData = exports.EmptyError = exports.NoneValidEncryptionMode = exports.CreateBotError = void 0;
 class CreateBotError extends Error {
     constructor(type) {
         switch (type) {
@@ -59,3 +59,9 @@ class CommandExisted extends Error {
     }
 }
 exports.CommandExisted = CommandExisted;
+class EmptyModeError extends Error {
+    constructor(mode) {
+        super(`please choose a ${mode} mode`);
+    }
+}
+exports.EmptyModeError = EmptyModeError;

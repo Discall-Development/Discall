@@ -22,3 +22,6 @@ export declare class ErrorStatus extends Error {
 export declare class CommandExisted extends Error {
     constructor(name: string);
 }
+export declare class EmptyModeError extends Error {
+    constructor(mode: string);
+}

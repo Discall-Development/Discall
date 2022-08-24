@@ -19,11 +19,11 @@ export default function commander(ws: ReturnType<typeof _ws>, prefix: string): R
         const message: MessageCreateEventData = data.d as MessageCreateEventData;
         const content = message.content.trim();
         if (content.split(/ +/g)[0].startsWith(prefix)) {
-            // eslint-disable-next-line prefer-const
-            let [name, ...args] = content.split(/ +/g);
-            name = name.replace(prefix, '');
+            const [commandName, ...args] = content.split(/ +/g);
+            const name = commandName.replace(prefix, '');
 
-            await commands[name].run(message, ...args);
+            if (name in commands)
+                await commands[name].run(message, ...args);
         }
 
         return data;
