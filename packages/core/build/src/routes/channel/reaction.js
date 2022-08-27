@@ -4,7 +4,6 @@ const types_1 = require("@discall/types");
 const error_1 = require("../../error");
 const utils_1 = require("../../utils");
 function reaction(arg_1, arg_2, arg_3, arg_4) {
-    console.log(arg_1, arg_2, arg_3, arg_4);
     if (arg_1 !== 'bot' && arg_1 !== 'all' && !(0, types_1.isSnowflake)(arg_1) && (!arg_3 && typeof arg_4 !== 'boolean'))
         throw new error_1.EmptyModeError('reaction');
     if (arg_1 === 'bot' || arg_1 === 'all' || (0, types_1.isSnowflake)(arg_1))

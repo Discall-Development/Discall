@@ -64,6 +64,13 @@ export default function message<T extends typeof message = typeof message>(
     };
 }
 
-// export function pins<T extends typeof pins>(id: SnowflakeData): T;
-// // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// export function pins(data_1: any, data_2: SnowflakeData): HttpRequestData;
+export function pins(id: SnowflakeData): HttpRequestData;
+export function pins(arg_1: SnowflakeData): HttpRequestData {
+    return {
+        type: 'pins',
+        data: {
+            message_id: arg_1,
+            data: {}
+        }
+    };
+}

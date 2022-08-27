@@ -13,14 +13,16 @@ interface CreateInviteSettings {
 export default function invite<T extends typeof invite>(code: string): T;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function invite(data_1: any, data_2: string): HttpRequestData;
-export default function invite(): HttpRequestData;
 export default function invite(data: HttpRequestData): HttpRequestData;
 export default function invite(settings: CreateInviteSettings): HttpRequestData;
 export default function invite<T extends typeof invite>(arg_1?: string | HttpRequestData | CreateInviteSettings, arg_2?: SnowflakeData): HttpRequestData | T {
     if (arg_2 && isString(arg_2))
         return {
             type: 'code',
-            data: invite(arg_1 as never) as unknown as HttpRequestData
+            data: {
+                code: arg_2,
+                data: invite(arg_1 as never)
+            }
         };
 
     if (isString(arg_1))
@@ -30,11 +32,6 @@ export default function invite<T extends typeof invite>(arg_1?: string | HttpReq
         return {
             type: 'invite',
             data: arg_1
-        };
-    if (!arg_1)
-        return {
-            type: 'invite+empty',
-            data: {}
         };
 
     return {

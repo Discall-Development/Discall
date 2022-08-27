@@ -187,9 +187,9 @@ export interface AllowMentionsData {
     replied_user: boolean;
 }
 export declare enum AllowMentionType {
-    Role_Mentions = 'roles',
-    User_Mentions = 'users',
-    EveryoneMentions = 'everyone'
+    Role_Mentions = "roles",
+    User_Mentions = "users",
+    EveryoneMentions = "everyone"
 }
 export declare enum PermissionFlags {
     CREATE_INSTANT_INVITE = 1,

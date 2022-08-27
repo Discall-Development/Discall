@@ -4,11 +4,6 @@ import { ChannelTypes, HttpRequestData, isHttpRequestData, isSnowflake, Overwrit
 //     recipient_id: SnowflakeData;
 // }
 
-// interface CreateGroupDmSettings {
-//     access_tokens: string[];
-//     nicks: Record<SnowflakeData, string>;
-// }
-
 interface CreateChannelSettings {
     name: string;
     type?: ChannelTypes | null;
@@ -62,7 +57,7 @@ export default function channel<T extends typeof channel>(
             type: 'id',
             data: {
                 channel_id: arg_2,
-                data: channel(arg_1 as never, arg_2)
+                data: channel(arg_1 as never)
             }
         };
 

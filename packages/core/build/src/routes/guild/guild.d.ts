@@ -9,8 +9,6 @@ interface CreateGuildSettings {
         id?: SnowflakeData;
         parent_id?: SnowflakeData;
     };
-}
-interface CreateGuildOptions {
     verification_level?: VerificationLevel | null;
     default_message_notifications?: DefaultMessageNotificationLevel | null;
     explict_content_filter?: ExplicitContentFilterLevel | null;
@@ -27,8 +25,6 @@ interface ModifyGuildSettings {
     discordvey_splash?: ImageScheme | null;
     banner?: ImageScheme | null;
     owner_id?: SnowflakeData;
-}
-interface ModifyGuildOptions {
     verification_level?: VerificationLevel | null;
     default_message_notifications?: DefaultMessageNotificationLevel | null;
     explict_content_filter?: ExplicitContentFilterLevel | null;
@@ -42,8 +38,8 @@ interface ModifyGuildOptions {
     premium_progress_bar_enabled?: boolean;
 }
 export default function guild<T extends typeof guild>(id: SnowflakeData): T;
-export default function guild(data_1: any, data_2: any, data_3: SnowflakeData): HttpRequestData;
+export default function guild(data_1: any, data_2: SnowflakeData): HttpRequestData;
 export default function guild(data: HttpRequestData): HttpRequestData;
-export default function guild(settings: CreateGuildSettings, options?: CreateGuildOptions): HttpRequestData;
-export default function guild(settings: ModifyGuildSettings, options?: ModifyGuildOptions): HttpRequestData;
+export default function guild(settings: CreateGuildSettings): HttpRequestData;
+export default function guild(settings: ModifyGuildSettings): HttpRequestData;
 export {};

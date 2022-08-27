@@ -65,16 +65,16 @@ function getData(data) {
             return data;
     }
 }
-function createPacket(key, data, param, reason) {
+function createPacket(key, data, reason) {
     console.log(key);
     const url = formatUrl(types_1.HttpUri[key], data);
-    console.log(url);
+    // console.log(url);
     const result = {
         uri(base) {
             const [pathname, query] = url.split('?');
-            base.pathname += pathname;
             if (query)
                 query.split('&').forEach((v) => base.searchParams.append(...v.split('=')));
+            base.pathname += pathname;
             return {
                 uri: base.toString(),
                 mode: types_1.UriMode[key]
@@ -83,28 +83,24 @@ function createPacket(key, data, param, reason) {
     };
     if (types_1.UriMode[key] >= types_1.HttpMode.POST)
         result['data'] = getData(data);
-    if (typeof param === 'string')
-        result['reason'] = param;
-    if (typeof param === 'function')
-        result['cache'] = param;
     if (reason)
         result['reason'] = reason;
     return result;
 }
-function create(action, param, reason) {
-    return createPacket(getKey('create', action), action, param, reason);
+function create(action, reason) {
+    return createPacket(getKey('create', action), action, reason);
 }
 exports.create = create;
-function get(action, param, reason) {
-    return createPacket(getKey('get', action), action, param, reason);
+function get(action, reason) {
+    return createPacket(getKey('get', action), action, reason);
 }
 exports.get = get;
-function edit(action, param, reason) {
-    return createPacket(getKey('edit', action), action, param, reason);
+function edit(action, reason) {
+    return createPacket(getKey('edit', action), action, reason);
 }
 exports.edit = edit;
-function remove(action, param, reason) {
-    return createPacket(getKey('remove', action), action, param, reason);
+function remove(action, reason) {
+    return createPacket(getKey('remove', action), action, reason);
 }
 exports.remove = remove;
 exports.crosspost = create;
