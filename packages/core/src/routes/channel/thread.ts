@@ -31,21 +31,21 @@ interface CreateFourmThreadSettings {
     message: FourmThreadMessageParams;
 }
 
-export default function thread<T extends typeof thread>(mode: 'private' | 'public' | 'joined'): T;
+export default function thread<T extends typeof thread>(mode: 'active' | 'private' | 'public' | 'joined'): T;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function thread(data_1: any, data_2: 'private' | 'public' | 'joined'): HttpRequestData;
+export default function thread(data_1: any, data_2: 'active' | 'private' | 'public' | 'joined'): HttpRequestData;
 export default function thread(data: HttpRequestData): HttpRequestData;
 export default function thread(settings: CreateMessageThreadSettings): HttpRequestData;
 export default function thread(settings: CreateChannelThreadSettings): HttpRequestData;
 export default function thread(settings: CreateFourmThreadSettings): HttpRequestData;
-export default function thread<T extends typeof thread>(arg_1: CreateMessageThreadSettings | CreateChannelThreadSettings | CreateFourmThreadSettings | HttpRequestData | 'private' | 'public' | 'joined', arg_2?: 'private' | 'public' | 'joined'): HttpRequestData | T {
+export default function thread<T extends typeof thread>(arg_1: CreateMessageThreadSettings | CreateChannelThreadSettings | CreateFourmThreadSettings | HttpRequestData | 'active' | 'private' | 'public' | 'joined', arg_2?: 'active' | 'private' | 'public' | 'joined'): HttpRequestData | T {
     if (arg_2 && isString(arg_2))
         return {
             type: arg_2,
             data: { ...thread(arg_1 as never) }
         };
 
-    if (arg_1 === 'public' || arg_1 === 'private' || arg_1 === 'joined')
+    if (arg_1 === 'active' || arg_1 === 'public' || arg_1 === 'private' || arg_1 === 'joined')
         return ((param_1: unknown) => thread(param_1, arg_1)) as T;
 
     if (isHttpRequestData(arg_1))

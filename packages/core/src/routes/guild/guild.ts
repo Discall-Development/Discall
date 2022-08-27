@@ -1,4 +1,5 @@
-import { HttpRequestData, SnowflakeData, ImageScheme, RoleData, ChannelTypes, VerificationLevel, DefaultMessageNotificationLevel, ExplicitContentFilterLevel, SystemChannelFlags, LocaleOption, isSnowflake, isHttpRequestData } from '@discall/types';
+import { HttpRequestData, SnowflakeData, ImageScheme, RoleData, ChannelTypes, VerificationLevel, DefaultMessageNotificationLevel, ExplicitContentFilterLevel, SystemChannelFlags, LocaleOption, isSnowflake, isHttpRequestData, isTypeObject, isTypeUndefined, isBoolean } from '@discall/types';
+import { isEmpty } from '../../utils';
 
 interface CreateGuildSettings {
     name: string;
@@ -40,17 +41,29 @@ interface ModifyGuildSettings {
     premium_progress_bar_enabled?: boolean;
 }
 
+interface GetGuildFilters {
+    with_counts?: boolean;
+}
+
+function isGetGuildFilters(obj: unknown): obj is GetGuildFilters {
+    return isTypeObject({
+        with_counts: isTypeUndefined(isBoolean)
+    })(obj);
+}
+
 export default function guild<T extends typeof guild>(id: SnowflakeData): T;
+export default function guild<T extends typeof guild>(mode: 'preview'): T;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function guild(data_1: any, data_2: SnowflakeData): HttpRequestData;
 export default function guild(data: HttpRequestData): HttpRequestData;
 export default function guild(settings: CreateGuildSettings): HttpRequestData;
 export default function guild(settings: ModifyGuildSettings): HttpRequestData;
+export default function guild(filters: GetGuildFilters): HttpRequestData;
 export default function guild<T extends typeof guild>(
-    arg_1: CreateGuildSettings | ModifyGuildSettings | SnowflakeData | HttpRequestData,
-    arg_2?: SnowflakeData
+    arg_1: CreateGuildSettings | ModifyGuildSettings | GetGuildFilters | SnowflakeData | HttpRequestData | 'preview',
+    arg_2?: SnowflakeData | 'preview'
 ): HttpRequestData | T {
-    if (arg_2 && isSnowflake(arg_2))
+    if (isSnowflake(arg_2))
         return {
             type: 'id',
             data: {
@@ -59,13 +72,32 @@ export default function guild<T extends typeof guild>(
             }
         };
 
-    if (isSnowflake(arg_1))
-        return ((param_1: unknown) => guild(param_1, arg_1)) as T;
+    if (arg_2 === 'preview')
+        return {
+            type: arg_2,
+            data: {}
+        };
+
+    if (arg_1 === 'preview' || isSnowflake(arg_1))
+        return ((param_1: unknown) => guild(param_1, arg_1 as string)) as T;
 
     if (isHttpRequestData(arg_1))
         return {
             type: 'guild',
             data: arg_1
+        };
+
+    
+    if (isGetGuildFilters(arg_1))
+        return {
+            type: 'message',
+            data: {
+                query: isEmpty(arg_1) ? '' : `?${
+                    Object.entries(arg_1).map(([key, value]) => {
+                        return `${key}=${value}`;
+                    }).join('&')
+                }`
+            }
         };
 
     return {

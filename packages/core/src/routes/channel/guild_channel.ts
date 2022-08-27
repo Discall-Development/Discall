@@ -36,6 +36,13 @@ interface ModifyChannelSettings {
     default_auto_archive_duration?: number | null;
 }
 
+interface ModifyChannelPositionSettings {
+    id: SnowflakeData;
+    position: number | null;
+    lock_permissions: boolean | null;
+    parent_id: SnowflakeData | null;
+}
+
 interface FollowChannelsSettings {
     webhook_channel_id: SnowflakeData[];
 }
@@ -49,7 +56,7 @@ export default function channel(settings: CreateChannelSettings): HttpRequestDat
 export default function channel(settings: ModifyChannelSettings): HttpRequestData;
 export default function channel(settings: FollowChannelsSettings): HttpRequestData;
 export default function channel<T extends typeof channel>(
-    arg_1?: CreateChannelSettings | ModifyChannelSettings | FollowChannelsSettings | SnowflakeData | HttpRequestData,
+    arg_1?: CreateChannelSettings | ModifyChannelSettings | ModifyChannelPositionSettings | FollowChannelsSettings | SnowflakeData | HttpRequestData,
     arg_2?: SnowflakeData
 ): HttpRequestData | T {
     if (arg_2 && isSnowflake(arg_2))

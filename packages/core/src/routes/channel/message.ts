@@ -1,4 +1,5 @@
-import { AllowMentionsData, AttachmentData, EmbedData, HttpRequestData, isHttpRequestData, isSnowflake, MessageComponentData, MessageFlag, MessageReferenceData, SnowflakeData } from '@discall/types';
+import { AllowMentionsData, AttachmentData, EmbedData, HttpRequestData, isHttpRequestData, isNumber, isSnowflake, isTypeObject, isTypeUndefined, MessageComponentData, MessageFlag, MessageReferenceData, SnowflakeData } from '@discall/types';
+import { isEmpty } from '../../utils';
 
 interface CreateMessageSettings {
     content?: string;
@@ -26,6 +27,15 @@ interface GetMessagesFilters {
     before?: SnowflakeData;
     after?: SnowflakeData;
     limit?: number;
+}
+
+function isGetMessageFilters(obj: unknown): obj is GetMessagesFilters {
+    return isTypeObject({
+        around: isTypeUndefined(isSnowflake),
+        before: isTypeUndefined(isSnowflake),
+        after: isTypeUndefined(isSnowflake),
+        limit: isTypeUndefined(isNumber)
+    })(obj);
 }
 
 export default function message<T extends typeof message>(id: SnowflakeData): T;
@@ -56,6 +66,18 @@ export default function message<T extends typeof message = typeof message>(
         return {
             type: 'message',
             data: arg_1
+        };
+
+    if (isGetMessageFilters(arg_1))
+        return {
+            type: 'message',
+            data: {
+                query: isEmpty(arg_1) ? '' : `?${
+                    Object.entries(arg_1).map(([key, value]) => {
+                        return `${key}=${value}`;
+                    }).join('&')
+                }`
+            }
         };
 
     return {

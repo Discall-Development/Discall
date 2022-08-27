@@ -67,7 +67,24 @@ export enum HttpUri {
     'get+id+channel+thread+member' = '/channel/{channel_id}/thread-members',
     'get+id+channel+public+thread' = '/channel/{channel_id}/thread/archived/public',
     'get+id+channel+private+thread' = '/channel/{channel_id}/thread/archived/private',
-    'get+id+channel+joined+thread' = '/channel/{channel_id}/users/@me/thread/archived/private'
+    'get+id+channel+joined+thread' = '/channel/{channel_id}/users/@me/thread/archived/private',
+    'get_id+guild+emoji' = '/guilds/{guild_id}/emojis',
+    'get+id+guild+id+emoji' = '/guilds/{guild_id}/emojis/{emoji_id}',
+    'create+id+guild+emoji' = '/guilds/{guild_id}/emojis',
+    'edit+id+guild+id+emoji' = '/guilds/{guild_id}/emojis/{emoji_id}',
+    'remove+id+guild+id+emoji' = '/guilds/{guild_id}/emojis/{emoji_id}',
+    'create+guild' = '/guilds',
+    'get+id+guild' = '/guilds/{guild_id}{query}',
+    'get+id+preview+guild' = '/guilds/{guild_id}/preview',
+    'get+preview+id+guild' = '/guilds/{guild_id}/preview',
+    'edit+id+guild' = '/guilds/{guild_id}',
+    'remove+id+guild' = '/guilds/{guild_id}',
+    'get+id+guild+channel' = '/guilds/{guild_id}/channels',
+    'create+id+guild+channel' = '/guilds/{guild_id}/channels',
+    'edit+id+guild+channel' = '/guilds/{guild_id}/channels',
+    'get+id+guild+active+thread' = '/guilds/{guild_id}/threads/active',
+    'get+id+guild+id+member' = '/guilds/{guild_id}/members/{user_id}',
+    'get+id+guild+member' = '/guilds/{guild_id}/members{query}'
 }
 
 export enum UriMode {
@@ -115,5 +132,22 @@ export enum UriMode {
     'get+id+channel+thread+member' = HttpMode.GET,
     'get+id+channel+public+thread' = HttpMode.GET,
     'get+id+channel+private+thread' = HttpMode.GET,
-    'get+id+channel+joined+thread' = HttpMode.GET
+    'get+id+channel+joined+thread' = HttpMode.GET,
+    'get_id+guild+emoji' = HttpMode.GET,
+    'get+id+guild+id+emoji' = HttpMode.GET,
+    'create+id+guild+emoji' = HttpMode.POST,
+    'edit+id+guild+id+emoji' = HttpMode.PATCH,
+    'remove+id+guild+id+emoji' = HttpMode.DELETE,
+    'create+guild' = HttpMode.POST,
+    'get+id+guild' = HttpMode.GET,
+    'get+id+preview+guild' = HttpMode.GET,
+    'get+preview+id+guild' = HttpMode.GET,
+    'edit+id+guild' = HttpMode.PATCH,
+    'remove+id+guild' = HttpMode.DELETE,
+    'get+id+guild+channel' = HttpMode.GET,
+    'create+id+guild+channel' = HttpMode.POST,
+    'edit+id+guild+channel' = HttpMode.PATCH,
+    'get+id+guild+active+thread' = HttpMode.GET,
+    'get+id+guild+id+member' = HttpMode.GET,
+    'get+id+guild+member' = HttpMode.GET
 }
