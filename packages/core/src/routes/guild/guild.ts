@@ -90,7 +90,7 @@ export default function guild<T extends typeof guild>(
     
     if (isGetGuildFilters(arg_1))
         return {
-            type: 'message',
+            type: 'guild',
             data: {
                 query: isEmpty(arg_1) ? '' : `?${
                     Object.entries(arg_1).map(([key, value]) => {
@@ -101,7 +101,7 @@ export default function guild<T extends typeof guild>(
         };
 
     return {
-        type: 'channel',
+        type: 'guild',
         data: { ...arg_1 }
     };
 }

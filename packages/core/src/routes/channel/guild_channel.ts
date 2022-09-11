@@ -54,6 +54,7 @@ export default function channel(data: HttpRequestData): HttpRequestData;
 export default function channel(): HttpRequestData;
 export default function channel(settings: CreateChannelSettings): HttpRequestData;
 export default function channel(settings: ModifyChannelSettings): HttpRequestData;
+export default function channel(settings: ModifyChannelPositionSettings): HttpRequestData;
 export default function channel(settings: FollowChannelsSettings): HttpRequestData;
 export default function channel<T extends typeof channel>(
     arg_1?: CreateChannelSettings | ModifyChannelSettings | ModifyChannelPositionSettings | FollowChannelsSettings | SnowflakeData | HttpRequestData,

@@ -7,7 +7,7 @@ function thread(arg_1, arg_2) {
             type: arg_2,
             data: { ...thread(arg_1) }
         };
-    if (arg_1 === 'public' || arg_1 === 'private' || arg_1 === 'joined')
+    if (arg_1 === 'active' || arg_1 === 'public' || arg_1 === 'private' || arg_1 === 'joined')
         return ((param_1) => thread(param_1, arg_1));
     if ((0, types_1.isHttpRequestData)(arg_1))
         return {

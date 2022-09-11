@@ -84,7 +84,10 @@ export enum HttpUri {
     'edit+id+guild+channel' = '/guilds/{guild_id}/channels',
     'get+id+guild+active+thread' = '/guilds/{guild_id}/threads/active',
     'get+id+guild+id+member' = '/guilds/{guild_id}/members/{user_id}',
-    'get+id+guild+member' = '/guilds/{guild_id}/members{query}'
+    'get+id+guild+member' = '/guilds/{guild_id}/members{query}',
+    'get+id+guild+search+member' = '/guilds/{guild_id}/members/search{query}',
+    'edit+id+guild+id+add+member' = '/guilds/{guild_id}/members/{user_id}',
+    'edit+id+guild+id+modify+member' = '/guilds/{guild_id}/members/{user_id}'
 }
 
 export enum UriMode {
@@ -149,5 +152,8 @@ export enum UriMode {
     'edit+id+guild+channel' = HttpMode.PATCH,
     'get+id+guild+active+thread' = HttpMode.GET,
     'get+id+guild+id+member' = HttpMode.GET,
-    'get+id+guild+member' = HttpMode.GET
+    'get+id+guild+member' = HttpMode.GET,
+    'get+id+guild+search+member' = HttpMode.GET,
+    'edit+id+guild+id+add+member' = HttpMode.PUT,
+    'edit+id+guild+id+modify+member' = HttpMode.PATCH
 }

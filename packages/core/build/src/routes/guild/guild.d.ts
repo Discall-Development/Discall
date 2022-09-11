@@ -37,9 +37,14 @@ interface ModifyGuildSettings {
     preferred_locale?: LocaleOption | null;
     premium_progress_bar_enabled?: boolean;
 }
+interface GetGuildFilters {
+    with_counts?: boolean;
+}
 export default function guild<T extends typeof guild>(id: SnowflakeData): T;
+export default function guild<T extends typeof guild>(mode: 'preview'): T;
 export default function guild(data_1: any, data_2: SnowflakeData): HttpRequestData;
 export default function guild(data: HttpRequestData): HttpRequestData;
 export default function guild(settings: CreateGuildSettings): HttpRequestData;
 export default function guild(settings: ModifyGuildSettings): HttpRequestData;
+export default function guild(filters: GetGuildFilters): HttpRequestData;
 export {};

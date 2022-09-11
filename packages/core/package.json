@@ -1,6 +1,6 @@
 {
     "name": "@discall/core",
-    "version": "1.0.0a1",
+    "version": "1.0.0a4",
     "description": "A async functional discord API wrapper.",
     "main": "./build/index.js",
     "types": "./build/index.d.ts",

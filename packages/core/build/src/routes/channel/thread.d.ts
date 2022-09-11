@@ -26,8 +26,8 @@ interface CreateFourmThreadSettings {
     rate_limit_per_user?: number | null;
     message: FourmThreadMessageParams;
 }
-export default function thread<T extends typeof thread>(mode: 'private' | 'public' | 'joined'): T;
-export default function thread(data_1: any, data_2: 'private' | 'public' | 'joined'): HttpRequestData;
+export default function thread<T extends typeof thread>(mode: 'active' | 'private' | 'public' | 'joined'): T;
+export default function thread(data_1: any, data_2: 'active' | 'private' | 'public' | 'joined'): HttpRequestData;
 export default function thread(data: HttpRequestData): HttpRequestData;
 export default function thread(settings: CreateMessageThreadSettings): HttpRequestData;
 export default function thread(settings: CreateChannelThreadSettings): HttpRequestData;
