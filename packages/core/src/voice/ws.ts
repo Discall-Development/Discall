@@ -59,7 +59,7 @@ export default function voice(_ws: ReturnType<typeof __ws>): typeof _ws {
 
 const states: Map<SnowflakeData, VoiceStates> = new Map();
 const heartbeatIDs: Map<SnowflakeData, NodeJS.Timer> = new Map();
-let ssrcs: Map<SnowflakeData, number>;
+const ssrcs: Map<SnowflakeData, number> = new Map();
 const udpSends: Map<SnowflakeData, (data: Buffer, secretKey?: Buffer) => Promise<void>> = new Map();
 function ws(endpoint: string, token: string, session_id: string, server_id: SnowflakeData, user_id: SnowflakeData): WebSocket.WebSocket {
     const ws = new WebSocket.WebSocket(`wss://${endpoint}?v=4`);
@@ -77,12 +77,11 @@ function ws(endpoint: string, token: string, session_id: string, server_id: Snow
 export async function send(ws: WebSocket.WebSocket, data: DiscordData) {
     return await pipe(data)
         .pipe(JSON.stringify)
-        .pipe(ws.send)
+        .pipe(ws.send.bind(ws))
         .execute();
 }
 
 async function open(ws: WebSocket.WebSocket, user_id: SnowflakeData, server_id: SnowflakeData, session_id: string, token: string) {
-    console.log(ws);
     switch(states.get(server_id)) {
     case VoiceStates.OPEN:
         return await login(ws, user_id, server_id, session_id, token);

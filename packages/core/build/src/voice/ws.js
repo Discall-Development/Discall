@@ -52,7 +52,7 @@ function voice(_ws) {
 exports.default = voice;
 const states = new Map();
 const heartbeatIDs = new Map();
-let ssrcs;
+const ssrcs = new Map();
 const udpSends = new Map();
 function ws(endpoint, token, session_id, server_id, user_id) {
     const ws = new runtimeModule_1.WebSocket.WebSocket(`wss://${endpoint}?v=4`);
@@ -67,7 +67,7 @@ function ws(endpoint, token, session_id, server_id, user_id) {
 async function send(ws, data) {
     return await (0, simple_pipe_1.default)(data)
         .pipe(JSON.stringify)
-        .pipe(ws.send)
+        .pipe(ws.send.bind(ws))
         .execute();
 }
 exports.send = send;
