@@ -11,7 +11,12 @@ function member(arg_1, arg_2) {
                 data: member(arg_1)
             }
         };
-    if ((0, types_1.isSnowflake)(arg_1))
+    if (arg_2 === 'search' || arg_2 === 'add' || arg_2 === 'modify')
+        return {
+            type: arg_2,
+            data: member(arg_1)
+        };
+    if (arg_1 === 'search' || (0, types_1.isSnowflake)(arg_1))
         return ((param_1) => member(param_1, arg_1));
     if ((0, types_1.isHttpRequestData)(arg_1))
         return {
@@ -21,6 +26,7 @@ function member(arg_1, arg_2) {
     return {
         type: 'member',
         data: {
+            data: arg_1,
             query: (0, utils_1.isEmpty)(arg_1) ? '' : `?${Object.entries(arg_1).map(([key, value]) => {
                 return `${key}=${value}`;
             }).join('&')}`

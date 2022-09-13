@@ -1,4 +1,5 @@
+import { DiscordData, HttpRequest } from '@discall/types';
 export default function bot(token: string, { intents, prefix }: {
     intents: number;
     prefix?: string;
-}): (packet: import("@discall/types").HttpRequest) => Promise<any>;
+}): (packet: HttpRequest | DiscordData) => Promise<any>;

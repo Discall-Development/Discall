@@ -72,6 +72,7 @@ async function send(ws, data) {
 }
 exports.send = send;
 async function open(ws, user_id, server_id, session_id, token) {
+    console.log(ws);
     switch (states.get(server_id)) {
         case VoiceStates.OPEN:
             return await login(ws, user_id, server_id, session_id, token);

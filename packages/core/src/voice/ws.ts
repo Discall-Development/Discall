@@ -82,6 +82,7 @@ export async function send(ws: WebSocket.WebSocket, data: DiscordData) {
 }
 
 async function open(ws: WebSocket.WebSocket, user_id: SnowflakeData, server_id: SnowflakeData, session_id: string, token: string) {
+    console.log(ws);
     switch(states.get(server_id)) {
     case VoiceStates.OPEN:
         return await login(ws, user_id, server_id, session_id, token);

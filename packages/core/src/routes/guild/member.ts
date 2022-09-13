@@ -1,4 +1,4 @@
-import { SnowflakeData, HttpRequestData, isSnowflake, isHttpRequestData, Timestamp, isTypeObject, isString, isTypeUndefined, isTypeArray, isBoolean, isTypeNull, isTimestamp, isNumber } from '@discall/types';
+import { SnowflakeData, HttpRequestData, isSnowflake, isHttpRequestData, Timestamp } from '@discall/types';
 import { isEmpty } from '../../utils';
 
 interface GetMemberFilters {
@@ -28,43 +28,8 @@ interface ModifyMemberSettings {
     communication_disabled_until?: Timestamp | null;
 }
 
-function isGetMemberFilters(obj: unknown): obj is GetMemberFilters {
-    return isTypeObject({
-        limit: isTypeUndefined(isNumber),
-        after: isTypeUndefined(isSnowflake)
-    })(obj);
-}
-
-function isSearchMemberFilters(obj: unknown): obj is SearchMemberFilters {
-    return isTypeObject({
-        query: isString,
-        limit: isTypeUndefined(isNumber)
-    })(obj);
-}
-
-function isAddMemberSettings(obj: unknown): obj is AddMemberSettings {
-    return isTypeObject({
-        access_token: isString,
-        nick: isTypeUndefined(isString),
-        roles: isTypeUndefined(isTypeArray(isSnowflake)),
-        mute: isTypeUndefined(isBoolean),
-        deaf: isTypeUndefined(isBoolean)
-    })(obj);
-}
-
-function isModifyMemberSettings(obj: unknown): obj is ModifyMemberSettings {
-    return isTypeObject({
-        nick: isTypeUndefined(isTypeNull(isString)),
-        roles: isTypeUndefined(isTypeNull(isTypeArray(isSnowflake))),
-        mute: isTypeUndefined(isTypeNull(isBoolean)),
-        deaf: isTypeUndefined(isTypeNull(isBoolean)),
-        channel_id: isTypeUndefined(isTypeNull(isBoolean)),
-        communication_disabled_until: isTypeUndefined(isTypeNull(isTimestamp))
-    })(obj) && !isGetMemberFilters(obj) && !isSearchMemberFilters(obj);
-}
-
 export default function member<T extends typeof member>(id: SnowflakeData): T;
-export default function member<T extends typeof member>(mode: 'search'): T;
+export default function member<T extends typeof member>(mode: 'search' | 'add' | 'modify'): T;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function member(data_1: any, data_2: SnowflakeData): HttpRequestData;
 export default function member(data: HttpRequestData): HttpRequestData;
@@ -81,31 +46,16 @@ export default function member<T extends typeof member>(arg_1: GetMemberFilters 
             }
         };
         
-    if (arg_2 === 'search')
+    if (arg_2 === 'search' || arg_2 === 'add' || arg_2 === 'modify')
         return {
-            type: 'search',
-            data: {
-                thread_id: arg_2,
-                data: member(arg_1 as never)
-            }
+            type: arg_2,
+            data: member(arg_1 as never) as unknown as HttpRequestData
         };
 
     if (arg_1 === 'search' || isSnowflake(arg_1))
         return ((param_1: unknown) => member(param_1, arg_1 as never)) as T;
-
-    if (isAddMemberSettings(arg_1))
-        return {
-            type: 'add+member',
-            data: { ...arg_1 }
-        };
-        
-    if (isModifyMemberSettings(arg_1))
-        return {
-            type: 'modify+member',
-            data: { ...arg_1 }
-        };
     
-    if (isHttpRequestData(arg_1) && !isEmpty(arg_1))
+    if (isHttpRequestData(arg_1))
         return {
             type: 'member',
             data: arg_1
@@ -114,6 +64,7 @@ export default function member<T extends typeof member>(arg_1: GetMemberFilters 
     return {
         type: 'member',
         data: {
+            data: arg_1,
             query: isEmpty(arg_1) ? '' : `?${
                 Object.entries(arg_1).map(([key, value]) => {
                     return `${key}=${value}`;

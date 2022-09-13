@@ -30,7 +30,7 @@ function guild(arg_1, arg_2) {
         };
     if (isGetGuildFilters(arg_1))
         return {
-            type: 'message',
+            type: 'guild',
             data: {
                 query: (0, utils_1.isEmpty)(arg_1) ? '' : `?${Object.entries(arg_1).map(([key, value]) => {
                     return `${key}=${value}`;
@@ -38,7 +38,7 @@ function guild(arg_1, arg_2) {
             }
         };
     return {
-        type: 'channel',
+        type: 'guild',
         data: { ...arg_1 }
     };
 }

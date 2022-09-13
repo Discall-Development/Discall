@@ -29,6 +29,12 @@ interface ModifyChannelSettings {
     video_quality_mode?: VideoQualityModes | null;
     default_auto_archive_duration?: number | null;
 }
+interface ModifyChannelPositionSettings {
+    id: SnowflakeData;
+    position: number | null;
+    lock_permissions: boolean | null;
+    parent_id: SnowflakeData | null;
+}
 interface FollowChannelsSettings {
     webhook_channel_id: SnowflakeData[];
 }
@@ -38,5 +44,6 @@ export default function channel(data: HttpRequestData): HttpRequestData;
 export default function channel(): HttpRequestData;
 export default function channel(settings: CreateChannelSettings): HttpRequestData;
 export default function channel(settings: ModifyChannelSettings): HttpRequestData;
+export default function channel(settings: ModifyChannelPositionSettings): HttpRequestData;
 export default function channel(settings: FollowChannelsSettings): HttpRequestData;
 export {};
